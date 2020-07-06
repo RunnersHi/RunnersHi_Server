@@ -1,5 +1,3 @@
-"use strict";
-
 const mysql = require("mysql");
 const DBConfig = require("./../config/DBConfig");
 const pool = mysql.createPool(DBConfig);
@@ -26,7 +24,7 @@ exports.auth = (token, done) => {
         } else {
             const sql = "SELECT user_idx FROM User WHERE id = ?";
 
-            pool.query(sql, [decoded.email], (err, rows) => {
+            pool.query(sql, [decoded.id], (err, rows) => {
                 if (err) {
                     return done(err);
                 } else {

@@ -1,5 +1,3 @@
-"use strict";
-
 //mysql connection
 const mysql = require("mysql");
 const DBConfig = require("./../config/DBConfig");
@@ -11,9 +9,8 @@ const config = require("../config/config");
 
 /*******************
  *  Register
- *  @param: userData = {email, pw, name, age, gender, profile, height, weight, private}
+ *  @param: userData = {nickname, id, password, salt, gender, level, log_visibility, img}
  ********************/
-
 exports.register = userData => {
     return new Promise((resolve, reject) => {
         const sql =
@@ -26,11 +23,11 @@ exports.register = userData => {
                 userData.nickname,
                 userData.id,
                 userData.password,
-                userData.crypto.randomBytes(128).toString('base64'),
+                userData.salt,
                 userData.gender,
                 userData.level,
                 userData.log_visibility,
-                userData.img,
+                userData.image,
             ],
             (err, rows) => {
                 // 가입 시도
@@ -38,10 +35,11 @@ exports.register = userData => {
                     reject(err);
                 } else {
                     if (rows.affectedRows === 1) {
-                        const token = jwt.sign(userData.id, config.jwt.cert, {
-                            expiresIn: "12h"
-                        });
-                        resolve(token);
+                        const result = {"token" : jwt.sign(userData, config.jwt.cert, {
+                                expiresIn: "10h"
+                            })
+                        };
+                        resolve(result);
                     } else {
                         const _err = new Error("User Register Custom error");
                         reject(_err);
@@ -52,11 +50,15 @@ exports.register = userData => {
     });
 };
 
+/*******************
+ *  Register
+ *  @param: userData = {id, password}
+ ********************/
 exports.login = userData => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT email FROM users WHERE email = ?";
+        const sql = "SELECT password, salt FROM User WHERE id = ?";
 
-        pool.query(sql, [userData.email], (err, rows) => {
+        pool.query(sql, [userData.id], (err, rows) => {
             // 아이디 존재 검사
             if (err) {
                 reject(err);
@@ -65,70 +67,34 @@ exports.login = userData => {
                     // 아이디 없음
                     reject(1402);
                 } else {
-                    resolve(userData);
-                }
-            }
-        });
-    }).then(userData => {
-        return new Promise((resolve, reject) => {
-            /*******************
-             *  id, email, name, profile
-             ********************/
-            const sql =
-                "SELECT email, name, id, profile, salt " +
-                "FROM users " +
-                "WHERE email = ? and pw = ?";
-
-            pool.query(sql, [userData.email, userData.pw], (err, rows) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    if (rows.length === 0) {
-                        // 비밀번호 틀림
-                        reject(1403);
-                    } else {
-                        const profile = {
-                            email: rows[0].email,
-                            nickname: rows[0].nickname,
-                            profile: rows[0].profile,
-                            id: rows[0].id
+                    if(rows[0].password === config.do_cipher(userData.password, rows[0].salt)) {
+                        userData.token = {
+                            "token": jwt.sign(userData, config.jwt.cert, {
+                                expiresIn: "10h"
+                            })
                         };
-                        const token = jwt.sign(profile, config.jwt.cert, {
-                            expiresIn: "10h"
-                        });
-
-                        const result = {
-                            profile,
-                            token
-                        };
-                        resolve(result);
+                        userData.password = undefined;
+                        userData.id = undefined;
+                        resolve(userData);
+                    } else{
+                        resolve();
                     }
-                }
-            });
-        });
-    });
-};
 
-// 토큰 업데이트
-exports.updateToken = (token, id) => {
-    return new Promise((resolve, reject) => {
-        const sql = "UPDATE users SET token = ? WHERE id = ?";
-        pool.query(sql, [token, id], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
+                }
             }
         });
     });
 };
 
-//id 있는지 검사
-exports.checkName = name => {
+/*******************
+ *  Register
+ *  @param: userData = {id}
+ ********************/
+exports.checkId = id => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT name FROM users WHERE name = ?";
+        const sql = "SELECT id FROM User WHERE id = ?";
 
-        pool.query(sql, [name], (err, rows) => {
+        pool.query(sql, [id], (err, rows) => {
             // 아이디 존재 검사
             if (err) {
                 reject(err);
@@ -144,40 +110,24 @@ exports.checkName = name => {
     });
 };
 
-//id 있는지 검사
-exports.checkEmail = email => {
+/*******************
+ *  Register
+ *  @param: userData = {nickname}
+ ********************/
+exports.checkNickname = nickname => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT email FROM users WHERE email = ?";
+        const sql = "SELECT nickname FROM User WHERE nickname = ?";
 
-        pool.query(sql, [email], (err, rows) => {
-            // email 존재 검사
+        pool.query(sql, [nickname], (err, rows) => {
+            // nickname 존재 검사
             if (err) {
                 reject(err);
             } else {
                 if (rows.length === 0) {
-                    // email 없음
+                    // nickname 없음
                     resolve();
                 } else {
                     reject(1401);
-                }
-            }
-        });
-    });
-};
-
-//id 있는지 검사
-exports.findNameById = id => {
-    return new Promise((resolve, reject) => {
-        const sql = "SELECT name FROM users WHERE id = ?";
-
-        pool.query(sql, [id], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                if (rows.length === 0) {
-                    reject(1402);
-                } else {
-                    resolve(rows[0].name);
                 }
             }
         });
