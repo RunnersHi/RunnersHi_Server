@@ -16,7 +16,46 @@ server.on('listening', onListening);
 
 app.set('port', port);
 
+let roomNum = 1;
+let roomName;
+let flag = false;
 
+io = require('socket.io')(server);
+
+io.on("connection", (socket) => {
+  setTimeout(sendHeartbeat, 9000);
+
+  io.to(socket.id).emit(start, socket.id);
+  
+  socket.on("joinRoom", (time, gender) => {
+    for (const [key, room] of Object.entries(socket.adapter.rooms)) {
+      if (room['time'] === time && room['gender'] === gender && room['length'] === 1) {
+        flag = true;
+        roomName = key;
+        break;
+      }
+      else {
+        flag = false;
+      }
+    }
+    if (flag) {
+      socket.join(roomName, () => {
+        io.to(roomName)
+      });
+    }
+    else {
+      socket.join(roomNum, () => {
+
+      });
+      roomNum += 1;
+    }
+  });
+
+  function sendHeartbeat() {
+    setTimeout(sendHeartbeat, 9000);
+    app.io.emit("ping", { beat: 1 });
+  }
+});
 
 app.use(logger('dev'));
 app.use(express.json());
