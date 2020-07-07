@@ -130,7 +130,7 @@ exports.checkNickname = nickname => {
  ********************/
 exports.profile = user_idx => {
     return new Promise((resolve, reject)=>{
-       const sql = "SELECT * FROM user WHERE user_idx = ?";
+       const sql = "SELECT (user_idx, nickname, gender, level, image, badge) FROM user WHERE user_idx = ? ";
 
        pool.query(sql, [user_idx], (err, rows) => {
            if(err){
@@ -143,6 +143,31 @@ exports.profile = user_idx => {
                }
            }
        })
+    }).then(userData => {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT result FROM run WHERE user_idx = ? ";
+
+            pool.query(sql, [userData.user_idx], (err, rows)=>{
+                if(err){
+                    reject(err);
+                } else{
+                    userData.win = 0;
+                    userData.lose = 0;
+                    for(let i = 0; i < rows.length(); i++){
+                        switch(rows[i]){
+                            case 0:
+                                userData.win++;
+                                break;
+                            case 1:
+                            case 2:
+                                userData.lose++;
+                                break;
+                        }
+                    }
+                    resolve(userData);
+                }
+            })
+        })
     });
 };
 
