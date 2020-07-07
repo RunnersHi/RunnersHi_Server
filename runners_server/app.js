@@ -26,8 +26,8 @@ io.on("connection", (socket) => {
   setTimeout(sendHeartbeat, 9000);
 
   io.to(socket.id).emit(start, socket.id);
-  
-  socket.on("joinRoom", (time, gender) => {
+
+  socket.on("joinRoom", (time, gender, token) => {
     for (const [key, room] of Object.entries(socket.adapter.rooms)) {
       if (room['time'] === time && room['gender'] === gender && room['length'] === 1) {
         flag = true;
@@ -40,12 +40,12 @@ io.on("connection", (socket) => {
     }
     if (flag) {
       socket.join(roomName, () => {
-        io.to(roomName)
+        io.to(roomName).emit("roomFull", roomName);
       });
     }
     else {
       socket.join(roomNum, () => {
-
+        io.to(roomNum.toString()).emit("roomCreated", roomNum.toString());
       });
       roomNum += 1;
     }
@@ -64,11 +64,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
-  res.r = (result, success, message) => {
+  res.r = (result) => {
     res.json({
       status: 200,
-      success : success,
-      message: message,
+      success : true,
+      message: "success",
       result,
     });
   };
