@@ -1,5 +1,3 @@
-"use strict";
-
 const config = require("../config/config");
 const resMsg = require("../errors.json");
 const crypto = require('crypto');
@@ -48,7 +46,6 @@ exports.register = async (req, res, next) => {
     console.log(req.body);
     //body check
     if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-        console.log(req.body.password);
         return res.status(400).end();
     }
     let result = "";
@@ -99,5 +96,24 @@ exports.duplicates = async(req, res, next) => {
     } catch(error){
         return next(error);
     }
-    return res.r(result, true, "duplicate check success");
+    if(result.rows.length === 0){
+        return res.r(result, false, "duplicate check fail");
+    } else{
+        return res.r(result, true, "duplicate check success");
+    }
+};
+
+/*******************
+ *  myProfile
+ *  body {}
+ ********************/
+exports.myProfile = async(req, res, next) => {
+    let result = "";
+    try{
+        result = await userModel.profile(req.user_idx);
+
+    } catch(error){
+        return next(error);
+    }
+    return res.r(result, true, "lookup my profile success");
 };

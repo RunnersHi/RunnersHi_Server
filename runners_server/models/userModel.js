@@ -14,7 +14,7 @@ const config = require("../config/config");
 exports.register = userData => {
     return new Promise((resolve, reject) => {
         const sql =
-            "INSERT INTO User(nickname, id, password, salt, gender, level, log_visibility, image) " +
+            "INSERT INTO user(nickname, id, password, salt, gender, level, log_visibility, image) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 
         pool.query(
@@ -56,7 +56,7 @@ exports.register = userData => {
  ********************/
 exports.login = userData => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT password, salt FROM User WHERE id = ?";
+        const sql = "SELECT password, salt FROM user WHERE id = ?";
 
         pool.query(sql, [userData.id], (err, rows) => {
             // 아이디 존재 검사
@@ -92,19 +92,14 @@ exports.login = userData => {
  ********************/
 exports.checkId = id => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT id FROM User WHERE id = ?";
+        const sql = "SELECT id FROM user WHERE id = ?";
 
         pool.query(sql, [id], (err, rows) => {
             // 아이디 존재 검사
             if (err) {
                 reject(err);
             } else {
-                if (rows.length === 0) {
-                    // 아이디 없음
-                    resolve();
-                } else {
-                    reject(1400);
-                }
+                resolve(rows);
             }
         });
     });
@@ -116,20 +111,38 @@ exports.checkId = id => {
  ********************/
 exports.checkNickname = nickname => {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT nickname FROM User WHERE nickname = ?";
+        const sql = "SELECT nickname FROM user WHERE nickname = ?";
 
         pool.query(sql, [nickname], (err, rows) => {
             // nickname 존재 검사
             if (err) {
                 reject(err);
             } else {
-                if (rows.length === 0) {
-                    // nickname 없음
-                    resolve();
-                } else {
-                    reject(1401);
-                }
+                resolve(rows);
             }
         });
     });
 };
+
+/*******************
+ *  Register
+ *  @param: user_idx
+ ********************/
+exports.profile = user_idx => {
+    return new Promise((resolve, reject)=>{
+       const sql = "SELECT * FROM user WHERE user_idx = ?";
+
+       pool.query(sql, [user_idx], (err, rows) => {
+           if(err){
+               reject(err);
+           } else{
+               if(rows.length === 0) {
+                   resolve(rows[0]);
+               } else{
+                   reject(1407);
+               }
+           }
+       })
+    });
+};
+
