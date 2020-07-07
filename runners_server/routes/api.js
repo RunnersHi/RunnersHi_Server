@@ -1,4 +1,5 @@
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 
 module.exports = router => {
@@ -14,6 +15,9 @@ module.exports = router => {
     //login
     router.route('/users/login')
         .post(userController.login);
+
+    router.route('/users/myProfile')
+        .get(authController.auth, userController.myProfile);
 
     return router;
 };

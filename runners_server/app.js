@@ -16,46 +16,7 @@ server.on('listening', onListening);
 
 app.set('port', port);
 
-let roomNum = 1;
-let roomName;
-let flag = false;
 
-io = require('socket.io')(server);
-
-io.on("connection", (socket) => {
-  setTimeout(sendHeartbeat, 9000);
-
-  io.to(socket.id).emit(start, socket.id);
-
-  socket.on("joinRoom", (time, gender, token) => {
-    for (const [key, room] of Object.entries(socket.adapter.rooms)) {
-      if (room['time'] === time && room['gender'] === gender && room['length'] === 1) {
-        flag = true;
-        roomName = key;
-        break;
-      }
-      else {
-        flag = false;
-      }
-    }
-    if (flag) {
-      socket.join(roomName, () => {
-        io.to(roomName).emit("roomFull", roomName);
-      });
-    }
-    else {
-      socket.join(roomNum, () => {
-        io.to(roomNum.toString()).emit("roomCreated", roomNum.toString());
-      });
-      roomNum += 1;
-    }
-  });
-
-  function sendHeartbeat() {
-    setTimeout(sendHeartbeat, 9000);
-    app.io.emit("ping", { beat: 1 });
-  }
-});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -64,11 +25,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
-  res.r = (result) => {
+  res.r = (status, result, success, message) => {
     res.json({
-      status: 200,
-      success : true,
-      message: "success",
+      status: status,
+      success : success,
+      message: message,
       result,
     });
   };
