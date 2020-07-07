@@ -44,9 +44,11 @@ exports.login = async (req, res, next) => {
  *  body {id, password, nickname, gender, level, log_visibility, image}
  ********************/
 exports.register = async (req, res, next) => {
+    console.log(req.body.id);
     console.log(req.body);
     //body check
-    if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.log_visibility || !req.body.image){
+    if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
+        console.log(req.body.password);
         return res.status(400).end();
     }
     let result = "";
@@ -79,7 +81,7 @@ exports.register = async (req, res, next) => {
 };
 
 /*******************
- *  Register
+ *  Duplicates
  *  body {check_name, flag}
  ********************/
 exports.duplicates = async(req, res, next) => {
@@ -87,10 +89,15 @@ exports.duplicates = async(req, res, next) => {
     if(!req.body.check_name || !req.body.flag){
         return res.status(400).end();
     }
-    if(req.body.flag === 1){
-        await userModel.checkId(req.body.check_name);
-    } else {
-        await userModel.checkNickname(req.body.check_name);
+    try{
+        if(req.body.flag === 1){
+            await userModel.checkId(req.body.check_name);
+        } else {
+            await userModel.checkNickname(req.body.check_name);
+        }
+
+    } catch(error){
+        return next(error);
     }
     return res.r(result, true, "duplicate check success");
 };

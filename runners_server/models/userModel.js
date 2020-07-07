@@ -9,12 +9,12 @@ const config = require("../config/config");
 
 /*******************
  *  Register
- *  @param: userData = {nickname, id, password, salt, gender, level, log_visibility, img}
+ *  @param: userData = {nickname, id, password, salt, gender, level, log_visibility, image}
  ********************/
 exports.register = userData => {
     return new Promise((resolve, reject) => {
         const sql =
-            "INSERT INTO User(nickname, id, password, salt, gender, level, log_visibility, img) " +
+            "INSERT INTO User(nickname, id, password, salt, gender, level, log_visibility, image) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 
         pool.query(
