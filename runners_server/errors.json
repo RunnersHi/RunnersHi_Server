@@ -16,13 +16,13 @@
     "status": 400,
     "code": 0,
     "message": "1",
-    "description": "Exist nickname"
+    "description": "Exist id"
   },
   "1401": {
     "status": 400,
     "code": 0,
     "message": "2",
-    "description": "Exist email"
+    "description": "Exist nickname"
   },
   "1402": {
     "status": 400,

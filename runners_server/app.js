@@ -25,11 +25,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
-  res.r = (result) => {
+  res.r = (result, success, message) => {
     res.json({
       status: 200,
-      success : true,
-      message: "success",
+      success : success,
+      message: message,
       result,
     });
   };
