@@ -1,6 +1,6 @@
 const expressValidation = require('express-validation');
 //const log = require('./config/logger');
-const errors = require('./errors');
+const errors = require('./errors.json');
 
 module.exports = (app) => {
     const error_code = {
