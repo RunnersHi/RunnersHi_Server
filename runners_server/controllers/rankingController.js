@@ -29,10 +29,19 @@ const ranking = {
     
     const result = await rankingModel.loser();
 
-    
     console.log(result);
     res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
 
+  },
+  getDetailProfile: async(req, res) => {
+
+    const user_id = req.params.id;
+    console.log(user_id);
+    const result = await rankingModel.getDetailProfile(user_id);
+
+    
+    console.log(result);
+    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
   }
 };
 

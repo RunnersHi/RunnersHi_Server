@@ -15,6 +15,9 @@ module.exports = router => {
     //졌잘싸
     router.get('/ranking/loser', rankingController.loser);
 
+    //러너DetailProfile
+    router.get('/ranking/detail/:id', rankingController.getDetailProfile);
+
     return router;
 };
 
