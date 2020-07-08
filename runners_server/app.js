@@ -9,6 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const indexRouter = require('./routes/index.js');
 const errorHandler = require('./ErrorHandler');
+const responseHandler = require('./responseHandler');
 
 server.listen(port);
 server.on('error', onError);
@@ -16,27 +17,14 @@ server.on('listening', onListening);
 
 app.set('port', port);
 
-app.io = require('socket.io')(server);
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next) {
-  res.r = (status, result, success, message) => {
-    res.json({
-      status: status,
-      success : success,
-      message: message,
-      result,
-    });
-  };
-  next();
-});
-
 indexRouter(app);
+responseHandler(app);
 errorHandler(app);
 
 //여기부분 부터 http server 생성관련인데 초기 설정 어떻게 할지 같이 고민

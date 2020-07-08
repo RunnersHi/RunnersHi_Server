@@ -3,69 +3,69 @@
     "status": 400,
     "success" : false,
     "message": "잘못된 요청입니다.",
-    "description": "Bad Request"
+    "result": ""
   },
   "401": {
     "status": 401,
     "success" : false,
     "message": "로그인에 실패하였습니다.",
-    "description": "Login Fail"
+    "result": ""
   },
 
   "1400" : {
     "status": 400,
     "success" : false,
     "message": "1",
-    "description": "Exist id"
+    "result": ""
   },
   "1401": {
     "status": 400,
     "success" : false,
     "message": "2",
-    "description": "Exist nickname"
+    "result": ""
   },
   "1402": {
     "status": 400,
     "success" : false,
     "message": "아이디가 존재하지 않습니다.",
-    "description": "Not Exist ID"
+    "result": ""
   },
   "1403": {
     "status": 403,
     "success" : false,
     "message": "비밀번호가 틀렸습니다.",
-    "description": "Passwords no not match"
+    "result": ""
   },
   "1404": {
     "status": 400,
     "success" : false,
     "message": "비밀번호가 일치하지 않습니다",
-    "description": "Passwords no not match"
+    "result": ""
   },
   "1405": {
     "status": 400,
     "success" : false,
     "message": "이미 승인 절차가 진행된 유저입니다.",
-    "description": "Already confirm user"
+    "result": ""
   },
   "1406": {
     "status": 400,
     "success" : false,
     "message": "중복된 데이터입니다.",
-    "description": "Already Existent data"
+    "result": ""
   },
   "1407": {
     "status": 400,
     "success" : false,
     "message": "존재하지 않는 데이터입니다.",
-    "description": "Nonexistent data"
+    "result": ""
   },
 
   "1700": {
     "status": 403,
     "success" : false,
     "message": "맞지 않는 데이터입니다.",
-    "description": "Nonexistent data"
+    "result": ""
   },
 
 
@@ -73,25 +73,25 @@
     "status": 400,
     "success" : false,
     "message": "파라미터가 잘못되었습니다.",
-    "description": "invalid parameter"
+    "result": ""
   },
   "9402": {
     "status": 403,
     "success" : false,
     "message": "권한이 없습니다.",
-    "description": "Do not have permission"
+    "result": ""
   },
   "10401": {
     "status": 401,
     "success" : false,
     "message": "만료된 인증 토큰 입니다.",
-    "description": "expired token"
+    "result": ""
   },
   "10403": {
     "status": 403,
     "success" : false,
     "message": "잘못된 인증 방식입니다.",
-    "description": "invalid authentication"
+    "result": ""
   },
 
 
@@ -99,16 +99,16 @@
     "status": 500,
     "success" : false,
     "message": "서버 오류",
-    "description": "Internal Server Error"
+    "result": ""
   },
   "8400": {
     "status": 400,
     "success" : false,
-    "message": "400 Error"
+    "result": ""
   },
   "9500": {
     "status": 400,
     "success" : false,
-    "message": "500 Error"
+    "result": ""
   }
 }

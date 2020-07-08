@@ -5,8 +5,9 @@ const resMessage = require("../modules/responseMessage");
 
 const ranking = {
   runner: async(req, res) => {
-
-  } 
+    
+  }
+  
 };
 
 module.exports = ranking;

@@ -29,11 +29,11 @@ exports.login = async (req, res, next) => {
     }
     //password fail
     if(result === undefined){
-        return res.r(result, false, "login fail");
+        return res.r(200, {}, false, "login fail");
     }
     //login success
     else{
-        return res.r(result, true, "login success");
+        return res.r(200, result.token, true, "login success");
     }
 };
 
@@ -42,11 +42,10 @@ exports.login = async (req, res, next) => {
  *  body {id, password, nickname, gender, level, log_visibility, image}
  ********************/
 exports.register = async (req, res, next) => {
-    console.log(req.body.id);
-    console.log(req.body);
     //body check
     if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-        return res.status(400).end();
+        return next(400);
+        //return res.status(400).end();
     }
     let result = "";
 
@@ -74,7 +73,7 @@ exports.register = async (req, res, next) => {
         return next(error);
     }
 
-    return res.r(result, true, "register success");
+    return res.r(200, result, true, "register success");
 };
 
 /*******************
@@ -82,24 +81,24 @@ exports.register = async (req, res, next) => {
  *  body {check_name, flag}
  ********************/
 exports.duplicates = async(req, res, next) => {
-    const result = {};
+    let result = "";
     if(!req.body.check_name || !req.body.flag){
         return res.status(400).end();
     }
     try{
         if(req.body.flag === 1){
-            await userModel.checkId(req.body.check_name);
+            result = await userModel.checkId(req.body.check_name);
         } else {
-            await userModel.checkNickname(req.body.check_name);
+            result = await userModel.checkNickname(req.body.check_name);
         }
 
     } catch(error){
         return next(error);
     }
-    if(result.rows.length === 0){
-        return res.r(result, false, "duplicate check fail");
+    if(result.length !== 0){
+        return res.r(200, {}, false, "duplicate check fail");
     } else{
-        return res.r(result, true, "duplicate check success");
+        return res.r(200, {}, true, "duplicate check success");
     }
 };
 
@@ -115,5 +114,5 @@ exports.myProfile = async(req, res, next) => {
     } catch(error){
         return next(error);
     }
-    return res.r(result, true, "lookup my profile success");
+    return res.r(200, result, true, "lookup my profile success");
 };
