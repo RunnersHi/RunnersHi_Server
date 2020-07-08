@@ -5,7 +5,6 @@ const authModel = require("../models/authModel");
 /*******************
  *  Authenticate
  ********************/
-
 exports.auth = (req, res, next) => {
     if (!req.headers.token) {
         return next(401);
