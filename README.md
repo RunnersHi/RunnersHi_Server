@@ -63,13 +63,20 @@
 
         "dependencies": {
             "clean-css": "^4.2.3",
-            "express": "^4.16.4",
+            "cookie-parser": "~1.4.4",
+            "crypto": "^1.0.1",
+            "debug": "~2.6.9",
+            "express": "~4.16.1",
             "express-validation": "^3.0.5",
+            "http-errors": "~1.6.3",
             "jsonwebtoken": "^8.5.1",
             "morgan": "~1.9.1",
+            "mysql": "^2.18.1",
+            "promise-mysql": "^4.1.3",
+            "socket.io": "2.3.0",
             "pug": "2.0.0-beta11"
-          }
->  express-validation, jsonwebtoken, crypto 를 사용하여 보안강화 
+        }
+>  
 
 
 ### 💻 역할분담
