@@ -29,7 +29,7 @@ exports.login = async (req, res, next) => {
     }
     //password fail
     if(result === undefined){
-        return res.r(200, {}, false, "login fail");
+        return res.r(200, result.token, false, "login fail");
     }
     //login success
     else{
@@ -42,10 +42,11 @@ exports.login = async (req, res, next) => {
  *  body {id, password, nickname, gender, level, log_visibility, image}
  ********************/
 exports.register = async (req, res, next) => {
+    console.log(req.body.id);
+    console.log(req.body);
     //body check
     if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-        return next(400);
-        //return res.status(400).end();
+        return res.status(400).end();
     }
     let result = "";
 

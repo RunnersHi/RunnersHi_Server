@@ -90,7 +90,6 @@ exports.login = userData => {
  *  Register
  *  @param: userData = {id}
  ********************/
-//TODO nickname 중복 시 회원가입 안되게 막기
 exports.checkId = id => {
     return new Promise((resolve, reject) => {
         const sql = "SELECT id FROM user WHERE id = ?";

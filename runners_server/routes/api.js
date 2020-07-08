@@ -16,7 +16,6 @@ module.exports = router => {
     router.route('/users/login')
         .post(userController.login);
 
-
     router.route('/users/myProfile')
         .get(authController.auth, userController.myProfile);
 
