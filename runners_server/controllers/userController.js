@@ -33,7 +33,7 @@ exports.login = async (req, res, next) => {
     }
     //login success
     else{
-        return res.r(200, result.token, true, "login success");
+        next({"code" : "LOGIN_SUCCESS", result : result.token});
     }
 };
 
@@ -45,7 +45,6 @@ exports.register = async (req, res, next) => {
     //body check
     if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
         return next(400);
-        //return res.status(400).end();
     }
     let result = "";
 
