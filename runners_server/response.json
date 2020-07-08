@@ -4,5 +4,29 @@
     "success": true,
     "message": "login success",
     "result": ""
+  },
+  "LOGIN_FAIL" : {
+    "status": 200,
+    "success": false,
+    "message": "login fail",
+    "result": ""
+  },
+  "REGISTER_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "register success",
+    "result": ""
+  },
+  "DUPLICATE_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "duplicate check success",
+    "result": ""
+  },
+  "DUPLICATE_FAIL" : {
+    "status": 200,
+    "success": false,
+    "message": "register check fail",
+    "result": ""
   }
 }

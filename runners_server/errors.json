@@ -24,7 +24,7 @@
     "message": "2",
     "description": "Exist nickname"
   },
-  "1402": {
+  "EXIST_ID": {
     "status": 400,
     "success" : false,
     "message": "아이디가 존재하지 않습니다.",
@@ -95,7 +95,7 @@
   },
 
 
-  "500": {
+  "SERVER_ERROR": {
     "status": 500,
     "success" : false,
     "message": "서버 오류",

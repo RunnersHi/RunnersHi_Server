@@ -1,5 +1,3 @@
-//const poolPromise = require("../config/database");
-
 const mysql = require('promise-mysql');
 const DBConfig = require("./../config/DBConfig.json");
 const poolPromise = mysql.createPool(DBConfig);
