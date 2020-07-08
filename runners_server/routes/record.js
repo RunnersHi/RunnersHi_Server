@@ -6,8 +6,10 @@ const authMiddleWare = require('../middleware/auth');
 
 module.exports = router => {
 
+    //token 확인필요!
+    router.get('/record/all', recordController.getAllRecords);
 
-    router.get('/');
+    router.get('/record/detail/:id', recordController.getDetailRecord);
 
     return router;
 };
