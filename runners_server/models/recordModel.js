@@ -1,4 +1,4 @@
-const pool = require('../modules/pool');
+const pool = require('./pool');
 //const { throw ,} = require('../config/database');
 const table = 'user';
 
