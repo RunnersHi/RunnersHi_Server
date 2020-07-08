@@ -44,7 +44,8 @@ exports.login = async (req, res, next) => {
 exports.register = async (req, res, next) => {
     //body check
     if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-        return res.status(400).end();
+        return next(400);
+        //return res.status(400).end();
     }
     let result = "";
 

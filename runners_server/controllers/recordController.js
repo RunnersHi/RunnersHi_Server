@@ -7,7 +7,7 @@ const recordModel = require("../models/recordModel");
 const authModel = require("../models/authModel");
 
 const record = {
-  getAllRecords: async(req, res) => {
+  getAllRecords: async(req, res, next) => {
 
     const token = req.headers.token;
     const id = await authModel.verify(token);
@@ -30,6 +30,7 @@ const record = {
     }
 
     //user_id가 FK인 모든 run table을 찾아 반환
+
     const result = await recordModel.getAllRecords(id);
 
     res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ALL_RECORDS_SUCCESS, {result}));
