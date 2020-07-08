@@ -1,7 +1,7 @@
 //const poolPromise = require("../config/database");
 
-const mysql = require("mysql");
-const DBConfig = require("./../config/DBConfig");
+const mysql = require('promise-mysql');
+const DBConfig = require("./../config/DBConfig.json");
 const poolPromise = mysql.createPool(DBConfig);
 
 
@@ -9,9 +9,10 @@ module.exports = {
   queryParam: async (query) => {
     return new Promise(async (resolve, reject) => {
       try {
+        console.log("query param try try try try ");
         const pool = await poolPromise;
+        console.log("query param pool");
         const connection = await pool.getConnection();
-
         try {
           const result = await connection.query(query);
           pool.releaseConnection(connection);

@@ -4,20 +4,37 @@ const statusCode = require("../modules/statusCode");
 const resMessage = require("../modules/responseMessage");
 
 const recordModel = require("../models/recordModel");
+const authModel = require("../models/authModel");
 
 const record = {
   getAllRecords: async(req, res) => {
-    console.log(req.headers.token);
 
     const token = req.headers.token;
-    
-    //token을 이용하여 user_id 값으로 변환
+    const id = await authModel.verify(token);
+
+    console.log(req.headers.token);
+    console.log("user_id : " + id);
+
+    if(token === null) {
+      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN));
+    }
+
+    //expired_token
+    if(id === -3) {
+      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EXPIRED_TOKEN));
+    }
+
+    //invalid_token
+    if(id === -2) {
+      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INVALID_TOKEN));
+    }
+
     //user_id가 FK인 모든 run table을 찾아 반환
+    const result = await recordModel.getAllRecords(id);
 
-    const result = await recordModel.getAllRecords();
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ALL_RECORDS_SUCCESS, {result}));
 
-
-
+    console.log(result);
 
   },
   getDetailRecord: async(req, res) => {
