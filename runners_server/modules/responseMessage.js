@@ -30,5 +30,8 @@ module.exports = {
   //이미지
   SEND_MULTI_IMAGE_SUCCESS: "다수의 이미지 보내기 성공",
 
+  //record
+  GET_ALL_RECORDS_SUCCESS: "모든 러닝 기록 조회 성공",
+
   DB_ERROR: "DB 오류",
 };
