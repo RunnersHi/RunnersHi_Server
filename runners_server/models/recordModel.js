@@ -24,21 +24,40 @@ const record = {
     }
   },
 
-  getDetailRecord: async(id) => {
+  getDetailRecord: async(user_idx, run_idx) => {
     //쿼리는 다시 짜야함
     const query = 
-    `SELECT r.created_time, r.end_time, r.distance, r.time 
-    FROM run r
-    WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
-    ORDER BY r.run_idx;`
+    `SELECT MONTH(created_time) as month,
+    DAY(created_time) as day,
+    TIME(created_time) as create_time,
+    TIME(end_time) as end_time
+    FROM run
+    WHERE user_idx = "${user_idx}" AND run_idx = "${run_idx}";`
+
+    const coordinate =  
+    `SELECT latitude, longitude 
+    From coordinate
+    WHERE run_idx =  "${run_idx}";`
 
     const data = await pool.queryParam(query);
+    const coordiData = await pool.queryParam(coordinate);
+
+    console.log(data);
+
+    const real_result = {
+      month: data[0].month,
+      day: data[0].day,
+      create_time: data[0].create_time,
+      end_time: data[0].end_time,
+      coordinate: coordiData
+      
+    }
 
     if(data.length === 0) {
       //## 데이터가 없을 때 아무것도 안보내줌. 수정필요
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } else {
-      return {code: "RECORD_DETAIL_SUCCESS", result: data};
+      return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
     }
    
   },

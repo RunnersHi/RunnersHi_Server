@@ -45,11 +45,24 @@ const record = {
   },
   
   getDetailRecord: async(req, res, next) => {
-
-    const user_idx = req.params.user_idx;
+    const token = req.headers.token;
     const run_idx = req.params.run_idx;
 
-    console.log(id);
+    const user_idx = await authModel.verify(token);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
 
     try{
       const result = await recordModel.getDetailRecord(user_idx, run_idx);

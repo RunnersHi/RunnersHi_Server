@@ -16,7 +16,7 @@ module.exports = router => {
     router.get('/loser', rankingController.loser);
 
     //러너DetailProfile
-    router.get('/detail/:id', rankingController.getDetailProfile);
+    router.get('/detail', rankingController.getDetailProfile);
 
     return router;
 };

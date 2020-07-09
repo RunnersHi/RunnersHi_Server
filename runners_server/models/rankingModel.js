@@ -14,7 +14,7 @@ const record = {
     //WHERE u.log_visibility = 1
     const query = 
     `SELECT 
-      u.user_idx, u.nickname, u.image, 
+      u.nickname, u.image, 
       COUNT(IF(r.result = 0, 1, null)) as win, 
       COUNT(IF(r.result = 1, 1, null)) as lose, 
       SUBSTR(r.created_time, 1, 4) as year
@@ -41,7 +41,7 @@ const record = {
     //AND u.log_visibility = 1
     const query = 
     `SELECT 
-    u.user_idx, u.nickname, u.image, 
+     u.nickname, u.image, 
     COUNT(IF(r.result = 0, 1, null)) as win, 
     COUNT(IF(r.result = 1, 1, null)) as lose, 
     SUBSTR(r.created_time, 1, 4) as year
@@ -68,7 +68,7 @@ const record = {
     //WHERE u.log_visibility = 1
     const query = 
     `SELECT 
-    u.user_idx, u.nickname, u.image, 
+    u.nickname, u.image, 
     SUM(r.distance) as sum, 
     SUBSTR(r.created_time, 1, 4) as year
     FROM user u 
