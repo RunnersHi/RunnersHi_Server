@@ -17,7 +17,8 @@ server.on('listening', onListening);
 
 app.set('port', port);
 
-app.io = require('socket.io')(server);
+app.io = require('socket.io')();
+app.io.attach(server);
 
 app.use(logger('dev'));
 app.use(express.json());
