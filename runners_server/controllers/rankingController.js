@@ -5,6 +5,8 @@ const resMessage = require("../modules/responseMessage");
 
 const rankingModel = require("../models/rankingModel");
 
+const authModel = require("../models/authModel");
+
 
 const ranking = {
   runner: async(req, res, next) => {
@@ -40,10 +42,27 @@ const ranking = {
   },
   getDetailProfile: async(req, res, next) => {
 
+    const token = req.headers.token;
+    const user_idx = await authModel.verify(token);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+
     try{
-      const user_id = req.params.id;
-      console.log(user_id);
-      const result = await rankingModel.getDetailProfile(user_id);
+      console.log(user_idx);
+      const result = await rankingModel.getDetailProfile(user_idx);
       console.log(result);
       return next(result);
     } catch(error){
