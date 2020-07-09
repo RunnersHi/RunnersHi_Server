@@ -7,13 +7,10 @@ module.exports = {
   queryParam: async (query) => {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log("query param try try try try ");
         const pool = await poolPromise;
-        console.log("query param pool");
         const connection = await pool.getConnection();
         try {
           const result = await connection.query(query);
-          console.log(result);
           pool.releaseConnection(connection);
           resolve(result);
         } catch (err) {

@@ -8,8 +8,8 @@ const port = normalizePort(process.env.PORT || '3000');
 const app = express();
 const server = http.createServer(app);
 const indexRouter = require('./routes/index.js');
-const errorHandler = require('./ErrorHandler');
-const responseHandler = require('./responseHandler');
+const errorHandler = require('./handlers/ErrorHandler');
+const responseHandler = require('./handlers/responseHandler');
 
 const matchingModel = require('./models/matchingModel');
 const authModel = require('./models/authModel');
@@ -58,6 +58,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((res, req, next)=>{
+    console.log(res.body);
+    console.log(res.header);
+    next();
+});
 
 indexRouter(app);
 responseHandler(app);

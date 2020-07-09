@@ -80,7 +80,6 @@ const record = {
 
     //##에러 다 처리하는지 확인하기!
     const id = await authModel.verify(token);
-    console.log(id);
 
     if(token === undefined || token === null) {
       return next("EMPTY_TOKEN");
@@ -98,7 +97,6 @@ const record = {
 
     try{
       const result = await recordModel.getBadge(id);
-      console.log("controller result : " + result);
       return next(result);
 
     } catch(error){
@@ -126,7 +124,6 @@ const record = {
 
     try{
       const result = await recordModel.getUserRecentRecord(user_idx);
-      console.log("controller result : " + result);
       return next(result);
 
     } catch(error){
@@ -156,7 +153,6 @@ const record = {
 
     try{
       const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
-      console.log("controller result : " + result);
       
       return next(result);
 
