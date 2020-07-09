@@ -25,7 +25,7 @@ const record = {
   },
 
   getDetailRecord: async(user_idx, run_idx) => {
-    //쿼리는 다시 짜야함
+   
     const query = 
     `SELECT MONTH(created_time) as month,
     DAY(created_time) as day,
