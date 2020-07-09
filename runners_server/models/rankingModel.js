@@ -1,4 +1,4 @@
-const pool = require('../modules/pool');
+const pool = require('../models/pool');
 //const { throw ,} = require('../config/database');
 
 const moment = require("../modules/moment");
@@ -25,18 +25,14 @@ const record = {
       ORDER BY win DESC 
       limit 10
       `;
-      try {
-        const result = await pool.queryParam(query);
-        console.log(result);
-        return result;
-      } catch (err) {
-        if (err.errno == 1062) {
-          console.log("winner ERROR : ", err.errno, err.code);
-          return -1;
-        }
-          console.log("winner ERROR : ", err);
-          throw err;
-       }
+ 
+    const data = await pool.queryParam(query);
+
+    if(data.length == 0) {
+      return {code : "NO_DATA", result : {}};
+    } else {
+      return {code : "WINNER_SUCCESS", result : data};
+    }
   },
 
   loser: async () => {
@@ -57,17 +53,12 @@ const record = {
     limit 10
     `;
      
-    try {
-      const result = await pool.queryParam(query);
-      console.log(result);
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("loser ERROR : ", err.errno, err.code);
-        return -1;
-      }
-        console.log("loser ERROR : ", err);
-        throw err;
+    const data = await pool.queryParam(query);
+
+    if(data.length == 0) {
+      return {code : "NO_DATA", result : {}};
+    } else {
+      return {code : "LOSER_SUCCESS", result : data};
     }
   },
 
@@ -87,19 +78,14 @@ const record = {
     ORDER BY sum DESC 
     limit 10
     `;
- 
-    try {
-      const result = await pool.queryParam(query);
-      console.log(result);
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("runner ERROR : ", err.errno, err.code);
-        return -1;
-      }
-      console.log("runner ERROR : ", err);
-      throw err;
-   }
+
+    const data = await pool.queryParam(query);
+
+    if(data.length == 0) {
+      return {code : "NO_DATA", result : {}};
+    } else {
+      return {code : "RUNNER_SUCCESS", result : data};
+    }
   },
 
   getDetailProfile: async(id) => {
@@ -115,19 +101,13 @@ const record = {
     GROUP BY u.user_idx
     `;
 
-    try {
-      const result = await pool.queryParam(query);
-      console.log(result);
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("getDetailProfile ERROR : ", err.errno, err.code);
-        return -1;
-      }
-      console.log("getDetailProfile ERROR : ", err);
-      throw err;
-   }
+    if(data.length == 0) {
+      return {code : "NO_DATA", result : {}};
+    } else {
+      return {code : "RUNNER_SUCCESS", result : data};
+    }
   }
+  
 };
 
 module.exports = record;

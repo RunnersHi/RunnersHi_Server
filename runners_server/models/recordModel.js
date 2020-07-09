@@ -5,7 +5,15 @@ const table = 'user';
 const record = {
 
   getAllRecords: async (id) => {
-    const query = `SELECT run.created_time, user.user_idx, run.distance, run.time, run.run_idx FROM ${table}, run WHERE ${table}.id = "${id}" AND ${table}.user_idx = run.user_idx ORDER BY run.run_idx;`
+
+    //승, 패 관련해서도 줘야함.
+    //그냥 승, 패 주면됨.
+    const query = 
+    `SELECT run.created_time, user.user_idx, run.distance, run.time, run.run_idx 
+    FROM ${table}, run 
+    WHERE ${table}.id = "${id}" 
+    AND ${table}.user_idx = run.user_idx 
+    ORDER BY run.run_idx;`
     //console.log("쿼리" + id);
     //const query = `SELECT * FROM ${table} WHERE id = "${id}"`;
     try {
