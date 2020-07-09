@@ -33,9 +33,9 @@ app.io.on('connection', (socket) => {
     app.io.to(socket.id).emit("start", socket.id);
 
     socket.on('joinRoom', (token, time, wantGender, leftTime) => {
-        userId = await authModel.verify(token);
-        userIdx = await matchingModel.getUserIdx(userId);
-        userInfo = await matchingModel.getUserInfo(userIdx);
+        // userId = await authModel.verify(token);
+        // userIdx = await matchingModel.getUserIdx(userId);
+        // userInfo = await matchingModel.getUserInfo(userIdx);
 
         // socket.join(roomNum, () => {
             
