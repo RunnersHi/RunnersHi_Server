@@ -6,64 +6,93 @@ const record = {
 
   getAllRecords: async (id) => {
 
-    //승, 패 관련해서도 줘야함.
-    //그냥 승, 패 주면됨.
     const query = 
-    `SELECT run.created_time, user.user_idx, run.distance, run.time, run.run_idx 
-    FROM ${table}, run 
-    WHERE ${table}.id = "${id}" 
-    AND ${table}.user_idx = run.user_idx 
-    ORDER BY run.run_idx;`
-    //console.log("쿼리" + id);
-    //const query = `SELECT * FROM ${table} WHERE id = "${id}"`;
-    try {
-      const result = await pool.queryParam(query);
-      console.log(result);
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("getAllRecords ERROR : ", err.errno, err.code);
-        return -1;
-      }
-      console.log("getAllRecords ERROR : ", err);
-      throw err;
+    `SELECT r.created_time, u.user_idx, r.distance, r.time, r.run_idx, r.result
+    FROM user u, run r
+    WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
+    ORDER BY r.run_idx;`
+
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      //## 데이터가 없을 때 아무것도 안보내줌. 수정필요
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+    } else {
+      return {code: "RECORD_ALL_SUCCESS", result: data};
     }
   },
+
   getDetailRecord: async(id) => {
     //쿼리는 다시 짜야함
-    const query = `SELECT run.created_time, run.end_time, run.distance, run.time,  FROM ${table}, run WHERE ${table}.id = "${id}" AND ${table}.user_idx = run.user_idx ORDER BY run.run_idx;`
+    const query = 
+    `SELECT r.created_time, r.end_time, r.distance, r.time 
+    FROM user u, run r
+    WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
+    ORDER BY r.run_idx;`
+
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      //## 데이터가 없을 때 아무것도 안보내줌. 수정필요
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+    } else {
+      return {code: "RECORD_ALL_SUCCESS", result: data};
+    }
    
-    //const query = `SELECT * FROM ${table} WHERE id = ${id}`;
-    try {
-      const result = await pool.queryParamArr(query);
+  },
 
-      
-      //pace를 구해야함. result에 있는 값
+  getBadge: async(id) => {
+    const query = `SELECT badge FROM ${table} WHERE user_idx = "${id}"`;
 
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("getDetailRecord ERROR : ", err.errno, err.code);
-        return -1;
-      }
-      console.log("getDetailRecord ERROR : ", err);
-      throw err;
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      //## 데이터가 없을 때 아무것도 안보내줌. 수정필요
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+    } else {
+      return {code: "RECORD_ALL_SUCCESS", result: data};
     }
   },
-  getBadge: async(id) => {
-    const query = `SELECT badge FROM ${table} WHERE id = "${id}"`;
 
-    try {
-      const result = await pool.queryParamArr(query);
-      return result;
-    } catch (err) {
-      if (err.errno == 1062) {
-        console.log("getBadge ERROR : ", err.errno, err.code);
-        return -1;
-      }
-      console.log("getBadge ERROR : ", err);
-      throw err;
+  //최근기록조회 :id
+  getUserRecentRecord: async(id) => {
+
+    //가장 큰 
+    const query = 
+    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+    FROM run r
+    WHERE r.user_idx = "${id}"
+    ORDER BY r.run_idx DESC 
+    limit 1;`
+
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      //## 데이터가 없을 때 204 안보내줌. 수정필요
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+    } else {
+      return {code: "GET_RECENT_RECORD_SUCCESS", result: data};
     }
+  },
+
+  getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
+
+    //가장 큰 
+    const query = 
+    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+    FROM run r
+    WHERE r.user_idx = "${user_idx}" 
+    AND r.run_idx = "${run_idx}";`
+
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      //## 데이터가 없을 때 204 안보내줌. 수정필요
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+    } else {
+      return {code: "USER_RECORD_SUCCESS", result: data};
+    }
+
   }
 };
 
