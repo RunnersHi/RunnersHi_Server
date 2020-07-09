@@ -11,6 +11,10 @@ const indexRouter = require('./routes/index.js');
 const errorHandler = require('./ErrorHandler');
 const responseHandler = require('./responseHandler');
 
+const matchingModel = require('./models/matchingModel');
+const authModel = require('./models/authModel');
+const auth = matchingModel.auth;
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
