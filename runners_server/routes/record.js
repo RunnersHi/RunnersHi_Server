@@ -24,6 +24,7 @@ module.exports = router => {
   //token, :run_idx를 통해 기록 조회
   router.get('/run/:run_idx', recordController.getUserRunIdxRecord);
 
+
   return router;
 };
 
