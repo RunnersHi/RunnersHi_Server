@@ -9,17 +9,20 @@ module.exports = router => {
   //token 확인필요!
   router.get('/all', recordController.getAllRecords);
 
-  //기록 상세보기
-  router.get('/detail/:id', recordController.getDetailRecord);
+  //기록 상세보기(좌표, 등등) **토큰필요 ###다시보기 좌표도 넘겨줘야함
+  router.get('/detail/:run_idx', recordController.getDetailRecord);
 
-  //러닝뱃지
+  //token과 :game_idx 상대방 USER 기록 보여주기 
+  router.get('/opponent/:game_idx', recordController.getOpponentRecord);
+
+  //러닝뱃지 **토큰필요
   router.get('/badge', recordController.getBadge);
 
   //사용자의 최근 기록 :id
-  router.get('/recent/:id', recordController.getUserRecentRecord);
+  router.get('/recent', recordController.getUserRecentRecord);
 
-  //:user_idx, :run_idx를 통해 기록 보여주기
-  router.get('/:user_idx/:run_idx', recordController.getUserIdxRunIdxRecord);
+  //token, :run_idx를 통해 기록 조회
+  router.get('/:run_idx', recordController.getUserRunIdxRecord);
 
   return router;
 };
