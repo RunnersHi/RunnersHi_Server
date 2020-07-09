@@ -11,32 +11,3 @@ const auth = matchingModel.auth;
 //cipher
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
-
-let roomNum = 1;
-let time = 300;
-
-io.on('connection', (socket) => {
-    console.log("사용자 들어왔다");
-
-    io.to(socket.id).emit("start", socket.id);
-
-    socket.on('joinRoom', (token, time, wantGender, leftTime) => {
-        userId = await authModel.verify(token);
-        userIdx = await matchingModel.getUserIdx(userId);
-        userInfo = await matchingModel.getUserInfo(userIdx);
-
-        // socket.join(roomNum, () => {
-            
-        //     socket.adapter.rooms[roomNum] 
-        // })
-
-        io.to(socket.id).emit("joinRoom", 1);
-    });
-
-    socket.on('startCount', (roomName) => {
-        setInterval(function() {
-            time--;
-            io.to(socket.id).emit("timeLeft", time);
-        }, 1000);
-    });
-});
