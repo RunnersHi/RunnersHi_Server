@@ -126,7 +126,8 @@ matching.on('connection', (socket) => {
     });
 
     socket.on("kmPassed", (roomName, km) => {
-
+      opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+      matching.to(opponent.id).emit("kmPassed", km);
     });
 });
 
