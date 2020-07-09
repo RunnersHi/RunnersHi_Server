@@ -111,7 +111,22 @@ matching.on('connection', (socket) => {
     });
 
     socket.on("readyToRun", (roomName) => {
-      
+      if (!socket.adapter.rooms[roomName].ready) {
+        socket.adapter.rooms[roomName].ready = 1;
+      }
+      else if (socket.adapter.rooms[roomName].ready === 1) {
+        socket.adapter.rooms[roomName].ready++;
+      }
+      if (socket.adapter.rooms[roomName].ready === 2) {
+        matching.to(roomName).emit("letsRun", roomName);
+      }
+      else {
+        matching.to(socket.id).emit("opponentNotReady");
+      }
+    });
+
+    socket.on("kmPassed", (roomName, km) => {
+
     });
 });
 
