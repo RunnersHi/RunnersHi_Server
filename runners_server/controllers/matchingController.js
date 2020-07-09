@@ -15,10 +15,10 @@ const config = require("../config/config");
 let roomNum = 1;
 let time = 300;
 
-matching.on('connection', (socket) => {
+io.on('connection', (socket) => {
     console.log("사용자 들어왔다");
 
-    matching.to(socket.id).emit("start", socket.id);
+    io.to(socket.id).emit("start", socket.id);
 
     socket.on('joinRoom', (token, time, wantGender, leftTime) => {
         userId = await authModel.verify(token);
@@ -30,13 +30,13 @@ matching.on('connection', (socket) => {
         //     socket.adapter.rooms[roomNum] 
         // })
 
-        matching.to(socket.id).emit("joinRoom", 1);
+        io.to(socket.id).emit("joinRoom", 1);
     });
 
     socket.on('startCount', (roomName) => {
         setInterval(function() {
             time--;
-            matching.to(socket.id).emit("timeLeft", time);
+            io.to(socket.id).emit("timeLeft", time);
         }, 1000);
     });
 });
