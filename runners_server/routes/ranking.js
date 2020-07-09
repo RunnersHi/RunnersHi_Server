@@ -7,16 +7,16 @@ const authMiddleWare = require('../middleware/auth');
 module.exports = router => {
 
     //이달의 러너
-    router.get('/ranking/runner', rankingController.runner);
+    router.get('/runner', rankingController.runner);
 
     //승리
-    router.get('/ranking/winner', rankingController.winner);
+    router.get('/winner', rankingController.winner);
     
     //졌잘싸
-    router.get('/ranking/loser', rankingController.loser);
+    router.get('/loser', rankingController.loser);
 
     //러너DetailProfile
-    router.get('/ranking/detail/:id', rankingController.getDetailProfile);
+    router.get('/detail/:id', rankingController.getDetailProfile);
 
     return router;
 };

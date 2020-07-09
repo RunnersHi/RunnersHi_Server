@@ -28,5 +28,40 @@
     "success": false,
     "message": "register check fail",
     "result": ""
+  },
+
+
+
+  
+  "RUNNER_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "이달의 러너 조회 성공",
+    "result": ""
+  },
+  "WINNER_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "명예의 전당 조회 성공",
+    "result": ""
+  },
+  "LOSER_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "졌.잘.싸 조회 성공",
+    "result": ""
+  },
+  "RUNNER_DETAIL_PROFILE_SUCCESS" : {
+    "status": 200,
+    "success": true,
+    "message": "러너의 상세 프로필 조회 성공",
+    "result": ""
+  },
+  "NO_DATA" : {
+    "status": 204,
+    "success": true,
+    "message": "조회 성공 BUT 데이터는 없습니다.",
+    "result": ""
   }
+
 }

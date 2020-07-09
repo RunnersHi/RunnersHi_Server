@@ -7,41 +7,49 @@ const rankingModel = require("../models/rankingModel");
 
 
 const ranking = {
-  runner: async(req, res) => {
-    const result = await rankingModel.runner();
-
-    console.log(result);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
+  runner: async(req, res, next) => {
+    try{
+      const result = await rankingModel.runner();
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
+  },
+  winner: async(req, res, next) => {
     
-    //createTime에 있는 것의 값 중, month가 thisMonth랑 같은 것을 찾는다...
-    // 찾을 수야 있어,, 근데 어떻게 가져와서 어떻게 저장해서 어떻게 해야하죠>'
+    try{
+      const result = await rankingModel.winner();
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
 
   },
-  winner: async(req, res) => {
-    
-    const result = await rankingModel.winner();
+  loser: async(req, res, next) => {
 
-    console.log(result);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
-
-  },
-  loser: async(req, res) => {
-    
-    const result = await rankingModel.loser();
-
-    console.log(result);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
+    try{
+      const result = await rankingModel.loser();
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
 
   },
-  getDetailProfile: async(req, res) => {
+  getDetailProfile: async(req, res, next) => {
 
-    const user_id = req.params.id;
-    console.log(user_id);
-    const result = await rankingModel.getDetailProfile(user_id);
-
+    try{
+      const user_id = req.params.id;
+      console.log(user_id);
+      const result = await rankingModel.getDetailProfile(user_id);
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
     
-    console.log(result);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
   }
 };
 
