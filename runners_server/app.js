@@ -34,12 +34,13 @@ matching.on('connection', (socket) => {
     matching.to(socket.id).emit("start", socket.id);
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
-      const userInfo = await (async function decodeToken(token) {
-        userId = await authModel.verify(token);
-        userIdx = await matchingModel.getUserIdx(userId);
-        userInfo = await matchingModel.getUserInfo(userIdx);
+      const user = await (async function decodeToken(token) {
+        const userId = await authModel.verify(token);
+        const userIdx = await matchingModel.getUserIdx(userId);
+        let userInfo = await matchingModel.getUserInfo(userIdx);
+        userInfo.id = socket.id;
         return userInfo;
-      })(token); // userInfo = {name, level, gender, image, win, lose}
+      })(token); // userInfo = {socketId, name, level, gender, image, win, lose}
 
       console.log("USER INFO: ", userInfo);
 
@@ -65,10 +66,11 @@ matching.on('connection', (socket) => {
       else {
         targetRoomName = targetRoom[0]
         socket.join(targetRoomName, () => {
+          let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
           delete socket.adapter.rooms[targetRoomName].wantGender;
           socket.adapter.rooms[targetRoomName].userList.push(userInfo);
-          socket.adapter.rooms[targetRoomName].gameIdx = matchingModel.
-          matching.to(targetRoomName).emit("matched", targetRoomName);
+          socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
+          matching.to(firstUserId).emit("matched", targetRoomName);
         });
       }
     });
@@ -89,6 +91,7 @@ matching.on('connection', (socket) => {
         socket.on("endCount", (roomName) => {
           clearInterval(intervalId);
           delete socket.adapter.rooms[roomName].leftTime;
+          matching.to(roomName).emit("roomFull", roomName);
         });
     });
 });
