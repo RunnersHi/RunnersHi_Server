@@ -24,32 +24,72 @@ app.set('port', port);
 app.io = require('socket.io')(server);
 app.io.attach(server);
 
-let roomNum = 1;
-let time = 300;
+const matching = app.io.of('/matching');
 
-app.io.on('connection', (socket) => {
+let roomNum = 1;
+
+matching.on('connection', (socket) => {
     console.log("사용자 들어왔다");
 
-    app.io.to(socket.id).emit("start", socket.id);
+    matching.to(socket.id).emit("start", socket.id);
 
-    socket.on('joinRoom', (token, time, wantGender, leftTime) => {
-        // userId = await authModel.verify(token);
-        // userIdx = await matchingModel.getUserIdx(userId);
-        // userInfo = await matchingModel.getUserInfo(userIdx);
+    socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
+      const userInfo = await (async function decodeToken(token) {
+        userId = await authModel.verify(token);
+        userIdx = await matchingModel.getUserIdx(userId);
+        userInfo = await matchingModel.getUserInfo(userIdx);
+        return userInfo;
+      })(token); // userInfo = {name, level, gender, image, win, lose}
 
-        // socket.join(roomNum, () => {
-            
-        //     socket.adapter.rooms[roomNum] 
-        // })
+      console.log("USER INFO: ", userInfo);
 
-        app.io.to(socket.id).emit("joinRoom", 1);
+      const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
+        if (room[1].length !== 1 || !room[1].userList) {
+          return false;
+        }
+        else {
+          return room[1].userList[0].level === userInfo.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === userInfo.gender || room[1].wantGender === 3)
+        }
+      });
+
+      if (targetRoom === undefined) {
+        socket.join(roomNum, () => {
+          socket.adapter.rooms[roomNum].time = time;
+          socket.adapter.rooms[roomNum].wantGender = wantGender;
+          socket.adapter.rooms[roomNum].leftTime = leftTime;
+          socket.adapter.rooms[roomNum].userList.push(userInfo);
+          matching.to(socket.id).emit("roomCreated", roomNum);
+          roomNum++;
+        });
+      }
+      else {
+        targetRoomName = targetRoom[0]
+        socket.join(targetRoomName, () => {
+          delete socket.adapter.rooms[targetRoomName].wantGender;
+          socket.adapter.rooms[targetRoomName].userList.push(userInfo);
+          socket.adapter.rooms[targetRoomName].gameIdx = matchingModel.
+          matching.to(targetRoomName).emit("matched", targetRoomName);
+        });
+      }
     });
 
     socket.on('startCount', (roomName) => {
-        setInterval(function() {
-            time--;
-            app.io.to(socket.id).emit("timeLeft", time);
+        const intervalId = setInterval(function() {
+            socket.adapter.rooms[roomName].leftTime--;
+            if (socket.adapter.rooms[roomName].leftTime > 0) {
+              matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
+            }
+            else if (socket.adapter.rooms[roomName].leftTime === 0) {
+              matching.to(socket.id).emit("timeOver", roomName);
+            }
         }, 1000);
+        socket.on("stopCount", () => {
+          clearInterval(intervalId);
+        });
+        socket.on("endCount", (roomName) => {
+          clearInterval(intervalId);
+          delete socket.adapter.rooms[roomName].leftTime;
+        });
     });
 });
 
