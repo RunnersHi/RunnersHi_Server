@@ -8,6 +8,7 @@ module.exports = (app) => {
     };
 
     app.use((err, req, res, next) => {
+        console.log(err);
         let miss_param = false;
         if (err instanceof expressValidation.ValidationError) {  // 잘못된 파라미터 확인
             miss_param = err.errors.map(error => error.messages.join('. ')).join('\n');

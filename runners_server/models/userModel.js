@@ -25,10 +25,14 @@ const userModel = {
             userData.log_visibility,
             userData.image,]);
         if (rows.affectedRows === 1) {
+            //response message result 에 들어갈 값들
             return {
-                "token": jwt.sign(userData, config.jwt.cert, {
-                    expiresIn: "10h"
-                })
+                "code" : "REGISTER_SUCCESS",
+                result : {
+                    "token": jwt.sign(userData, config.jwt.cert, {
+                        expiresIn: "10h"
+                    })
+                }
             };
         } else {
             return "SERVER_ERROR";
@@ -44,7 +48,7 @@ const userModel = {
         const sql = "SELECT password, salt FROM user WHERE id = ?";
         const rows = await pool.queryParamArr(sql, [userData.id]);
         if(rows.length === 0){
-            return "EXIST_ID";
+            return "NON_EXIST_ID";
         } else{
             if(rows[0].password === config.do_cipher(userData.password, rows[0].salt)) {
                 userData.token = {
@@ -68,7 +72,7 @@ const userModel = {
     checkId: async(id) => {
         const sql = "SELECT id FROM user WHERE id = ?";
         const rows = await pool.queryParamArr(sql, [id]);
-        if(rows.length !== 1) {
+        if(rows.length !== 0) {
             return {code : "DUPLICATE_FAIL", result : {}};
         } else{
             return  {code : "DUPLICATE_SUCCESS", result : {}};
@@ -93,19 +97,23 @@ const userModel = {
      *  @param: user_idx
      ********************/
     selectUserData: async(user_idx) => {
-        const sql = "SELECT (user_idx, nickname, gender, level, image, badge) FROM user WHERE user_idx = ? ";
+        const sql = "SELECT user_idx, nickname, gender, level, image, badge FROM user WHERE user_idx = ? ";
 
-        pool.query(sql, [user_idx], (err, rows) => {
-            if(err){
-                throw err;
-            } else{
-                if(rows.length === 0) {
-                    return rows[0];
-                } else{
-                    throw 1407;
-                }
+        const rows = await pool.queryParamArr(sql, [user_idx]);
+        if(rows.length === 0) {
+            return "NON_EXISTENT_DATA";
+        } else{
+            let result = rows[0];
+            result.badge = [];
+            let bin = rows[0].badge.toString(2);
+            for(let i = 0; i < bin.length; i++){
+                result.badge[bin.length - i - 1] = (bin[i] === '1');
             }
-        })
+            for(let i = bin.length; i < 9; i++){
+                result.badge[i] = false;
+            }
+            return result;
+        }
     },
     /*******************
      *  Profile
@@ -113,27 +121,30 @@ const userModel = {
      ********************/
     selectRun: async(userData) => {
         const sql = "SELECT result FROM run WHERE user_idx = ? ";
-
-        pool.query(sql, [userData.user_idx], (err, rows)=>{
-            if(err){
-                throw err;
-            } else{
-                userData.win = 0;
-                userData.lose = 0;
-                for(let i = 0; i < rows.length(); i++){
-                    switch(rows[i]){
-                        case 0:
-                            userData.win++;
-                            break;
-                        case 1:
-                        case 2:
-                            userData.lose++;
-                            break;
-                    }
-                }
-                return userData;
+        const rows = await pool.queryParamArr(sql, [userData.user_idx]);
+        userData.win = 0;
+        userData.lose = 0;
+        for(let i = 0; i < rows.length; i++){
+            switch(rows[i].result){
+                case 0:
+                    userData.win++;
+                    break;
+                case 1:
+                case 2:
+                    userData.lose++;
+                    break;
             }
-        })
+        }
+        return userData;
+    },
+    findUserIdxById : async (id, done) => {
+        const sql = "SELECT user_idx FROM user WHERE id = ?";
+        const rows = await pool.queryParamArr(sql, [id]);
+        if(rows.length === 0){
+            done("LOGIN_FAIL", null);
+        } else{
+            done(null, rows[0].user_idx);
+        }
     }
 };
 

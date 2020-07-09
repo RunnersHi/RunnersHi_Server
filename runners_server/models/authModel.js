@@ -1,10 +1,7 @@
-const mysql = require("mysql");
-const DBConfig = require("./../config/DBConfig");
-const pool = mysql.createPool(DBConfig);
-
 const jwt = require("jsonwebtoken");
 
 const config = require("../config/config");
+const userModel = require('./userModel');
 
 
 const TOKEN_EXPIRED = -3;
@@ -14,35 +11,28 @@ const TOKEN_INVALID = -2;
  *  Authenticate
  *  @param: token
  ********************/
-exports.auth = (token, done) => {
-  jwt.verify(token, config.jwt.cert, (err, decoded) => {
-    if (err) {
-      switch (err.message) {
-        case "jwt expired":
-          return done(10401);
-        case "invalid token":
-          return done(10403);
-        default:
-          return done(err.message);
+const authModel = {
+  auth : (token, done) => {
+    jwt.verify(token, config.jwt.cert, (err, decoded) => {
+      if (err) {
+        switch (err.message) {
+          case "jwt expired":
+            return done("EXPIRED_TOKEN");
+          case "invalid token":
+            return done("INVALID_AUTH");
+          default:
+            return done(err.message);
         }
       } else {
-        const sql = "SELECT user_idx FROM User WHERE id = ?";
-
-        pool.query(sql, [decoded.id], (err, rows) => {
-          if (err) {
-            return done(err);
-          } else {
-            if (rows.length === 0) {
-              return done(401);
-          } else {
-              // 인증 성공
-            return done(null, rows[0].user_idx);
-         }
-        }
-      });
-    }
-  });
+        return done(null, decoded.id);
+      }
+    });
+  }
 };
+
+
+module.exports = authModel;
+
 
 
 exports.verify = async(token) => {
