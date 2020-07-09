@@ -86,7 +86,7 @@ const userModel = {
     checkNickname: async (nickname) => {
         const sql = "SELECT nickname FROM user WHERE nickname = ?";
         const rows = await pool.queryParamArr(sql, [nickname]);
-        if(rows.length !== 1) {
+        if(rows.length !== 0) {
             return {code : "DUPLICATE_FAIL", result : {}};
         } else{
             return  {code : "DUPLICATE_SUCCESS", result : {}};
