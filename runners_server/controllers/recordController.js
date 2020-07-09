@@ -10,41 +10,192 @@ const record = {
   getAllRecords: async(req, res, next) => {
 
     const token = req.headers.token;
+    //##수정
     const id = await authModel.verify(token);
 
     console.log(req.headers.token);
     console.log("user_id : " + id);
 
-    if(token === null) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN));
+    if(token === undefined || token === null) {
+      //throw(400);
+      return next("EMPTY_TOKEN");
+     // return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN));
     }
 
     //expired_token
     if(id === -3) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EXPIRED_TOKEN));
+      return next("EXPIRED_TOKEN");
+     // return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.EXPIRED_TOKEN));
     }
 
     //invalid_token
     if(id === -2) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INVALID_TOKEN));
+      return next("INVALID_TOKEN");
+      //return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INVALID_TOKEN));
     }
 
-    //user_id가 FK인 모든 run table을 찾아 반환
-
-    const result = await recordModel.getAllRecords(id);
-
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ALL_RECORDS_SUCCESS, {result}));
-
-    console.log(result);
+    try{
+      const result = await recordModel.getAllRecords(id);
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
 
   },
-  getDetailRecord: async(req, res) => {
+  
+  getDetailRecord: async(req, res, next) => {
+    const token = req.headers.token;
+    const run_idx = req.params.run_idx;
 
-    //user_idx 또는 token && run_idx가 같은 table 중에서
-    // 자신의 정보 및 상대방에 정보도 같이 보내준다..(이걸 분리해야할까?! 그럼 복잡해질 것 같다..)
-    //상대방의 정보는 game_idx가 같지만, user_idx가 다른 것이 상대방 그 테이블로 가서 그 상대방의 정보를 빼온다.
-  } 
+    const user_idx = await authModel.verify(token);
 
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+    try{
+      const result = await recordModel.getDetailRecord(user_idx, run_idx);
+      console.log(result);
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+
+  },
+  
+  getBadge: async(req, res, next) => {
+    const token = req.headers.token;
+
+    //##에러 다 처리하는지 확인하기!
+    const id = await authModel.verify(token);
+    console.log(id);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(id === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(id === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+    try{
+      const result = await recordModel.getBadge(id);
+      console.log("controller result : " + result);
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+  },
+
+  getUserRecentRecord: async(req, res, next) => {
+    const token = req.headers.token;
+    const user_idx = await authModel.verify(token);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+    try{
+      const result = await recordModel.getUserRecentRecord(user_idx);
+      console.log("controller result : " + result);
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+  },
+
+  getUserRunIdxRecord: async(req, res, next) => {
+    const token = req.headers.token;
+    const run_idx = req.params.run_idx;
+  
+    const user_idx = await authModel.verify(token);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+    try{
+      const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
+      console.log("controller result : " + result);
+      
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+  },
+  //상대방기록
+  getOpponentRecord: async(req, res, next) => {
+
+    const token = req.headers.token;
+    const game_idx = req.params.game_idx;
+
+    const user_idx = await authModel.verify(token);
+    console.log("recordController userIDX" + user_idx);
+
+    if(token === undefined || token === null) {
+      return next("EMPTY_TOKEN");
+    }
+
+    //expired_token
+    if(user_idx === -3) {
+      return next("EXPIRED_TOKEN");
+    }
+
+    //invalid_token
+    if(user_idx === -2) {
+      return next("INVALID_TOKEN");
+    }
+
+    try{
+      const result = await recordModel.getOpponentRecord(user_idx, game_idx);
+      console.log("controller result : " + result);
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+  }
 };
 
 module.exports = record;

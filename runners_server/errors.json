@@ -50,6 +50,9 @@
     "message": "권한이 없습니다.",
     "description": "Do not have permission"
   },
+
+
+
   "10401": {
     "status": 401,
     "success" : false,
@@ -61,6 +64,24 @@
     "success" : false,
     "message": "잘못된 인증 방식입니다.",
     "description": "invalid authentication"
+  },
+  "EMPTY_TOKEN": {
+    "status": 400,
+    "success" : false,
+    "message": "토큰 값이 없습니다.",
+    "description": "Empty token"
+  },
+  "EXPIRED_TOKEN": {
+    "status": 400,
+    "success" : false,
+    "message": "만료된 인증 토큰 입니다.",
+    "description": "expired token"
+  }, 
+  "INVALID_TOKEN": {
+    "status": 400,
+    "success" : false,
+    "message": "유효하지 않은 토큰값입니다.",
+    "description": "invalid token"
   },
 
 

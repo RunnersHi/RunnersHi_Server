@@ -5,6 +5,8 @@ const list = fs
     .readdirSync(__dirname)
     .filter(dir => !dir.match(/(^\.)|index/i));
 
+console.log("LIST: ", list);
+
 module.exports = (app) => {
   for (let ctrl of list) {
     app.use(`/${ctrl}`.substr(0, ctrl.length - 2), require(`./${ctrl}`)(router));

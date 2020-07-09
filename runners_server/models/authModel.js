@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 const config = require("../config/config");
-const userModel = require('./userModel');
 
 
 const TOKEN_EXPIRED = -3;
@@ -53,5 +52,13 @@ exports.verify = async(token) => {
       return TOKEN_INVALID;
     }
   }
-  return decoded.id;
+  const id = decoded.id;
+  console.log("model  " + id);
+
+  const query = `SELECT user_idx FROM user WHERE id = "${id}" `;
+  const data = await poolModel.queryParam(query);
+
+  console.log("usususu  " + data[0].user_idx);
+
+  return data[0].user_idx;
 };

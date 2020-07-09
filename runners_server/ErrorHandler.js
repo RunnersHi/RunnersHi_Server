@@ -1,4 +1,6 @@
 const expressValidation = require('express-validation');
+
+//const log = require('./config/logger');
 const errors = require('./errors');
 
 module.exports = (app) => {

@@ -11,11 +11,47 @@ const indexRouter = require('./routes/index.js');
 const errorHandler = require('./ErrorHandler');
 const responseHandler = require('./responseHandler');
 
+const matchingModel = require('./models/matchingModel');
+const authModel = require('./models/authModel');
+const auth = matchingModel.auth;
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
 app.set('port', port);
+
+app.io = require('socket.io')(server);
+app.io.attach(server);
+
+let roomNum = 1;
+let time = 300;
+
+app.io.on('connection', (socket) => {
+    console.log("사용자 들어왔다");
+
+    app.io.to(socket.id).emit("start", socket.id);
+
+    socket.on('joinRoom', (token, time, wantGender, leftTime) => {
+        // userId = await authModel.verify(token);
+        // userIdx = await matchingModel.getUserIdx(userId);
+        // userInfo = await matchingModel.getUserInfo(userIdx);
+
+        // socket.join(roomNum, () => {
+            
+        //     socket.adapter.rooms[roomNum] 
+        // })
+
+        app.io.to(socket.id).emit("joinRoom", 1);
+    });
+
+    socket.on('startCount', (roomName) => {
+        setInterval(function() {
+            time--;
+            app.io.to(socket.id).emit("timeLeft", time);
+        }, 1000);
+    });
+});
 
 app.use(logger('dev'));
 app.use(express.json());
