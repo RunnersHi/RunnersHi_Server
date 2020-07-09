@@ -22,7 +22,7 @@ module.exports = router => {
   router.get('/recent', recordController.getUserRecentRecord);
 
   //token, :run_idx를 통해 기록 조회
-  router.get('/bahi/:run_idx', recordController.getUserRunIdxRecord);
+  router.get('/gahi/:run_idx', recordController.getUserRunIdxRecord);
 
   return router;
 };
