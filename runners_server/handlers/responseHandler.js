@@ -7,14 +7,13 @@ module.exports = (app) => {
      **************************/
     app.use((response, req, res, next) => {
         if(response.result === undefined){
-            console.log("result가 undefined");
             return next(response);
         }
 
         const response_message = response_code[response.code];
         response_message.result = response.result ? response.result : {};
 
-        console.log(response_message);
+        //console.log(response_message);
         return res.status(response_message.status).json(
             response_message
         );

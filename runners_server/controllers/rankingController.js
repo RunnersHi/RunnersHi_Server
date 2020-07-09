@@ -12,7 +12,6 @@ const ranking = {
   runner: async(req, res, next) => {
     try{
       const result = await rankingModel.runner();
-      console.log(result);
       return next(result);
     } catch(error){
       return next(error);

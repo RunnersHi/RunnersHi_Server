@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+const poolModel = require('./pool');
 const config = require("../config/config");
 
 
@@ -26,39 +26,31 @@ const authModel = {
         return done(null, decoded.id);
       }
     });
+  },
+  verify : async(token) => {
+    let decoded;
+    try {
+      decoded = jwt.verify(token, config.jwt.cert);
+    } catch (err) {
+      if (err.message === "jwt expired") {
+        return TOKEN_EXPIRED;
+      } else if (err.message === "invalid token") {
+        console.log(TOKEN_INVALID);
+        return TOKEN_INVALID;
+      } else {
+        return TOKEN_INVALID;
+      }
+    }
+    const id = decoded.id;
+
+    const query = `SELECT user_idx FROM user WHERE id = "${id}" `;
+    const data = await poolModel.queryParam(query);
+
+
+    return data[0].user_idx;
   }
+
 };
 
 
 module.exports = authModel;
-
-
-
-exports.verify = async(token) => {
-  let decoded;
-  try {
-    decoded = jwt.verify(token, config.jwt.cert);
-    console.log(decoded);
-  } catch (err) {
-    if (err.message === "jwt expired") {
-      console.log("expired token");
-      return TOKEN_EXPIRED;
-    } else if (err.message === "invalid token") {
-      console.log("invalid token");
-      console.log(TOKEN_INVALID);
-      return TOKEN_INVALID;
-    } else {
-      console.log("invalid token");
-      return TOKEN_INVALID;
-    }
-  }
-  const id = decoded.id;
-  console.log("model  " + id);
-
-  const query = `SELECT user_idx FROM user WHERE id = "${id}" `;
-  const data = await poolModel.queryParam(query);
-
-  console.log("usususu  " + data[0].user_idx);
-
-  return data[0].user_idx;
-};

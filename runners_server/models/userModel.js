@@ -126,11 +126,11 @@ const userModel = {
         userData.lose = 0;
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
-                case 0:
+                case 1:
                     userData.win++;
                     break;
-                case 1:
                 case 2:
+                case 3:
                     userData.lose++;
                     break;
             }
