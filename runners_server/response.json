@@ -26,7 +26,13 @@
   "DUPLICATE_FAIL" : {
     "status": 200,
     "success": false,
-    "message": "register check fail",
+    "message": "duplicate check fail",
+    "result": ""
+  },
+  "MY_PROFILE" : {
+    "status": 200,
+    "success": true,
+    "message": "my profile",
     "result": ""
   },
   "RECORD_ALL_SUCCESS" : {
