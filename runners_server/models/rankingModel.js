@@ -91,23 +91,24 @@ const record = {
   getDetailProfile: async(id) => {
     
     const query = 
-    `SELECT u.user_idx, u.nickname, u.image, u.level, u.badge,
+    `SELECT u.nickname, u.image, u.level, u.badge,
     COUNT(IF(r.result = 0, 1, null)) as win, 
-    COUNT(IF(r.result = 1, 1, null)) as lose,
-    SUBSTR(r.created_time, 1, 4) as year
-    WHERE u.user_idx = "${id}"
+    COUNT(IF(r.result = 1, 1, null)) as lose
     FROM user u 
     LEFT JOIN run r ON u.user_idx = r.user_idx
-    GROUP BY u.user_idx
+    WHERE u.user_idx = "${id}"
     `;
+
+    const data = await pool.queryParam(query);
+    console.log(data);
 
     if(data.length == 0) {
       return {code : "NO_DATA", result : {}};
     } else {
-      return {code : "RUNNER_SUCCESS", result : data};
+      return {code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : data[0]};
     }
   }
-  
+
 };
 
 module.exports = record;

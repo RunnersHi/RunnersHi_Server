@@ -36,17 +36,20 @@ const ranking = {
     } catch(error){
       return next(error);
     }
-    
+
   },
   getDetailProfile: async(req, res, next) => {
 
-    const user_id = req.params.id;
-    console.log(user_id);
-    const result = await rankingModel.getDetailProfile(user_id);
-
+    try{
+      const user_id = req.params.id;
+      console.log(user_id);
+      const result = await rankingModel.getDetailProfile(user_id);
+      console.log(result);
+      return next(result);
+    } catch(error){
+      return next(error);
+    }
     
-    console.log(result);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, "네네 성공성공", {result}));
   }
 };
 
