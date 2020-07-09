@@ -75,6 +75,12 @@ matching.on('connection', (socket) => {
       }
     });
 
+    socket.on('leaveRoom', (roomName) => {
+      socket.leave(roomName, () => {
+        matching.to(socket.id).emit("leaveRoom");
+      });
+    });
+
     socket.on('startCount', (roomName) => {
         const intervalId = setInterval(function() {
             socket.adapter.rooms[roomName].leftTime--;
@@ -85,8 +91,12 @@ matching.on('connection', (socket) => {
               matching.to(socket.id).emit("timeOver", roomName);
             }
         }, 1000);
-        socket.on("stopCount", () => {
+        socket.on("stopCount", (roomName) => {
           clearInterval(intervalId);
+          const leftTime = socket.adapter.rooms[roomName].leftTime;
+          socket.leave(roomName, () => {
+            matching.to(socket.id).emit("stopCount", leftTime);
+          });
         });
         socket.on("endCount", (roomName) => {
           clearInterval(intervalId);
@@ -94,6 +104,7 @@ matching.on('connection', (socket) => {
           matching.to(roomName).emit("roomFull", roomName);
         });
     });
+
 });
 
 app.use(logger('dev'));
