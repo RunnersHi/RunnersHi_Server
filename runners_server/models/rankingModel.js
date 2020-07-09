@@ -3,8 +3,6 @@ const pool = require('../models/pool');
 
 const moment = require("../modules/moment");
 
-const yearCurrent = moment.currentYear();
-
 const record = {
 
   winner: async () => {
@@ -70,16 +68,30 @@ const record = {
     `SELECT 
     u.nickname, u.image, 
     SUM(r.distance) as sum, 
-    SUBSTR(r.created_time, 1, 4) as year
+    SUBSTR(r.created_time, 1, 4) as year, 
+    MONTH(r.created_time) as month,
+    MONTH(NOW()) as current_month,
+    YEAR(NOW()) as current_year
     FROM user u 
     LEFT JOIN run r ON u.user_idx = r.user_idx
     GROUP BY u.user_idx
-    HAVING sum IS NOT NULL AND year = '2020' 
+    HAVING sum IS NOT NULL AND year = current_year AND month = current_month
     ORDER BY sum DESC 
     limit 10
     `;
-
+    
     const data = await pool.queryParam(query);
+
+    //##data는 여러 개의 배열??? 이 들어간다.
+    //##하고 싶은 것 --> 칼럼 중, 사용할 것만(보내줘야 할 것만) 담아서 보내주고 싶다. 
+
+    // const final_data = [];
+
+    // for(var item in data) {
+    //   final_data.push(
+
+    //   );
+    // }
 
     if(data.length == 0) {
       return {code : "NO_DATA", result : {}};
