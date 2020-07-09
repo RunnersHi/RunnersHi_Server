@@ -17,10 +17,23 @@ const match = {
     },
 
     getUserInfo: async (idx) => {
-        const fields_1 = 'nickname, level, gender, image'
-        const query_1 = `SELECT ${fields} FROM user WHERE user_idx="${idx}"`;
-        const result_1 = await pool.queryParam(query);
-        const query_2 = `SELECT COUNT(if(user_idx=${idx}, )) FROM `
+        const user_fields = 'nickname, level, gender, image'
+        const user_query = `SELECT ${user_fields} FROM user WHERE user_idx="${idx}"`;
+        const user_result = await pool.queryParam(user_query);
+        const win_query = `SELECT COUNT(if(user_idx="${idx}" AND result=0), 1, null) as win FROM run`;
+        const lose_query = `SELECT COUNT(if(user_idx="${idx}" AND (result=1 OR result=2)), 1, null) as lose FROM run`;
+        const win_result = await pool.queryParam(win_query);
+        const lose_result = await pool.queryParam(lose_query);
+        const final_result = {
+            name: user_result[0].nickname,
+            level: parseInt(user_result[0].level, 10),
+            gender: parseInt(user_result[0].gender, 10),
+            image: parseInt(user_result[0].image, 10),
+            win: parseInt(win_result[0].win, 10),
+            lose: parseInt(lose_result[0].lose, 10)
+        }
+
+        return final_result;
     }
 }
 
