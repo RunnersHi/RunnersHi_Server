@@ -95,11 +95,37 @@ const userController = {
     },
 
     /*******************
+     *  modify
+     *  body {nickname, gender, level, log_visibility, image}
+     ********************/
+    modify : async(req, res, next) => {
+        let result = "";
+        try{
+            const userData = {
+                id : req.user_id,
+                user_idx : req.user_idx,
+                nickname : req.body.nickname,
+                gender : req.body.gender,
+                level : req.body.level,
+                log_visibility : req.body.log_visibility,
+                image : req.body.image
+            };
+            result = await userModel.modify(userData);
+            return next(result);
+        } catch(error){
+            return next(error);
+        }
+    },
+
+    /*******************
      *  myProfile
      *  body {}
      ********************/
     myProfile : async(req, res, next) => {
-        let userData = "";
+        //body check
+        if(!req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
+            return next("NON_EXISTENT_DATA");
+        }
         try{
             userData = await userModel.selectUserData(req.user_idx);
             userData = await userModel.selectRun(userData);
