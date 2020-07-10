@@ -4,7 +4,6 @@ const statusCode = require("../modules/statusCode");
 const resMessage = require("../modules/responseMessage");
 
 const rankingModel = require("../models/rankingModel");
-
 const authModel = require("../models/authModel");
 
 
@@ -21,7 +20,6 @@ const ranking = {
     
     try{
       const result = await rankingModel.winner();
-      console.log(result);
       return next(result);
     } catch(error){
       return next(error);
@@ -32,7 +30,6 @@ const ranking = {
 
     try{
       const result = await rankingModel.loser();
-      console.log(result);
       return next(result);
     } catch(error){
       return next(error);
