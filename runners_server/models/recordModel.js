@@ -81,7 +81,7 @@ const record = {
 
     //가장 큰 
     const query = 
-    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+    `SELECT r.distance, r.time, (r.time * 1000)/r.distance as pace,  r.result
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
@@ -90,7 +90,6 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      //## 데이터가 없을 때 204 안보내줌. 수정필요
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } else {
       return {code: "GET_RECENT_RECORD_SUCCESS", result: data};

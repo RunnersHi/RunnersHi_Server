@@ -18,7 +18,7 @@ module.exports = router => {
   //러닝뱃지 **토큰필요
   router.get('/badge', authController.auth, recordController.getBadge);
 
-  //사용자의 최근 기록 :id
+  //사용자의 최근 기록 token
   router.get('/recent', authController.auth, recordController.getUserRecentRecord);
 
   //token, :run_idx를 통해 기록 조회

@@ -38,7 +38,7 @@ const record = {
           lose: data[i].lose
         });
       }
-  }
+    }
 
     if(data.length == 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
@@ -81,7 +81,7 @@ const record = {
           lose: data[i].lose
         });
       }
-  }
+    }
 
     if(data.length == 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
@@ -121,8 +121,6 @@ const record = {
         distance_sum: data[i].sum
       });
     }
-
-
     if(data.length == 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } else {
