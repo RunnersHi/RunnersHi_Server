@@ -34,55 +34,72 @@ matching.on('connection', (socket) => {
     matching.to(socket.id).emit("start", socket.id);
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
-      const user = await (async function decodeToken(token) {
-        const userId = await authModel.verify(token);
-        const userIdx = await matchingModel.getUserIdx(userId);
-        let userInfo = await matchingModel.getUserInfo(userIdx);
-        userInfo.id = socket.id;
-        userInfo.idx = userIdx;
-        return userInfo;
-      })(token); // user = {id, idx, name, level, gender, image, win, lose}
-
-      console.log("USER INFO: ", user);
-
-      const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
-        if (room[1].length !== 1 || !room[1].userList) {
-          return false;
+      console.log(socket.id, " send joinRoom");
+      try {
+        const user = await (async function decodeToken(token) {
+          const userId = await authModel.verify(token);
+          const userIdx = await matchingModel.getUserIdx(userId);
+          let userInfo = await matchingModel.getUserInfo(userIdx);
+          userInfo.id = socket.id;
+          userInfo.idx = userIdx;
+          return userInfo;
+        })(token); // user = {id, idx, name, level, gender, image, win, lose}
+  
+        console.log("USER INFO: ", user);
+  
+        const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
+          if (room[1].length !== 1 || !room[1].userList) {
+            return false;
+          }
+          else {
+            return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3)
+          }
+        });
+  
+        if (targetRoom === undefined) {
+          socket.join(roomNum, () => {
+            socket.adapter.rooms[roomNum].time = time;
+            socket.adapter.rooms[roomNum].wantGender = wantGender;
+            socket.adapter.rooms[roomNum].leftTime = leftTime;
+            socket.adapter.rooms[roomNum].userList.push(user);
+            matching.to(socket.id).emit("roomCreated", roomNum);
+            roomNum++;
+          });
         }
         else {
-          return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3)
+          targetRoomName = targetRoom[0]
+          socket.join(targetRoomName, async () => {
+            let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
+            delete socket.adapter.rooms[targetRoomName].wantGender;
+            socket.adapter.rooms[targetRoomName].userList.push(user);
+            socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
+            matching.to(firstUserId).emit("matched", targetRoomName);
+          });
         }
-      });
-
-      if (targetRoom === undefined) {
-        socket.join(roomNum, () => {
-          socket.adapter.rooms[roomNum].time = time;
-          socket.adapter.rooms[roomNum].wantGender = wantGender;
-          socket.adapter.rooms[roomNum].leftTime = leftTime;
-          socket.adapter.rooms[roomNum].userList.push(user);
-          matching.to(socket.id).emit("roomCreated", roomNum);
-          roomNum++;
-        });
       }
-      else {
-        targetRoomName = targetRoom[0]
-        socket.join(targetRoomName, async () => {
-          let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
-          delete socket.adapter.rooms[targetRoomName].wantGender;
-          socket.adapter.rooms[targetRoomName].userList.push(user);
-          socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
-          matching.to(firstUserId).emit("matched", targetRoomName);
-        });
+      catch (err) {
+        console.log("joinRoom error");
+        throw (err);
       }
     });
 
     socket.on('leaveRoom', (roomName) => {
-      socket.leave(roomName, () => {
-        matching.to(socket.id).emit("leaveRoom");
-      });
+      console.log(socket.id, " send leaveRoom");
+      try {
+        socket.leave(roomName, () => {
+          matching.to(socket.id).emit("leaveRoom");
+        });
+      }
+      catch(err) {
+        console.log("leaveRoom error");
+        throw (err);
+      }
+      
     });
 
     socket.on('startCount', (roomName) => {
+      console.log(socket.id, " send leaveRoom");
+      try {
         const intervalId = setInterval(function() {
             socket.adapter.rooms[roomName].leftTime -= 3;
             if (socket.adapter.rooms[roomName].leftTime > 0) {
@@ -104,34 +121,62 @@ matching.on('connection', (socket) => {
           delete socket.adapter.rooms[roomName].leftTime;
           matching.to(roomName).emit("roomFull", roomName);
         });
+      }
+      catch(err) {
+        console.log("startCount error");
+        throw (err);
+      }
     });
 
     socket.on('opponentInfo', (roomName) => {
-      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-      matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
+      console.log(socket.id, " send opponentInfo");
+      try {
+        const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+        matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
+      }
+      catch(err) {
+        console.log("opponentInfo error");
+        throw (err);
+      }
     });
 
     socket.on("readyToRun", (roomName) => {
-      if (!socket.adapter.rooms[roomName].ready) {
-        socket.adapter.rooms[roomName].ready = 1;
+      console.log(socket.id, " send readyToRun");
+      try {
+        if (!socket.adapter.rooms[roomName].ready) {
+          socket.adapter.rooms[roomName].ready = 1;
+        }
+        else if (socket.adapter.rooms[roomName].ready === 1) {
+          socket.adapter.rooms[roomName].ready++;
+        }
+        if (socket.adapter.rooms[roomName].ready === 2) {
+          matching.to(roomName).emit("letsRun", roomName);
+        }
+        else {
+          matching.to(socket.id).emit("opponentNotReady");
+        }
       }
-      else if (socket.adapter.rooms[roomName].ready === 1) {
-        socket.adapter.rooms[roomName].ready++;
-      }
-      if (socket.adapter.rooms[roomName].ready === 2) {
-        matching.to(roomName).emit("letsRun", roomName);
-      }
-      else {
-        matching.to(socket.id).emit("opponentNotReady");
+      catch(err) {
+        console.log("readyToRun error");
+        throw(err)
       }
     });
 
     socket.on("kmPassed", (roomName, km) => {
-      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-      matching.to(opponent.id).emit("kmPassed", km);
+      console.log(socket.id, " send kmPassed");
+      try {
+        const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+        matching.to(opponent.id).emit("kmPassed", km);
+      }
+      
+      catch(err) {
+        console.log("kmPassed error");
+        throw(err);
+      }
     });
 
     socket.on("stopRunning", (roomName, distance, time, coordinates, createdTime, endTime) => {
+      console.log(socket.id, " send stopRunning");
       const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
       const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       try {
@@ -147,23 +192,25 @@ matching.on('connection', (socket) => {
         })
       } 
       catch (err) {
-        console.log("Stop Running Event Error");
+        console.log("stopRunning error");
         throw(err);
       }
     });
 
     socket.on("endRunning", (roomName, distance) => {
+      console.log(socket.id, " send endRunning");
       try {
         socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = distance;
         matching.to(socket.id).emit("endRunning", roomName);
       } 
       catch (err) {
-        console.log("End Running Event Error");
+        console.log("endRunning error");
         throw(err);
       }
     });
 
     socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
+      console.log(socket.id, " send compareResult");
       const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
       const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       let result;
@@ -183,7 +230,7 @@ matching.on('connection', (socket) => {
         })
       } 
       catch (err) {
-        console.log("Compare Result Event Error");
+        console.log("compareResult error");
         throw(err);
       }
     });
