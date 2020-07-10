@@ -92,6 +92,14 @@
 7. user_idx: 러닝 사용자 인덱스값(FK)
 8. game_idx: 게임 인덱스값(FK)
 
+## :horse: coordinate
+running 중 수집한 위치 좌표 정보를 담고 있는 테이블
+
+1. coordinate_idx : coordinate의 인덱스값(PK)
+2. latitude : 위도
+3. longitude : 경도
+4. run_idx : 러닝의 인덱스값(FK)
+
 ### ⚙️ Dependencies
 
 ------------
