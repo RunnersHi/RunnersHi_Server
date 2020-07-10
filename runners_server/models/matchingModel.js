@@ -1,7 +1,7 @@
 //mysql connection
 const mysql = require("mysql");
 const DBConfig = require("./../config/DBConfig");
-const { queryParam } = require("./pool");
+const { queryParam, queryParamArr } = require("./pool");
 const pool = mysql.createPool(DBConfig);
 
 async function asyncP() {
@@ -46,7 +46,27 @@ const match = {
             return result.insertId;
         }
         catch (err) {
-            throw(err);
+            throw (err);
+        }
+    },
+
+    storeRunningData: async(distance, time, coordinates, result, created_time, end_time, user_idx, game_idx) => {
+        const run_fields = 'distance, time, result, created_time, end_time, user_idx, game_idx';
+        const questions = "?, ?, ?, ?, ?";
+        const run_query = `INSERT INTO run (${run_fields}) VALUES (${questions})`;
+        const run_values = [distance, time, result, created_time, end_time, user_idx, game_idx];
+        
+        try {
+            const run_result = await queryParamArr(run_query, run_values);
+            const run_idx = run_result.insertId;
+            const coordinate_fields = `latitude, longitude, run_idx`;
+            const coordinate_query = `INSERT INTO coordinate (${coordinate_fields}) VALUES (?, ?, ${run_idx})`;
+            const coordinate_result = await queryParamArr(coordinate_query, coordinates);
+            return coordinate_result.affectedRows;
+        }
+        catch (err) {
+            console.log("Store Data Error");
+            throw (err);
         }
     }
 }

@@ -39,8 +39,9 @@ matching.on('connection', (socket) => {
         const userIdx = await matchingModel.getUserIdx(userId);
         let userInfo = await matchingModel.getUserInfo(userIdx);
         userInfo.id = socket.id;
+        userInfo.idx = userIdx;
         return userInfo;
-      })(token); // userInfo = {socketId, name, level, gender, image, win, lose}
+      })(token); // userInfo = {socketId, idx, name, level, gender, image, win, lose}
 
       console.log("USER INFO: ", userInfo);
 
@@ -128,6 +129,10 @@ matching.on('connection', (socket) => {
     socket.on("kmPassed", (roomName, km) => {
       opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       matching.to(opponent.id).emit("kmPassed", km);
+    });
+
+    socket.on("stopRunning", (roomName, distance, time, coordinates) => {
+
     });
 });
 
