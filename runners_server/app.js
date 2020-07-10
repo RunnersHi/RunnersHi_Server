@@ -41,16 +41,16 @@ matching.on('connection', (socket) => {
         userInfo.id = socket.id;
         userInfo.idx = userIdx;
         return userInfo;
-      })(token); // userInfo = {socketId, idx, name, level, gender, image, win, lose}
+      })(token); // user = {id, idx, name, level, gender, image, win, lose}
 
-      console.log("USER INFO: ", userInfo);
+      console.log("USER INFO: ", user);
 
       const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
         if (room[1].length !== 1 || !room[1].userList) {
           return false;
         }
         else {
-          return room[1].userList[0].level === userInfo.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === userInfo.gender || room[1].wantGender === 3)
+          return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3)
         }
       });
 
@@ -59,7 +59,7 @@ matching.on('connection', (socket) => {
           socket.adapter.rooms[roomNum].time = time;
           socket.adapter.rooms[roomNum].wantGender = wantGender;
           socket.adapter.rooms[roomNum].leftTime = leftTime;
-          socket.adapter.rooms[roomNum].userList.push(userInfo);
+          socket.adapter.rooms[roomNum].userList.push(user);
           matching.to(socket.id).emit("roomCreated", roomNum);
           roomNum++;
         });
@@ -69,7 +69,7 @@ matching.on('connection', (socket) => {
         socket.join(targetRoomName, () => {
           let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
           delete socket.adapter.rooms[targetRoomName].wantGender;
-          socket.adapter.rooms[targetRoomName].userList.push(userInfo);
+          socket.adapter.rooms[targetRoomName].userList.push(user);
           socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
           matching.to(firstUserId).emit("matched", targetRoomName);
         });
@@ -84,14 +84,14 @@ matching.on('connection', (socket) => {
 
     socket.on('startCount', (roomName) => {
         const intervalId = setInterval(function() {
-            socket.adapter.rooms[roomName].leftTime--;
+            socket.adapter.rooms[roomName].leftTime -= 3;
             if (socket.adapter.rooms[roomName].leftTime > 0) {
               matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
             }
             else if (socket.adapter.rooms[roomName].leftTime === 0) {
               matching.to(socket.id).emit("timeOver", roomName);
             }
-        }, 1000);
+        }, 3000);
         socket.on("stopCount", (roomName) => {
           clearInterval(intervalId);
           const leftTime = socket.adapter.rooms[roomName].leftTime;
@@ -107,7 +107,7 @@ matching.on('connection', (socket) => {
     });
 
     socket.on('opponentInfo', (roomName) => {
-      opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
     });
 
@@ -127,12 +127,69 @@ matching.on('connection', (socket) => {
     });
 
     socket.on("kmPassed", (roomName, km) => {
-      opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       matching.to(opponent.id).emit("kmPassed", km);
     });
 
-    socket.on("stopRunning", (roomName, distance, time, coordinates) => {
+    socket.on("stopRunning", (roomName, distance, time, coordinates, createdTime, endTime) => {
+      const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+      try {
+        socket.leave("roomName", () => {
+          if (socket.adapter.rooms[roomName].length === 1) {
+            await matchingModel.storeRunningData(distance, time, coordinates, 3, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+            matching.to(opponent.id).emit("opponentStopped", roomName);
+          }
+          else {
+            await matchingModel.storeRunningData(distance, time, coordinates, 4, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+          }
+          matching.to(socket.id).emit("stopRunning", roomName);
+        })
+      } 
+      catch (err) {
+        console.log("Stop Running Event Error");
+        throw(err);
+      }
+    });
 
+    socket.on("endRunning", (roomName, distance) => {
+      try {
+        socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = distance;
+        matching.to(socket.id).emit("endRunning", roomName);
+      } 
+      catch (err) {
+        console.log("End Running Event Error");
+        throw(err);
+      }
+    });
+
+    socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
+      const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+      let result;
+      try {
+        socket.leave("roomName", () => {
+          if (user.distance > opponent.distance) {
+            result = 1;
+          }
+          else if (user.distance < opponent.distance) {
+            result = 2;
+          }
+          else {
+            result = 5
+          }
+          await matchingModel.storeRunningData(distance, time, coordinates, result, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+          matching.to(socket.id).emit("compareResult", result);
+        })
+      } 
+      catch (err) {
+        console.log("Compare Result Event Error");
+        throw(err);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
     });
 });
 
