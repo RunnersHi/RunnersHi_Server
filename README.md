@@ -56,7 +56,7 @@
 
 ### 📂 ERD
 
-![ERD](https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/erd_runnershi.PNG)
+![ERD](https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/erd%EB%AA%A8%EB%8D%B8.png)
 
 ### ⚙️ Dependencies
 
