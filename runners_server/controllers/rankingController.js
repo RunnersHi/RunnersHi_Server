@@ -1,11 +1,4 @@
-
-const util = require("../modules/utils");
-const statusCode = require("../modules/statusCode");
-const resMessage = require("../modules/responseMessage");
-
 const rankingModel = require("../models/rankingModel");
-const authModel = require("../models/authModel");
-
 
 const ranking = {
   runner: async(req, res, next) => {
@@ -17,54 +10,39 @@ const ranking = {
     }
   },
   winner: async(req, res, next) => {
-    
     try{
       const result = await rankingModel.winner();
+      
+    console.log("winner controller");
+    console.log(result);
       return next(result);
     } catch(error){
       return next(error);
     }
-
   },
   loser: async(req, res, next) => {
-
     try{
       const result = await rankingModel.loser();
       return next(result);
     } catch(error){
       return next(error);
     }
-
   },
   getDetailProfile: async(req, res, next) => {
 
-    const token = req.headers.token;
-    const user_idx = await authModel.verify(token);
+    //const token = req.headers.token;
+    //const user_idx = await authModel.verify(token);
 
-    if(token === undefined || token === null) {
-      return next("EMPTY_TOKEN");
-    }
-
-    //expired_token
-    if(user_idx === -3) {
-      return next("EXPIRED_TOKEN");
-    }
-
-    //invalid_token
-    if(user_idx === -2) {
-      return next("INVALID_TOKEN");
-    }
-
+    //이 함수가 호출되기 전, token을 부여 받는 것은
+    //권한(로그인을 한 사람)이 있는 사람만 이 API에 접근할 수 있다는 것이다.
+    const user_idx = req.params.user_idx;
 
     try{
-      console.log(user_idx);
       const result = await rankingModel.getDetailProfile(user_idx);
-      console.log(result);
       return next(result);
     } catch(error){
       return next(error);
     }
-    
   }
 };
 

@@ -6,6 +6,7 @@ const record = {
 
   getAllRecords: async (id) => {
 
+    //result가 1,5--> 무승부
     const query = 
     `SELECT r.created_time, r.distance, r.time, r.run_idx, r.result, r.game_idx
     FROM user u, run r

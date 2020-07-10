@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router;
 
 const rankingController = require('../controllers/rankingController');
-const authMiddleWare = require('../middleware/auth');
+const authController = require('../controllers/authController');
 
 module.exports = router => {
 
@@ -15,8 +15,8 @@ module.exports = router => {
     //졌잘싸
     router.get('/loser', rankingController.loser);
 
-    //러너DetailProfile
-    router.get('/detail', rankingController.getDetailProfile);
+    //러너DetailProfile 
+    router.get('/detail/:user_idx', authController.auth, rankingController.getDetailProfile);
 
     return router;
 };
