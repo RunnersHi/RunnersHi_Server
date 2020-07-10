@@ -135,7 +135,7 @@ matching.on('connection', (socket) => {
       const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
       const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       try {
-        socket.leave("roomName", () => {
+        socket.leave("roomName", async () => {
           if (socket.adapter.rooms[roomName].length === 1) {
             await matchingModel.storeRunningData(distance, time, coordinates, 3, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
             matching.to(opponent.id).emit("opponentStopped", roomName);
@@ -168,7 +168,7 @@ matching.on('connection', (socket) => {
       const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
       let result;
       try {
-        socket.leave("roomName", () => {
+        socket.leave("roomName", async () => {
           if (user.distance > opponent.distance) {
             result = 1;
           }
