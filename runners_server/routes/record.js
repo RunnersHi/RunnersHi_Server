@@ -9,7 +9,7 @@ module.exports = router => {
   //token 확인필요!
   router.get('/all', authController.auth, recordController.getAllRecords);
 
-  //기록 상세보기(좌표, 등등) **토큰필요 ###다시보기 좌표도 넘겨줘야함
+  //기록 상세보기(좌표, 등등) **토큰필요
   router.get('/detail/:run_idx', authController.auth, recordController.getDetailRecord);
 
   //token과 :game_idx 상대방 USER 기록 보여주기 

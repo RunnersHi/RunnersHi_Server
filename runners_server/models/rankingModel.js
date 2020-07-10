@@ -25,6 +25,10 @@ const record = {
  
     const data = await pool.queryParam(query);
 
+    if(data.length == 0) {
+      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
+    }
+
     const final_data = [];
 
     for(let i = 0; i < data.length; i++){
@@ -40,11 +44,8 @@ const record = {
       }
     }
 
-    if(data.length == 0) {
-      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
-    } else {
-      return {code : "WINNER_SUCCESS", result : final_data};
-    }
+    return {code : "WINNER_SUCCESS", result : final_data};
+    
   },
 
   loser: async () => {
@@ -70,6 +71,10 @@ const record = {
     const data = await pool.queryParam(query);
     const final_data = [];
 
+    if(data.length == 0) {
+      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
+    }
+
     for(let i = 0; i < data.length; i++){
 
       if(data[i].win + data[i].lose != 0) {
@@ -83,11 +88,8 @@ const record = {
       }
     }
 
-    if(data.length == 0) {
-      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
-    } else {
-      return {code : "LOSER_SUCCESS", result : final_data};
-    }
+    return {code : "LOSER_SUCCESS", result : final_data};
+    
   },
 
   runner: async () => {
@@ -112,6 +114,10 @@ const record = {
     const data = await pool.queryParam(query);
     const final_data = [];
 
+    if(data.length == 0) {
+      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
+    } 
+
     for(let i = 0; i < data.length; i++){
     
       final_data.push( {
@@ -121,11 +127,9 @@ const record = {
         distance_sum: data[i].sum
       });
     }
-    if(data.length == 0) {
-      return {code : "SUCCESS_BUT_NO_DATA", result : {}};
-    } else {
-      return {code : "RUNNER_SUCCESS", result : final_data};
-    }
+   
+    return {code : "RUNNER_SUCCESS", result : final_data};
+    
   },
 
   getDetailProfile: async(id) => {

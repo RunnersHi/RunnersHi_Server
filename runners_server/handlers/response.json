@@ -84,7 +84,7 @@
   "BADGE_SUCCESS": {
     "status": 200,
     "success": true,
-    "message": "BADGE 부여 성공!!",
+    "message": "BADGE 조회 성공!!",
     "result" : ""
   },
   "USER_RECORD_SUCCESS": {

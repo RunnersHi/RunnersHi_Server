@@ -61,6 +61,7 @@ const record = {
 
     try{
       const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
+      console.log(result);
       return next(result);
     } catch(error){
       return next(error);
@@ -68,10 +69,7 @@ const record = {
   },
   //상대방기록
   getOpponentRecord: async(req, res, next) => {
-
-    const token = req.headers.token;
     const game_idx = req.params.game_idx;
-
     const user_idx = req.user_idx;
 
     try{
