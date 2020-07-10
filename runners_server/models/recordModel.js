@@ -6,6 +6,7 @@ const record = {
 
   getAllRecords: async (id) => {
 
+    //result가 1,5--> 무승부
     const query = 
     `SELECT r.created_time, r.distance, r.time, r.run_idx, r.result, r.game_idx
     FROM user u, run r
@@ -106,11 +107,18 @@ const record = {
 
     const data = await pool.queryParam(query);
 
+    const final_data = {
+      distance: data[0].distance,
+      time: data[0].time,
+      pace: data[0].pace,
+      result: data[0].result
+    }
+
     if(data.length === 0) {
       //## 데이터가 없을 때 204 안보내줌. 수정필요
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } else {
-      return {code: "USER_RECORD_SUCCESS", result: data};
+      return {code: "USER_RECORD_SUCCESS", result: final_data};
     }
 
   },

@@ -9,7 +9,7 @@ const userModel = require("../models/userModel");
 
 exports.auth = async (req, res, next) => {
     if (!req.headers.token) {
-        return next("LOGIN_FAIL");
+        return next("EMPTY_TOKEN");
     } else {
         authModel.auth(req.headers.token, (err, id) => {
             if (err) {

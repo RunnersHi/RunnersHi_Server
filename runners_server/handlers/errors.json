@@ -101,12 +101,6 @@
     "success" : false,
     "message": "500 Error"
   },
-  "EXPIRED_TOKEN": {
-    "status": 401,
-    "success" : false,
-    "message": "만료된 인증 토큰 입니다.",
-    "description": "expired token"
-  },
   "INVALID_AUTH": {
     "status": 403,
     "success" : false,
