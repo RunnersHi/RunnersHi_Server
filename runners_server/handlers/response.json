@@ -35,6 +35,12 @@
     "message": "my profile",
     "result": ""
   },
+  "PROFILE_MODIFY" : {
+    "status": 200,
+    "success": true,
+    "message": "profile modify success",
+    "result": ""
+  },
   "RECORD_ALL_SUCCESS" : {
     "status": 200,
     "success": true,

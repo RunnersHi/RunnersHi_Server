@@ -127,6 +127,7 @@ const userModel = {
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
                 case 1:
+                case 4:
                     userData.win++;
                     break;
                 case 2:
@@ -145,7 +146,35 @@ const userModel = {
         } else{
             done(null, rows[0].user_idx);
         }
-    }
+    },
+    /*******************
+     *  modify
+     *  @param: userData = {user_idx, nickname, gender, level, log_visibility, image}
+     ********************/
+    modify: async(userData)=>{
+        const sql =
+            "UPDATE user SET nickname = ?, gender = ?, level = ?, log_visibility = ?, image = ? WHERE user_idx = ?";
+        const rows = await pool.queryParamArr(sql, [
+            userData.nickname,
+            userData.gender,
+            userData.level,
+            userData.log_visibility,
+            userData.image,
+            userData.user_idx]);
+        if (rows.affectedRows === 1) {
+            //response message result 에 들어갈 값들
+            return {
+                "code" : "PROFILE_MODIFY",
+                result : {
+                    "token": jwt.sign(userData, config.jwt.cert, {
+                        expiresIn: "10h"
+                    })
+                }
+            };
+        } else {
+            return "SERVER_ERROR";
+        }
+    },
 };
 
 module.exports = userModel;

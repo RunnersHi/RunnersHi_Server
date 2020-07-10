@@ -16,5 +16,8 @@ module.exports = router => {
     //myProfile
     router.get('/myProfile', [authController.auth, userController.myProfile]);
 
+    //modify
+    router.post('/modify', [authController.auth, userController.modify]);
+
     return router;
 };
