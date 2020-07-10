@@ -66,7 +66,7 @@ matching.on('connection', (socket) => {
       }
       else {
         targetRoomName = targetRoom[0]
-        socket.join(targetRoomName, () => {
+        socket.join(targetRoomName, async () => {
           let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
           delete socket.adapter.rooms[targetRoomName].wantGender;
           socket.adapter.rooms[targetRoomName].userList.push(user);
