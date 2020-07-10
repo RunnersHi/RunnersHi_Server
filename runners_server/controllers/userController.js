@@ -1,5 +1,4 @@
 const config = require("../config/config");
-const resMsg = require("../errors.json");
 const crypto = require('crypto');
 const userModel = require("../models/userModel");
 
@@ -12,7 +11,7 @@ const userController = {
 
         //body check
         if (!req.body.id || !req.body.password) {
-            return next("1700");
+            return next("NON_EXISTENT_DATA");
         }
 
         try {
@@ -36,7 +35,7 @@ const userController = {
     register : async(req, res, next) => {
         //body check
         if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-            return next("400");
+            return next("NON_EXISTENT_DATA");
         }
         let result = "";
 
@@ -52,15 +51,20 @@ const userController = {
                 log_visibility : req.body.log_visibility,
                 image: req.body.image
             };
-
-            //TODO
             //check id, nickname
-            await userModel.checkId(userData.id);
-            await userModel.checkNickname(userData.nickname);
+            let checkId = await userModel.checkId(userData.id);
+            if(checkId.code === "DUPLICATE_FAIL"){
+                return next("EXIST_ID");
+            }
+
+            let checkName = await userModel.checkNickname(userData.nickname);
+            if(checkName.code === "DUPLICATE_FAIL"){
+                return next("EXIST_NICKNAME");
+            }
 
             //register model
             result = await userModel.register(userData);
-            return next({"code" : "REGISTER_SUCCESS", result : result});
+            return next(result);
         } catch (error) {
             return next(error);
         }
@@ -74,7 +78,7 @@ const userController = {
     duplicates : async(req, res, next)=>{
         let result = "";
         if(!req.body.check_name || !req.body.flag){
-            return next(400);
+            return next("NON_EXISTENT_DATA");
         }
         try{
             if(req.body.flag === 1){
@@ -95,15 +99,15 @@ const userController = {
      *  body {}
      ********************/
     myProfile : async(req, res, next) => {
-        let result = "";
+        let userData = "";
         try{
-            result = await userModel.profile(req.user_idx);
+            userData = await userModel.selectUserData(req.user_idx);
+            userData = await userModel.selectRun(userData);
+            return next({"code" : "MY_PROFILE", result : userData});
         } catch(error){
             return next(error);
         }
-        return res.r(200, result, true, "lookup my profile success");
     }
-
 
 };
 

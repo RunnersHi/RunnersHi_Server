@@ -56,7 +56,49 @@
 
 ### 📂 ERD
 
-![ERD](https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/erd_runnershi.PNG)
+![ERD](https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/erd%EB%AA%A8%EB%8D%B8.png)
+
+### 🏃‍♂️ User 🏃‍♀️
+
+서비스 사용자의 정보를 담고 있는 테이블
+
+1. user_idx: 사용자의 인덱스값(PK)
+2. nickname: 사용자의 닉네임
+3. id: 사용자의 ID
+4. password: 사용자의 비밀번호
+5. salt: 사용자의 비밀번호 Salt
+6. gender: 사용자의 성별
+7. level: 사용자의 레벨(초급, 중급, 고급)
+8. log_visibility: 사용자의 러닝 기록 조회 가능 여부(False일 시 랭킹에 해당 유저 비포함)
+9. img: 사용자의 프로필 이미지
+10. badge: 사용자의 배지 소유여부, 9자리 이진수값. ex) 101011000: 1, 3, 5, 6번 배지 소유
+
+## 🎮 Game 🕹️
+
+게임 진행 시 해당 게임의 정보를 담고 있는 테이블
+
+1. game_idx: 게임의 인덱스값(PK)
+
+## 🏅 Run 🏆
+
+게임 종료 후 러닝에 대한 정보를 담고 있는 테이블
+
+1. run_idx: 러닝의 인덱스값(PK)
+2. distance: 러닝 거리
+3. time: 러닝 시간
+4. result: 러닝 결과(1: Win, 2: Lose, 3: Escape, 4: nothing, 5: tie)
+5. created_time: 러닝 데이터 생성시간(매칭 완료 시간)
+6. end_time: 러닝 데이터 완료시간(러닝 완료 시간)
+7. user_idx: 러닝 사용자 인덱스값(FK)
+8. game_idx: 게임 인덱스값(FK)
+
+## :horse: coordinate
+running 중 수집한 위치 좌표 정보를 담고 있는 테이블
+
+1. coordinate_idx : coordinate의 인덱스값(PK)
+2. latitude : 위도
+3. longitude : 경도
+4. run_idx : 러닝의 인덱스값(FK)
 
 ### ⚙️ Dependencies
 

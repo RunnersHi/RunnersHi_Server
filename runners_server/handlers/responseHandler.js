@@ -13,6 +13,7 @@ module.exports = (app) => {
         const response_message = response_code[response.code];
         response_message.result = response.result ? response.result : {};
 
+        //console.log(response_message);
         return res.status(response_message.status).json(
             response_message
         );
