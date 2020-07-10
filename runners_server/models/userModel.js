@@ -127,6 +127,7 @@ const userModel = {
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
                 case 1:
+                case 4:
                     userData.win++;
                     break;
                 case 2:

@@ -127,7 +127,7 @@ const userController = {
             return next("NON_EXISTENT_DATA");
         }
         try{
-            userData = await userModel.selectUserData(req.user_idx);
+            let userData = await userModel.selectUserData(req.user_idx);
             userData = await userModel.selectRun(userData);
             return next({"code" : "MY_PROFILE", result : userData});
         } catch(error){
