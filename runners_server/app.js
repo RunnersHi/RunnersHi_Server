@@ -143,7 +143,7 @@ matching.on('connection', (socket) => {
           else {
             await matchingModel.storeRunningData(distance, time, coordinates, 4, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
           }
-          matching.to(socket.id).emit("stopRunning", roomName);
+          matching.to(socket.id).emit("stopRunning");
         })
       } 
       catch (err) {
