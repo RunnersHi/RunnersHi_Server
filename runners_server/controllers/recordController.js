@@ -1,8 +1,4 @@
 
-const util = require("../modules/utils");
-const statusCode = require("../modules/statusCode");
-const resMessage = require("../modules/responseMessage");
-
 const recordModel = require("../models/recordModel");
 const authModel = require("../models/authModel");
 
@@ -68,10 +64,7 @@ const record = {
   },
   //상대방기록
   getOpponentRecord: async(req, res, next) => {
-
-    const token = req.headers.token;
     const game_idx = req.params.game_idx;
-
     const user_idx = req.user_idx;
 
     try{

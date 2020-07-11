@@ -142,7 +142,7 @@ const userModel = {
         const sql = "SELECT user_idx FROM user WHERE id = ?";
         const rows = await pool.queryParamArr(sql, [id]);
         if(rows.length === 0){
-            done("LOGIN_FAIL", null);
+            done("INVALID_AUTH", null);
         } else{
             done(null, rows[0].user_idx);
         }
