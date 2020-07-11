@@ -11,7 +11,6 @@ module.exports = {
         const connection = await pool.getConnection();
         try {
           const result = await connection.query(query);
-          console.log("RESULT: ", result);
           pool.releaseConnection(connection);
           resolve(result);
         } catch (err) {

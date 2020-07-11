@@ -1,5 +1,4 @@
 const rankingModel = require("../models/rankingModel");
-const userModel = require("../models/userModel");
 const recordModel = require("../models/recordModel");
 
 const ranking = {

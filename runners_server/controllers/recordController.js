@@ -9,6 +9,7 @@ const record = {
     try{
       const result = await recordModel.getAllRecords(id);
       return next(result);
+
     } catch(error){
       return next(error);
     }

@@ -1,9 +1,7 @@
 const pool = require('./pool');
-//const { throw ,} = require('../config/database');
 const table = 'user';
 
 const record = {
-
   getAllRecords: async (id) => {
 
     const query = 
@@ -12,22 +10,20 @@ const record = {
     WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
     ORDER BY r.run_idx;`
 
-    const data = await pool.queryParam(query);4
+    const data = await pool.queryParam(query);
 
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } 
-
     const final_data = [];
-    let result_num = 1;
 
     for(let i = 0; i < data.length; i++){
-      if(data[i].result == 1 || data[i].result == 5) {
+      if(data[i].result === 1 || data[i].result === 5) {
         result_num = 0;
       } else {
         result_num = 1;
       }
-
+      
       final_data.push( {
         date: data[i].nickname,
         distance: data[i].distance,
@@ -38,7 +34,8 @@ const record = {
       });
     }
 
-    return {code: "RECORD_ALL_SUCCESS", result: data};
+    //const final = await record.makeArray(data);
+    return {code: "RECORD_ALL_SUCCESS", result: final_data};
   },
 
   getDetailRecord: async(user_idx, run_idx) => {
