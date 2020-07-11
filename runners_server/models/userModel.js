@@ -172,6 +172,34 @@ const userModel = {
             return "SERVER_ERROR";
         }
     },
+
+    /******************
+     * ID 찾기
+     * @param userData : {email}
+     *********************/
+    findID : async(userData)=>{
+        const sql = `SELECT id FROM users WHERE email = ?`;
+        const rows = await pool.queryParamArr(sql, [userData.email]);
+        if (rows.length === 0) {
+            return "NON_EXISTENT_DATA";
+        } else {
+            return rows[0].id;
+        }
+    },
+
+    /*********************
+     * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
+     * @param userData : {id, email}
+     *********************/
+    findPassword : async(userData)=>{
+        const sql = `SELECT email FROM user WHERE id = ? and email = ?`;
+        const rows = await pool.queryParamArr(sql, [userData.id, userData.email]);
+        if (rows.length === 0) { // 일치하는 값이 없는 경우
+            return "NON_EXISTENT_DATA";
+        } else {
+            return rows[0].email;
+        }
+    }
 };
 
 module.exports = userModel;
