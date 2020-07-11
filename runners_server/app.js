@@ -117,7 +117,7 @@ matching.on('connection', (socket) => {
         socket.on("endCount", (roomName) => {
           console.log(socket.id, " send endCount in roomName ", roomName);
           clearInterval(intervalId);
-          // delete socket.adapter.rooms[roomName].leftTime;
+          delete socket.adapter.rooms[roomName].leftTime;
           matching.to(roomName).emit("roomFull", roomName);
         });
       }
@@ -128,7 +128,7 @@ matching.on('connection', (socket) => {
     });
 
     socket.on('opponentInfo', (roomName) => {
-      console.log(socket.id, " send opponentInfo");
+      console.log(socket.id, " send opponentInfo at ", roomName);
       try {
         const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
         matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
