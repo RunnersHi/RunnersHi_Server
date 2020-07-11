@@ -62,6 +62,7 @@ matching.on('connection', (socket) => {
             socket.adapter.rooms[roomNum].time = time;
             socket.adapter.rooms[roomNum].wantGender = wantGender;
             socket.adapter.rooms[roomNum].leftTime = leftTime;
+            socket.adapter.rooms[roomNum].userList = []
             socket.adapter.rooms[roomNum].userList.push(user);
             matching.to(socket.id).emit("roomCreated", roomNum);
             roomNum++;
