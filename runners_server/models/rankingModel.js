@@ -135,7 +135,7 @@ const record = {
   getDetailProfile: async(id) => {
     
     const query = 
-    `SELECT u.nickname, u.image, u.level, u.badge,
+    `SELECT u.nickname, u.image, u.level,
     COUNT(IF(r.result = 1, 2, null)) as win,
     COUNT(IF(r.result = 2, 1, null)) as lose
     FROM user u 
@@ -148,7 +148,8 @@ const record = {
     if(data.length == 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } else {
-      return {code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : data[0]};
+      return data[0];
+      //return {code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : data[0]};
     }
   }
 
