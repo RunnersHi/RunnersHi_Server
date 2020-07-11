@@ -40,7 +40,7 @@ matching.on('connection', (socket) => {
       try {
         const user = await (async function decodeToken(token) {
           const userIdx = await authModel.verify(token);
-          console.log("userId: ", userIdx);
+          console.log("token: ", token);
           let userInfo = await matchingModel.getUserInfo(userIdx);
           userInfo.id = socket.id;
           userInfo.idx = userIdx;
@@ -112,6 +112,7 @@ matching.on('connection', (socket) => {
               matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
             }
             else if (socket.adapter.rooms[roomName].leftTime === 0) {
+              clearInterval(intervalId);
               matching.to(socket.id).emit("timeOver", roomName);
             }
         }, 3000);
