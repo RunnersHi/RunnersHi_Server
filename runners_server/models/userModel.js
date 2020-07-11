@@ -48,7 +48,7 @@ const userModel = {
         const sql = "SELECT password, salt FROM user WHERE id = ?";
         const rows = await pool.queryParamArr(sql, [userData.id]);
         if(rows.length === 0){
-            return "NON_EXIST_ID";
+            return {"code" : "LOGIN_FAIL", result : {}};
         } else{
             if(rows[0].password === config.do_cipher(userData.password, rows[0].salt)) {
                 userData.token = {
@@ -60,7 +60,7 @@ const userModel = {
                 userData.id = undefined;
                 return ({"code": "LOGIN_SUCCESS", result: userData.token});
             } else{
-                return ({"code" : "LOGIN_FAIL", result : {}});
+                return {"code" : "LOGIN_FAIL", result : {}};
             }
         }
     },
