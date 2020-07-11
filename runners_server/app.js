@@ -107,6 +107,7 @@ matching.on('connection', (socket) => {
             }
         }, 3000);
         socket.on("stopCount", (roomName) => {
+          console.log(socket.id, " send stopCount");
           clearInterval(intervalId);
           const leftTime = socket.adapter.rooms[roomName].leftTime;
           socket.leave(roomName, () => {
@@ -114,6 +115,7 @@ matching.on('connection', (socket) => {
           });
         });
         socket.on("endCount", (roomName) => {
+          console.log(socket.id, " send endCount");
           clearInterval(intervalId);
           delete socket.adapter.rooms[roomName].leftTime;
           matching.to(roomName).emit("roomFull", roomName);
