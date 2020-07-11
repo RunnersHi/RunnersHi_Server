@@ -144,7 +144,6 @@ const record = {
     `;
 
     const data = await pool.queryParam(query);
-    console.log(data);
 
     if(data.length == 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};

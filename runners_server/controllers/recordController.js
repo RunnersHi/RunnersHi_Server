@@ -57,7 +57,6 @@ const record = {
 
     try{
       const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
-      console.log(result);
       return next(result);
     } catch(error){
       return next(error);
