@@ -16,6 +16,8 @@ const matchingModel = require('./models/matchingModel');
 const authModel = require('./models/authModel');
 const auth = matchingModel.auth;
 const moment = require('moment');
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul");
 
 server.listen(port);
 server.on('error', onError);
