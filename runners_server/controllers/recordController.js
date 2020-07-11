@@ -32,7 +32,7 @@ const record = {
 
     try{
       const result = await recordModel.getBadge(id);
-      return next(result);
+      return next({code: "BADGE_SUCCESS", result: result});
 
     } catch(error){
       return next(error);

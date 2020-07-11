@@ -80,6 +80,7 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
+      //return "SUCCESS_BUT_NO_DATA";
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
@@ -92,8 +93,7 @@ const record = {
     }
 
     result.badge = badge;
-
-    return {code: "BADGE_SUCCESS", result: result};
+    return result;
   },
 
   //최근기록조회 :id

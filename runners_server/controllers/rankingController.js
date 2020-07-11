@@ -1,5 +1,6 @@
 const rankingModel = require("../models/rankingModel");
 const userModel = require("../models/userModel");
+const recordModel = require("../models/recordModel");
 
 const ranking = {
   runner: async(req, res, next) => {
@@ -28,12 +29,15 @@ const ranking = {
   },
   getDetailProfile: async(req, res, next) => {
     const user_idx = req.params.user_idx;
-    let result = "";
+    let final_data = {};
 
     try{
-      result = await userModel.selectUserData(user_idx);
-      result = await userModel.selectRun(result);
-      return next({"code" : "RUNNER_DETAIL_PROFILE_SUCCESS", result : result});
+      const user_data = await rankingModel.getDetailProfile(user_idx);
+      const badge = await recordModel.getBadge(user_idx);
+      final_data = user_data;
+      final_data.badge = badge.badge;
+
+      return next({code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : final_data});
     } catch(error){
       return next(error);
     }
