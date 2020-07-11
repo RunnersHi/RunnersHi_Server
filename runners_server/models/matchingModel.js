@@ -4,10 +4,6 @@ const DBConfig = require("./../config/DBConfig");
 const { queryParam, queryParamArr } = require("./pool");
 const pool = mysql.createPool(DBConfig);
 
-async function asyncP() {
-    return 'Mark';
-}
-
 const match = {
     getUserIdx: async (id) => {
         const query = `SELECT user_idx FROM user WHERE id="${id}"`;
