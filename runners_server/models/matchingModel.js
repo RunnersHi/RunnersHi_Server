@@ -4,10 +4,6 @@ const DBConfig = require("./../config/DBConfig");
 const { queryParam, queryParamArr } = require("./pool");
 const pool = mysql.createPool(DBConfig);
 
-async function asyncP() {
-    return 'Mark';
-}
-
 const match = {
     getUserIdx: async (id) => {
         const query = `SELECT user_idx FROM user WHERE id="${id}"`;
@@ -30,6 +26,9 @@ const match = {
             const lose_query = `SELECT COUNT(if((user_idx="${idx}" AND (result=1 OR result=2)), 1, null)) as lose FROM run`;
             const win_result = await queryParam(win_query);
             const lose_result = await queryParam(lose_query);
+            console.log("User Result: ", user_result);
+            console.log("Win Result: ", win_result);
+            console.log("Lose Result: ", lose_result);
             const final_result = {
                 name: user_result[0].nickname,
                 level: user_result[0].level,
