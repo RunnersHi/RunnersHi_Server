@@ -7,6 +7,7 @@ const http = require('http');
 const port = normalizePort(process.env.PORT || '3000');
 const app = express();
 const server = http.createServer(app);
+const helmet = require("helmet");
 const indexRouter = require('./routes/index.js');
 const errorHandler = require('./handlers/ErrorHandler');
 const responseHandler = require('./handlers/responseHandler');
@@ -245,10 +246,12 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//헤더 보안 설정
+app.use(helmet());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((res, req, next)=>{
     console.log(res.body);
-    console.log(res.header);
     next();
 });
 

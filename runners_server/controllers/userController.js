@@ -122,10 +122,6 @@ const userController = {
      *  body {}
      ********************/
     myProfile : async(req, res, next) => {
-        //body check
-        if(!req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
-            return next("NON_EXISTENT_DATA");
-        }
         try{
             let userData = await userModel.selectUserData(req.user_idx);
             userData = await userModel.selectRun(userData);
