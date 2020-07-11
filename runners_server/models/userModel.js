@@ -189,10 +189,10 @@ const userModel = {
 
     /*********************
      * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
-     * @param userData : {id, email}
-     * @return user_idx
+     * @param id : {id, email}
+     * @return userData : {user_idx, email}
      *********************/
-    findIdxByEmail : async(id)=>{
+    findEmailById : async(id)=>{
         const sql = `SELECT user_idx, email FROM user WHERE id = ?`;
         const rows = await pool.queryParamArr(sql, [id]);
         if (rows.length === 0) {
@@ -204,11 +204,11 @@ const userModel = {
 
     /*********************
      * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
-     * @param userData : {secretNumber, user_idx}
+     * @param userData : {secretNumber, user_idx, salt}
      *********************/
     updatePassword : async(userData)=>{
-        const sql = `UPDATE user SET password = ? WHERE user_idx = ?`;
-        const rows = await pool.queryParamArr(sql, [userData.secretNumber, userData.user_idx]);
+        const sql = `UPDATE user SET password = ?, salt = ?  WHERE user_idx = ?`;
+        const rows = await pool.queryParamArr(sql, [userData.secretNumber, userData.salt, userData.user_idx]);
         if (rows.length === 0) {
             return "NON_EXISTENT_DATA";
         } else {

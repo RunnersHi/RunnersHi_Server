@@ -19,5 +19,8 @@ module.exports = router => {
     //modify
     router.post('/modify', [authController.auth, userController.modify]);
 
+    //find password
+    router.get('/findPassword/:id', userController.findPassword);
+
     return router;
 };
