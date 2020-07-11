@@ -2,7 +2,6 @@ const pool = require('./pool');
 const table = 'user';
 
 const record = {
-
   getAllRecords: async (id) => {
 
     const query = 
@@ -16,12 +15,6 @@ const record = {
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } 
-
-    const final = await record.makeArray(data);
-    return {code: "RECORD_ALL_SUCCESS", result: final};
-  },
-
-  makeArray: async(data) => {
     const final_data = [];
 
     for(let i = 0; i < data.length; i++){
@@ -41,7 +34,8 @@ const record = {
       });
     }
 
-    return final_data;
+    //const final = await record.makeArray(data);
+    return {code: "RECORD_ALL_SUCCESS", result: final_data};
   },
 
   getDetailRecord: async(user_idx, run_idx) => {

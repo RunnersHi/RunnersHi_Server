@@ -129,7 +129,6 @@ const record = {
     }
    
     return {code : "RUNNER_SUCCESS", result : final_data};
-    
   },
 
   getDetailProfile: async(id) => {
