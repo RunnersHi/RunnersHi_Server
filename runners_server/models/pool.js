@@ -29,7 +29,6 @@ module.exports = {
         const pool = await poolPromise;
         const connection = await pool.getConnection();
         try {
-          //## result에는 어떤 값이 들어가는지?
           const result = await connection.query(query, value);
           pool.releaseConnection(connection);
           resolve(result);

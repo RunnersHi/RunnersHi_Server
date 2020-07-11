@@ -1,8 +1,4 @@
 
-const util = require("../modules/utils");
-const statusCode = require("../modules/statusCode");
-const resMessage = require("../modules/responseMessage");
-
 const recordModel = require("../models/recordModel");
 const authModel = require("../models/authModel");
 

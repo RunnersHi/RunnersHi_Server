@@ -83,12 +83,26 @@ const record = {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
+    //뱃지 나누기
+    let result = {};
+    let badge = [];
+    let bin = data[0].badge.toString(2);
+    console.log(bin.length);
+
+    for(let i = 0; i < bin.length; i++){
+      badge[i] = (bin[i] === '1');
+    }
+
+    result.badge = badge;
+
+    return {code: "BADGE_SUCCESS", result: result};
+
+
     const final_data = {
       badge: data[0].badge
     }
 
     return {code: "BADGE_SUCCESS", result: final_data};
-    
   },
 
   //최근기록조회 :id

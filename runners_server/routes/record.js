@@ -5,7 +5,7 @@ const recordController = require('../controllers/recordController');
 const authController = require('../controllers/authController');
 
 module.exports = router => {
-
+  
   //token 확인필요!
   router.get('/all', authController.auth, recordController.getAllRecords);
 
