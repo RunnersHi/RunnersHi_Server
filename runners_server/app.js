@@ -39,62 +39,60 @@ matching.on('connection', (socket) => {
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
       console.log(socket.id, " send joinRoom");
-      if (!token || !time || !wantGender || !leftTime || typeof token !== 'string' || typeof time !== 'int' || typeof wantGender !== 'int' || typeof leftTime !== 'int') {
-        console.log("joinRoom parameter error");
-        matching.to(socket.id).emit("error");
-      }
-      else {
-        try {
-          const user = await (async function decodeToken(token) {
-            const userIdx = await authModel.verify(token);
-            console.log("token: ", token);
-            let userInfo = await matchingModel.getUserInfo(userIdx);
-            userInfo.id = socket.id;
-            userInfo.idx = userIdx;
-            return userInfo;
-          })(token); // user = {id, idx, name, level, gender, image, win, lose}
+      // if (!token || !time || !wantGender || !leftTime || typeof token !== 'string' || typeof time !== 'int' || typeof wantGender !== 'int' || typeof leftTime !== 'int') {
+      //   console.log("joinRoom parameter error");
+      //   matching.to(socket.id).emit("error");
+      // }
+      try {
+        const user = await (async function decodeToken(token) {
+          const userIdx = await authModel.verify(token);
+          console.log("token: ", token);
+          let userInfo = await matchingModel.getUserInfo(userIdx);
+          userInfo.id = socket.id;
+          userInfo.idx = userIdx;
+          return userInfo;
+        })(token); // user = {id, idx, name, level, gender, image, win, lose}
 
-          matching.to(socket.id).emit(user.name, user.level, user.gender, user.win, user.lose, user.image);
-    
-          // const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
-          //   if (room[1].length !== 1 || !room[1].userList) {
-          //     return false;
-          //   }
-          //   else {
-          //     return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3);
-          //   }
-          // });
-    
-          // if (targetRoom === undefined) {
-          //   socket.join(roomNum.toString(), () => {
-          //     socket.adapter.rooms[roomNum].time = time;
-          //     socket.adapter.rooms[roomNum].wantGender = wantGender;
-          //     socket.adapter.rooms[roomNum].leftTime = leftTime;
-          //     socket.adapter.rooms[roomNum].userList = []
-          //     socket.adapter.rooms[roomNum].userList.push(user);
-          //     console.log(socket.adapter.rooms[roomNum]);
-          //     console.log("Give RoomNum: ", roomNum);
-          //     roomNum = roomNum.toString();
-          //     matching.to(socket.id).emit("roomCreated", roomNum);
-          //     roomNum++;
-          //   });
-          // }
-          // else {
-          //   targetRoomName = targetRoom[0]
-          //   socket.join(targetRoomName, async () => {
-          //     let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
-          //     delete socket.adapter.rooms[targetRoomName].wantGender;
-          //     socket.adapter.rooms[targetRoomName].userList.push(user);
-          //     socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
-          //     targetRoomName = targetRoomName.toString();
-          //     matching.to(firstUserId).emit("matched", targetRoomName);
-          //   });
-          // }
-        }
-        catch (err) {
-          console.log("joinRoom error");
-          throw (err);
-        }
+        matching.to(socket.id).emit(user.name, user.level, user.gender, user.win, user.lose, user.image);
+  
+        // const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
+        //   if (room[1].length !== 1 || !room[1].userList) {
+        //     return false;
+        //   }
+        //   else {
+        //     return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3);
+        //   }
+        // });
+  
+        // if (targetRoom === undefined) {
+        //   socket.join(roomNum.toString(), () => {
+        //     socket.adapter.rooms[roomNum].time = time;
+        //     socket.adapter.rooms[roomNum].wantGender = wantGender;
+        //     socket.adapter.rooms[roomNum].leftTime = leftTime;
+        //     socket.adapter.rooms[roomNum].userList = []
+        //     socket.adapter.rooms[roomNum].userList.push(user);
+        //     console.log(socket.adapter.rooms[roomNum]);
+        //     console.log("Give RoomNum: ", roomNum);
+        //     roomNum = roomNum.toString();
+        //     matching.to(socket.id).emit("roomCreated", roomNum);
+        //     roomNum++;
+        //   });
+        // }
+        // else {
+        //   targetRoomName = targetRoom[0]
+        //   socket.join(targetRoomName, async () => {
+        //     let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
+        //     delete socket.adapter.rooms[targetRoomName].wantGender;
+        //     socket.adapter.rooms[targetRoomName].userList.push(user);
+        //     socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
+        //     targetRoomName = targetRoomName.toString();
+        //     matching.to(firstUserId).emit("matched", targetRoomName);
+        //   });
+        // }
+      }
+      catch (err) {
+        console.log("joinRoom error");
+        throw (err);
       }
     });
 
