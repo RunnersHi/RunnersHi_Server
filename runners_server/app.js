@@ -64,6 +64,7 @@ matching.on('connection', (socket) => {
             socket.adapter.rooms[roomNum].userList = []
             socket.adapter.rooms[roomNum].userList.push(user);
             console.log(socket.adapter.rooms[roomNum]);
+            console.log("Give RoomNum: ", roomNum);
             matching.to(socket.id).emit("roomCreated", roomNum);
             roomNum++;
           });
@@ -102,8 +103,10 @@ matching.on('connection', (socket) => {
     socket.on('startCount', (roomName) => {
       roomName = roomName.toString();
       console.log(socket.id, " send startCount");
+      console.log("Given RoomName: ", roomName);
       try {
         const intervalId = setInterval(function() {
+            console.log("Room: ", socket.adapter.rooms[roomName]);
             socket.adapter.rooms[roomName].leftTime -= 3;
             if (socket.adapter.rooms[roomName].leftTime > 0) {
               matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
