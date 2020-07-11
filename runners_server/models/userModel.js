@@ -60,7 +60,7 @@ const userModel = {
                 userData.id = undefined;
                 return ({"code": "LOGIN_SUCCESS", result: userData.token});
             } else{
-                return {"code" : "LOGIN_FAIL", result : {}};
+                return {"code" : "LOGIN_FAIL", result : {token : ""}};
             }
         }
     },
