@@ -9,6 +9,7 @@ const match = {
         const query = `SELECT user_idx FROM user WHERE id="${id}"`;
         try {
             const result = await queryParam(query);
+            console.log("UserIdx: ", result);
             return result[0];
         }
         catch (err) {
