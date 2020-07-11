@@ -52,7 +52,7 @@ matching.on('connection', (socket) => {
             return false;
           }
           else {
-            return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3)
+            return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3);
           }
         });
   
@@ -86,20 +86,6 @@ matching.on('connection', (socket) => {
       }
     });
 
-    socket.on('leaveRoom', (roomName) => {
-      console.log(socket.id, " send leaveRoom");
-      try {
-        socket.leave(roomName, () => {
-          matching.to(socket.id).emit("leaveRoom");
-        });
-      }
-      catch(err) {
-        console.log("leaveRoom error");
-        throw (err);
-      }
-      
-    });
-
     socket.on('startCount', (roomName) => {
       roomName = roomName.toString();
       console.log(socket.id, " send startCount");
@@ -113,7 +99,9 @@ matching.on('connection', (socket) => {
             }
             else if (socket.adapter.rooms[roomName].leftTime === 0) {
               clearInterval(intervalId);
-              matching.to(socket.id).emit("timeOver", roomName);
+              socket.leave(roomName, () => {
+                matching.to(socket.id).emit("timeOver");
+              })
             }
         }, 3000);
         socket.on("stopCount", (roomName) => {
@@ -149,14 +137,17 @@ matching.on('connection', (socket) => {
 
     socket.on("readyToRun", (roomName) => {
       console.log(socket.id, " send readyToRun");
+      console.log("ReadyToRun RoomName: ", roomName);
+      console.log("ReadyToRun Room: ", socket.adapter.rooms[roomName]);
       try {
         if (!socket.adapter.rooms[roomName].ready) {
           socket.adapter.rooms[roomName].ready = 1;
         }
         else if (socket.adapter.rooms[roomName].ready === 1) {
-          socket.adapter.rooms[roomName].ready++;
+          socket.adapter.rooms[roomName].ready = 2;
         }
         if (socket.adapter.rooms[roomName].ready === 2) {
+          console.log("매칭 완료");
           matching.to(roomName).emit("letsRun", roomName);
         }
         else {
