@@ -115,9 +115,9 @@ matching.on('connection', (socket) => {
           });
         });
         socket.on("endCount", (roomName) => {
-          console.log(socket.id, " send endCount");
+          console.log(socket.id, " send endCount in roomName ", roomName);
           clearInterval(intervalId);
-          delete socket.adapter.rooms[roomName].leftTime;
+          // delete socket.adapter.rooms[roomName].leftTime;
           matching.to(roomName).emit("roomFull", roomName);
         });
       }
