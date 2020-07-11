@@ -30,7 +30,7 @@ const matching = app.io.of('/matching');
 let roomNum = 1;
 
 matching.on('connection', (socket) => {
-    console.log("소켓 사용자 들어왔다 at ", moment());
+    console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
     matching.to(socket.id).emit("start", socket.id);
 
