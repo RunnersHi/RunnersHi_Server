@@ -39,6 +39,7 @@ matching.on('connection', (socket) => {
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
       console.log(socket.id, " send joinRoom");
+      console.log(`token: ${token}, time: ${time}, wantGender: ${wantGender}, leftTime: ${leftTime}`);
       // if (!token || !time || !wantGender || !leftTime || typeof token !== 'string' || typeof time !== 'int' || typeof wantGender !== 'int' || typeof leftTime !== 'int') {
       //   console.log("joinRoom parameter error");
       //   matching.to(socket.id).emit("error");
@@ -53,7 +54,7 @@ matching.on('connection', (socket) => {
           return userInfo;
         })(token); // user = {id, idx, name, level, gender, image, win, lose}
 
-        matching.to(socket.id).emit(user.name, user.level, user.gender, user.win, user.lose, user.image);
+        matching.to(socket.id).emit("opponentInfo", user.name, user.level, user.gender, user.win, user.lose, user.image);
   
         // const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
         //   if (room[1].length !== 1 || !room[1].userList) {
