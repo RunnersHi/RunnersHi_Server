@@ -39,10 +39,8 @@ matching.on('connection', (socket) => {
       console.log(socket.id, " send joinRoom");
       try {
         const user = await (async function decodeToken(token) {
-          const userId = await authModel.verify(token);
-          console.log("userId: ", userId);
-          const userIdx = await matchingModel.getUserIdx(userId);
-          console.log("userIdx: ", userIdx);
+          const userIdx = await authModel.verify(token);
+          console.log("userId: ", userIdx);
           let userInfo = await matchingModel.getUserInfo(userIdx);
           userInfo.id = socket.id;
           userInfo.idx = userIdx;
