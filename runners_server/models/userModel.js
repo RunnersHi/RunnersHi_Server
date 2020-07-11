@@ -190,16 +190,31 @@ const userModel = {
     /*********************
      * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
      * @param userData : {id, email}
+     * @return user_idx
      *********************/
-    findPassword : async(userData)=>{
-        const sql = `SELECT email FROM user WHERE id = ? and email = ?`;
-        const rows = await pool.queryParamArr(sql, [userData.id, userData.email]);
-        if (rows.length === 0) { // 일치하는 값이 없는 경우
+    findIdxByEmail : async(id)=>{
+        const sql = `SELECT user_idx, email FROM user WHERE id = ?`;
+        const rows = await pool.queryParamArr(sql, [id]);
+        if (rows.length === 0) {
             return "NON_EXISTENT_DATA";
         } else {
-            return rows[0].email;
+            return rows[0];
         }
-    }
+    },
+
+    /*********************
+     * PW 찾기 -> email로 임시비밀번호 보내고 임시비밀번호로 변경
+     * @param userData : {secretNumber, user_idx}
+     *********************/
+    updatePassword : async(userData)=>{
+        const sql = `UPDATE user SET password = ? WHERE user_idx = ?`;
+        const rows = await pool.queryParamArr(sql, [userData.secretNumber, userData.user_idx]);
+        if (rows.length === 0) {
+            return "NON_EXISTENT_DATA";
+        } else {
+            return {"code" : "SEND_PASSWORD", result : {}};
+        }
+    },
 };
 
 module.exports = userModel;

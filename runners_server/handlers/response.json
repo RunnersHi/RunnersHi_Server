@@ -110,6 +110,12 @@
     "success": true,
     "message": "상대방 러너의 기록 조회 성공(useridx, gameidx)",
     "result" : ""
+  },
+  "SEND_PASSWORD": {
+    "status": 200,
+    "success": true,
+    "message": "임시 비밀번호 전송 완료",
+    "result" : ""
   }
 
 
