@@ -14,6 +14,7 @@ const responseHandler = require('./handlers/responseHandler');
 const matchingModel = require('./models/matchingModel');
 const authModel = require('./models/authModel');
 const auth = matchingModel.auth;
+const moment = require('moment');
 
 server.listen(port);
 server.on('error', onError);
@@ -29,7 +30,7 @@ const matching = app.io.of('/matching');
 let roomNum = 1;
 
 matching.on('connection', (socket) => {
-    console.log("사용자 들어왔다");
+    console.log("소켓 사용자 들어왔다 at ", moment());
 
     matching.to(socket.id).emit("start", socket.id);
 
