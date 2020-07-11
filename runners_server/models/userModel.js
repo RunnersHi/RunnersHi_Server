@@ -104,13 +104,10 @@ const userModel = {
             return "NON_EXISTENT_DATA";
         } else{
             let result = rows[0];
+            let bin = rows[0].badge;
             result.badge = [];
-            let bin = rows[0].badge.toString(2);
             for(let i = 0; i < bin.length; i++){
-                result.badge[bin.length - i - 1] = (bin[i] === '1');
-            }
-            for(let i = bin.length; i < 9; i++){
-                result.badge[i] = false;
+                result.badge.push(bin[i] === '1');
             }
             return result;
         }

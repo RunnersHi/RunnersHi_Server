@@ -64,7 +64,6 @@ app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((res, req, next)=>{
     console.log(res.body);
-    console.log(res.header);
     next();
 });
 
