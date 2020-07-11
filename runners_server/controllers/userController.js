@@ -129,8 +129,29 @@ const userController = {
         } catch(error){
             return next(error);
         }
-    }
-
+    },
+    /*******************
+     *  myProfile
+     *  body {}
+     ********************/
+    findPassword : async(req, res, next) => {
+        try{
+            //email 조회
+            let userData = await userModel.findEmailById(req.params.id);
+            //salt 생성
+            userData.salt = crypto.randomBytes(128).toString('base64');
+            //secretNumber 생성
+            let secretNumber = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+            userData.secretNumber = config.do_cipher(secretNumber + '', userData.salt);
+            console.log(secretNumber + '');
+            //update password
+            let result = await userModel.updatePassword(userData);
+            //mail 보내기
+            return next(result);
+        } catch(error){
+            return next(error);
+        }
+    },
 };
 
 module.exports = userController;
