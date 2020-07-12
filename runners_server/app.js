@@ -58,8 +58,6 @@ matching.on('connection', (socket) => {
         try {
           const user = await (async function decodeToken(token) {
             const userIdx = await authModel.verify(token);
-            console.log("token: ", token);
-            console.log("")
             let userInfo = await matchingModel.getUserInfo(userIdx);
             userInfo.id = socket.id;
             userInfo.idx = userIdx;
