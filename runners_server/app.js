@@ -39,6 +39,7 @@ matching.on('connection', (socket) => {
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
       console.log(socket.id, " send joinRoom");
+
       if (!token || typeof token !== 'string') {
         console.log("joinRoom parameter error");
         matching.to(socket.id).emit("error");

@@ -1,5 +1,4 @@
 const pool = require('../models/pool');
-//const { throw ,} = require('../config/database');
 
 const record = {
 
@@ -148,7 +147,6 @@ const record = {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } else {
       return data[0];
-      //return {code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : data[0]};
     }
   }
 

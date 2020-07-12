@@ -25,7 +25,7 @@ const record = {
       }
       
       final_data.push( {
-        date: data[i].nickname,
+        date: data[i].date,
         distance: data[i].distance,
         time: data[i].time,
         run_idx: data[i].run_idx,
@@ -34,7 +34,6 @@ const record = {
       });
     }
 
-    //const final = await record.makeArray(data);
     return {code: "RECORD_ALL_SUCCESS", result: final_data};
   },
 
@@ -93,7 +92,6 @@ const record = {
     return result;
   },
 
-  //최근기록조회 :id
   getUserRecentRecord: async(id) => {
 
     const query = 
