@@ -1,5 +1,3 @@
-const router = require("express").Router();
-
 const fs = require("fs");
 const list = fs
     .readdirSync(__dirname)
@@ -7,6 +5,6 @@ const list = fs
 
 module.exports = (app) => {
   for (let ctrl of list) {
-    app.use(`/${ctrl}`.substr(0, ctrl.length - 2), require(`./${ctrl}`)(router));
+    app.use(`/${ctrl}`.substr(0, ctrl.length - 2), require(`./${ctrl}`)(require("express").Router()));
   }
 };
