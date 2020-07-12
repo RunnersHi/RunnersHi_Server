@@ -28,12 +28,11 @@ const match = {
             COUNT(if((user_idx="${idx}" AND result=0), 1, null)) as win, 
             COUNT(if((user_idx="${idx}" AND (result=1 OR result=2)), 1, null)) as lose 
             FROM run`;
-            //const lose_query = `SELECT  FROM run`;
+
             const record_result = await queryParam(record_query);
-            //const lose_result = await queryParam(lose_query);
             console.log("User Result: ", user_result);
-            console.log("Win Result: ", win_result);
-            console.log("Lose Result: ", lose_result);
+            console.log("Win Result: ", record_result.win);
+            console.log("Lose Result: ", record_result.lose);
             const final_result = {
                 name: user_result[0].nickname,
                 level: user_result[0].level,
