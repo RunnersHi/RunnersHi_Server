@@ -171,7 +171,7 @@ matching.on('connection', (socket) => {
       else {
         try {
           const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-          matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
+          matching.to(socket.id).emit("opponentInfo", roomName, opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
         }
         catch(err) {
           console.log("opponentInfo error");
