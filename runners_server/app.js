@@ -39,61 +39,72 @@ matching.on('connection', (socket) => {
 
     socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
       console.log(socket.id, " send joinRoom");
-      console.log(`token: ${token}, time: ${time}, wantGender: ${wantGender}, leftTime: ${leftTime}`);
-      // if (!token || !time || !wantGender || !leftTime || typeof token !== 'string' || typeof time !== 'int' || typeof wantGender !== 'int' || typeof leftTime !== 'int') {
-      //   console.log("joinRoom parameter error");
-      //   matching.to(socket.id).emit("error");
-      // }
-      try {
-        const user = await (async function decodeToken(token) {
-          const userIdx = await authModel.verify(token);
-          console.log("token: ", token);
-          let userInfo = await matchingModel.getUserInfo(userIdx);
-          userInfo.id = socket.id;
-          userInfo.idx = userIdx;
-          return userInfo;
-        })(token); // user = {id, idx, name, level, gender, image, win, lose}
-
-        matching.to(socket.id).emit("opponentInfo", user.name, user.level, user.gender, user.win, user.lose, user.image);
-  
-        // const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
-        //   if (room[1].length !== 1 || !room[1].userList) {
-        //     return false;
-        //   }
-        //   else {
-        //     return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3);
-        //   }
-        // });
-  
-        // if (targetRoom === undefined) {
-        //   socket.join(roomNum.toString(), () => {
-        //     socket.adapter.rooms[roomNum].time = time;
-        //     socket.adapter.rooms[roomNum].wantGender = wantGender;
-        //     socket.adapter.rooms[roomNum].leftTime = leftTime;
-        //     socket.adapter.rooms[roomNum].userList = []
-        //     socket.adapter.rooms[roomNum].userList.push(user);
-        //     console.log(socket.adapter.rooms[roomNum]);
-        //     console.log("Give RoomNum: ", roomNum);
-        //     roomNum = roomNum.toString();
-        //     matching.to(socket.id).emit("roomCreated", roomNum);
-        //     roomNum++;
-        //   });
-        // }
-        // else {
-        //   targetRoomName = targetRoom[0]
-        //   socket.join(targetRoomName, async () => {
-        //     let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
-        //     delete socket.adapter.rooms[targetRoomName].wantGender;
-        //     socket.adapter.rooms[targetRoomName].userList.push(user);
-        //     socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
-        //     targetRoomName = targetRoomName.toString();
-        //     matching.to(firstUserId).emit("matched", targetRoomName);
-        //   });
-        // }
+      if (!token || typeof token !== 'string') {
+        console.log("joinRoom parameter error");
+        matching.to(socket.id).emit("error");
       }
-      catch (err) {
-        console.log("joinRoom error");
-        throw (err);
+      else if (!time || typeof time !== 'number'){
+        console.log("joinRoom time error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!wantGender || typeof wantGender !== 'number') {
+        console.log("joinRoom wantGender error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!leftTime || typeof leftTime !== 'number') {
+        console.log("joinRoom leftTime error");
+        matching.to(socket.id).emit("error");
+      }
+      else {
+        try {
+          const user = await (async function decodeToken(token) {
+            const userIdx = await authModel.verify(token);
+            console.log("token: ", token);
+            let userInfo = await matchingModel.getUserInfo(userIdx);
+            userInfo.id = socket.id;
+            userInfo.idx = userIdx;
+            return userInfo;
+          })(token); // user = {id, idx, name, level, gender, image, win, lose}
+    
+          const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
+            if (room[1].length !== 1 || !room[1].userList) {
+              return false;
+            }
+            else {
+              return room[1].userList[0].level === user.level && room[1].leftTime > 0 && room[1].time === time && (room[1].wantGender === user.gender || room[1].wantGender === 3);
+            }
+          });
+    
+          if (targetRoom === undefined) {
+            socket.join(roomNum.toString(), () => {
+              socket.adapter.rooms[roomNum].time = time;
+              socket.adapter.rooms[roomNum].wantGender = wantGender;
+              socket.adapter.rooms[roomNum].leftTime = leftTime;
+              socket.adapter.rooms[roomNum].userList = []
+              socket.adapter.rooms[roomNum].userList.push(user);
+              console.log(socket.adapter.rooms[roomNum]);
+              console.log("Give RoomNum: ", roomNum);
+              roomNum = roomNum.toString();
+              matching.to(socket.id).emit("roomCreated", roomNum);
+              roomNum++;
+            });
+          }
+          else {
+            targetRoomName = targetRoom[0]
+            socket.join(targetRoomName, async () => {
+              let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
+              delete socket.adapter.rooms[targetRoomName].wantGender;
+              socket.adapter.rooms[targetRoomName].userList.push(user);
+              socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
+              targetRoomName = targetRoomName.toString();
+              matching.to(firstUserId).emit("matched", targetRoomName);
+            });
+          }
+        }
+        catch (err) {
+          console.log("joinRoom error");
+          throw (err);
+        }
       }
     });
 
@@ -101,7 +112,7 @@ matching.on('connection', (socket) => {
       console.log(socket.id, " send startCount");
       console.log("Given RoomName: ", roomName);
       if (!roomName || typeof roomName !== 'string') {
-        console.log("startCount parameter error");
+        console.log("startCount roomName error");
         matching.to(socket.id).emit("error");
       }
       else {
@@ -160,19 +171,13 @@ matching.on('connection', (socket) => {
         matching.to(socket.id).emit("error");
       }
       else {
-        if (!roomName || typeof roomName !== 'string') {
-          console.log("opponentInfo roomName error");
-          matching.to(socket.id).emit("error");
+        try {
+          const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
+          matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
         }
-        else {
-          try {
-            const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-            matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
-          }
-          catch(err) {
-            console.log("opponentInfo error");
-            throw (err);
-          }
+        catch(err) {
+          console.log("opponentInfo error");
+          throw (err);
         }
       }
     });
@@ -210,8 +215,12 @@ matching.on('connection', (socket) => {
 
     socket.on("kmPassed", (roomName, km) => {
       console.log(socket.id, " send kmPassed");
-      if (!roomName || !km || typeof roomName !== 'string' || typeof km !== 'int') {
-        console.log('readyToRun roomName error');
+      if (!roomName || typeof roomName !== 'string') {
+        console.log('kmPassed roomName error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!km || typeof km !== 'number') {
+        console.log('kmPassed km error');
         matching.to(socket.id).emit("error");
       }
       else {
@@ -228,14 +237,35 @@ matching.on('connection', (socket) => {
 
     socket.on("stopRunning", (roomName, distance, time, coordinates, createdTime, endTime) => {
       console.log(socket.id, " send stopRunning");
-      const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
-      const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-      if (!roomName || !distance || !time || !coordinates || !createdTime || !endTime || typeof roomName !== 'string' || typeof distance !== 'int' || typeof time !== 'int' || typeof createdTime !== 'string' || typeof endTime !== 'string') {
-        console.log("stopRunning parameter error");
+      
+      if (!roomName || typeof roomName !== 'string') {
+        console.log("stopRunning roomName error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!distance || typeof distance !== 'number') {
+        console.log("stopRunning distance error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!time || typeof time !== 'number') {
+        console.log('stopRunning time error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!coordinates || typeof coordinates !== 'object') {
+        console.log('stopRunning coordinates error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!createdTime || typeof createdTime !== 'string') {
+        console.log('stopRunning createdTime error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!endTime || typeof endTime !== 'string') {
+        console.log('stopRunning endTime error');
         matching.to(socket.id).emit("error");
       }
       else {
         try {
+          const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+          const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
           socket.leave("roomName", async () => {
             if (socket.adapter.rooms[roomName].length === 1) {
               await matchingModel.storeRunningData(distance, time, coordinates, 3, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
@@ -256,7 +286,7 @@ matching.on('connection', (socket) => {
 
     socket.on("endRunning", (roomName, distance) => {
       console.log(socket.id, " send endRunning");
-      if (!roomName || !distance || typeof roomName !== 'string' || typeof distance !== 'int') {
+      if (!roomName || !distance || typeof roomName !== 'string' || typeof distance !== 'number') {
         console.log("endRunning parameter error");
         matching.to(socket.id).emit("error");
       }
@@ -274,8 +304,28 @@ matching.on('connection', (socket) => {
 
     socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
       console.log(socket.id, " send compareResult");
-      if (!roomName || !distance || !time || !coordinates || !createdTime || !endTime || typeof roomName !== 'string' || typeof distance !== 'int' || typeof time !== 'int' || typeof createdTime !== 'string' || typeof endTime !== 'string') {
-        console.log("compareResult parameter error");
+      if (!roomName || typeof roomName !== 'string') {
+        console.log("compareResult roomName error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!distance || typeof distance !== 'number') {
+        console.log("compareResult distance error");
+        matching.to(socket.id).emit("error");
+      }
+      else if (!time || typeof time !== 'number') {
+        console.log('compareResult time error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!coordinates || typeof coordinates !== 'object') {
+        console.log('compareResult coordinates error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!createdTime || typeof createdTime !== 'string') {
+        console.log('compareResult createdTime error');
+        matching.to(socket.id).emit("error");
+      }
+      else if (!endTime || typeof endTime !== 'string') {
+        console.log('compareResult endTime error');
         matching.to(socket.id).emit("error");
       }
       else {
