@@ -48,7 +48,8 @@ matching.on('connection', (socket) => {
           userInfo.idx = userIdx;
           return userInfo;
         })(token); // user = {id, idx, name, level, gender, image, win, lose}
-  
+
+        
         const targetRoom = Object.entries(socket.adapter.rooms).find((room) => {
           if (room[1].length !== 1 || !room[1].userList) {
             return false;
@@ -58,6 +59,7 @@ matching.on('connection', (socket) => {
           }
         });
   
+        
         if (targetRoom === undefined) {
           socket.join(roomNum, () => {
             socket.adapter.rooms[roomNum].time = time;
