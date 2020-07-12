@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const poolModel = require('./pool');
 const config = require("../config/config");
+const nodeMailer = require("nodemailer");
 
 
 const TOKEN_EXPIRED = -3;
@@ -27,6 +28,7 @@ const authModel = {
       }
     });
   },
+
   verify : async(token) => {
     let decoded;
     try {
@@ -48,7 +50,9 @@ const authModel = {
 
 
     return data[0].user_idx;
-  }
+  },
+
+ 
 
 };
 
