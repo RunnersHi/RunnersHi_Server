@@ -52,8 +52,10 @@ const record = {
     From coordinate
     WHERE run_idx =  "${run_idx}";`
 
+    
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
+
 
     if(data.length === 0 || coordiData.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};

@@ -23,10 +23,14 @@ const match = {
             const user_fields = 'nickname, level, gender, image'
             const user_query = `SELECT ${user_fields} FROM user WHERE user_idx="${idx}"`;
             const user_result = await queryParam(user_query);
-            const win_query = `SELECT COUNT(if((user_idx="${idx}" AND result=0), 1, null)) as win FROM run`;
-            const lose_query = `SELECT COUNT(if((user_idx="${idx}" AND (result=1 OR result=2)), 1, null)) as lose FROM run`;
-            const win_result = await queryParam(win_query);
-            const lose_result = await queryParam(lose_query);
+            const record_query = 
+            `SELECT 
+            COUNT(if((user_idx="${idx}" AND result=0), 1, null)) as win, 
+            COUNT(if((user_idx="${idx}" AND (result=1 OR result=2)), 1, null)) as lose 
+            FROM run`;
+            //const lose_query = `SELECT  FROM run`;
+            const record_result = await queryParam(record_query);
+            //const lose_result = await queryParam(lose_query);
             console.log("User Result: ", user_result);
             console.log("Win Result: ", win_result);
             console.log("Lose Result: ", lose_result);
@@ -35,8 +39,8 @@ const match = {
                 level: user_result[0].level,
                 gender: user_result[0].gender,
                 image: user_result[0].image,
-                win: win_result[0].win,
-                lose: lose_result[0].lose
+                win: record_result[0].win,
+                lose: record_result[0].lose
             };
             return final_result;
         }
