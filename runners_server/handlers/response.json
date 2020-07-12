@@ -108,7 +108,7 @@
   "RECORD_DETAIL_SUCCESS": {
     "status": 200,
     "success": true,
-    "message": "상대방 러너의 기록 조회 성공(useridx, gameidx)",
+    "message": "기록 Detail (month,day,coordinate) 조회 성공",
     "result" : ""
   },
   "SEND_PASSWORD": {

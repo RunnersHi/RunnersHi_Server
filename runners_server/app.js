@@ -18,6 +18,13 @@ const moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
 
+// var recordRouter = require('./routes/record');
+// var rankingRouter = require('./routes/ranking');
+
+// app.use('/ranking', rankingRouter);
+// app.use('/record', recordRouter);
+
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
