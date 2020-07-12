@@ -14,7 +14,6 @@ const responseHandler = require('./handlers/responseHandler');
 
 const matchingModel = require('./models/matchingModel');
 const authModel = require('./models/authModel');
-const auth = matchingModel.auth;
 const moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
@@ -60,7 +59,6 @@ matching.on('connection', (socket) => {
         try {
           const user = await (async function decodeToken(token) {
             const userIdx = await authModel.verify(token);
-            console.log("token: ", token);
             let userInfo = await matchingModel.getUserInfo(userIdx);
             userInfo.id = socket.id;
             userInfo.idx = userIdx;
@@ -124,7 +122,7 @@ matching.on('connection', (socket) => {
               if (socket.adapter.rooms[roomName].leftTime > 0) {
                 matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
               }
-              else if (socket.adapter.rooms[roomName].leftTime === 0) {
+              else if (socket.adapter.rooms[roomName].leftTime <= 0) {
                 clearInterval(intervalId);
                 socket.leave(roomName, () => {
                   matching.to(socket.id).emit("timeOver");
@@ -174,7 +172,7 @@ matching.on('connection', (socket) => {
       else {
         try {
           const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-          matching.to(socket.id).emit("opponentInfo", opponent.name, opponent.level, opponent.gender, opponent.win, opponent.lose, opponent.image);
+          matching.to(socket.id).emit("opponentInfo", roomName, opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
         }
         catch(err) {
           console.log("opponentInfo error");
