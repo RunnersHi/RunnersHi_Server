@@ -93,7 +93,6 @@ module.exports = matching => {
             else {
                 try {
                     const intervalId = setInterval(function() {
-                        console.log("Room: ", socket.adapter.rooms[roomName]);
                         socket.adapter.rooms[roomName].leftTime -= 3;
                         if (socket.adapter.rooms[roomName].leftTime > 0) {
                             matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
@@ -157,8 +156,14 @@ module.exports = matching => {
             else {
                 try {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-                    console.log("opponentInfo", roomName, opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
-                    matching.to(socket.id).emit("opponentInfo", roomName, opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
+
+                    console.log("opponentInfo",
+                        {"roomName" : roomName, "name" : opponent.name, "level" : opponent.level,
+                        "win" : opponent.win, "lose" : opponent.lose, "image" : opponent.image});
+
+                    matching.to(socket.id).emit("opponentInfo",
+                        {"roomName" : roomName, "name" : opponent.name, "level" : opponent.level,
+                        "win" : opponent.win, "lose" : opponent.lose, "image" : opponent.image});
                 }
                 catch(err) {
                     console.log("opponentInfo error");

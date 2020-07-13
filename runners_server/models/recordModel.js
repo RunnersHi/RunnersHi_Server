@@ -143,7 +143,7 @@ const record = {
         distance: data[0].distance,
         time: data[0].time,
         pace: data[0].pace,
-        result: data[0].result
+        result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
       };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
     }
