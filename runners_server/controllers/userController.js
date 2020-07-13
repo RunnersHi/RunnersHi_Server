@@ -37,10 +37,9 @@ const userController = {
         if(!req.body.id || !req.body.password || !req.body.nickname || !req.body.gender || !req.body.level || !req.body.image){
             return next("NON_EXISTENT_DATA");
         }
-        let result = "";
 
         try {
-            let salt = crypto.randomBytes(128).toString('base64');
+            const salt = crypto.randomBytes(128).toString('base64');
             const userData = {
                 id: req.body.id,
                 password :config.do_cipher(req.body.password, salt),
@@ -52,18 +51,18 @@ const userController = {
                 image: req.body.image
             };
             //check id, nickname
-            let checkId = await userModel.checkId(userData.id);
+            const checkId = await userModel.checkId(userData.id);
             if(checkId.code === "DUPLICATE_FAIL"){
                 return next("EXIST_ID");
             }
 
-            let checkName = await userModel.checkNickname(userData.nickname);
+            const checkName = await userModel.checkNickname(userData.nickname);
             if(checkName.code === "DUPLICATE_FAIL"){
                 return next("EXIST_NICKNAME");
             }
 
             //register model
-            result = await userModel.register(userData);
+            const result = await userModel.register(userData);
             return next(result);
         } catch (error) {
             return next(error);
@@ -99,7 +98,6 @@ const userController = {
      *  body {nickname, gender, level, log_visibility, image}
      ********************/
     modify : async(req, res, next) => {
-        let result = "";
         try{
             const userData = {
                 id : req.user_id,
@@ -110,7 +108,7 @@ const userController = {
                 log_visibility : req.body.log_visibility,
                 image : req.body.image
             };
-            result = await userModel.modify(userData);
+            const result = await userModel.modify(userData);
             return next(result);
         } catch(error){
             return next(error);
@@ -141,11 +139,11 @@ const userController = {
             //salt 생성
             userData.salt = crypto.randomBytes(128).toString('base64');
             //secretNumber 생성
-            let secretNumber = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+            const secretNumber = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
             userData.secretNumber = config.do_cipher(secretNumber + '', userData.salt);
             console.log(secretNumber + '');
             //update password
-            let result = await userModel.updatePassword(userData);
+            const result = await userModel.updatePassword(userData);
             //mail 보내기
             return next(result);
         } catch(error){
