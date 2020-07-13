@@ -21,9 +21,9 @@ const record = {
 
     for(let i = 0; i < data.length; i++){
       if(data[i].result === 1 || data[i].result === 5) {
-        result_num = 0;
-      } else {
         result_num = 1;
+      } else {
+        result_num = 2;
       }
       
       final_data.push( {
