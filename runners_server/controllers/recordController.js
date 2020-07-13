@@ -80,45 +80,64 @@ const record = {
   postFindRunner: async(req, res, next) => {
     const {level, gender, time} = req.body;
     let pace;
+    let win;
+    let lose;
+
+    console.log(time);
 
     //성별이 1 : 남, 2 : 여, 3 : 상관X?
     if(gender === 2) {
       switch(level) {
-        case 1:
+        case '1':
+          win = 3;
+          lose = 2;
           pace = 8.45;
           break;
-        case 2:
+        case '2':
+          win = 5;
+          lose = 3;
           pace = 6.33;
           break;
-        case 3:
+        case '3':
+          win = 4;
+          lose = 1;
           pace = 4.35;
           break;
       }
     } else {
       switch(level) {
-        case 1:
+        case '1':
+          win = 3;
+          lose = 2;
           pace = 9.45;
           break;
-        case 2:
+        case '2':
+          win = 11;
+          lose = 5;
           pace = 7.33;
           break;
-        case 3:
+        case '3':
+          win = 4;
+          lose = 1;
           pace = 5.35;
           break;
       }
     }
 
+    console.log("pace" + pace);
     try{
       const result = {};
       result.level = level;
-      result.win = 11;
-      result.lose = 5;
+      result.win = win;
+      result.lose = lose;
       result.nickname = "성북천치타";
       result.img = 3;
       result.pace = pace;
-      result.distance = time * 1000 / pace;
+      result.distance = (time * 1000 / pace).toFixed(2);
 
-      return {code: "OPPONENT_RECORD_SUCCESS", result: result};
+      console.log(result.distance);
+
+      return next({code: "OPPONENT_RECORD_SUCCESS", result: result});
 
     } catch(error){
       return next(error);
