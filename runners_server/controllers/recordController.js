@@ -78,6 +78,51 @@ const record = {
   },
 
   postFindRunner: async(req, res, next) => {
+    const {level, gender, time} = req.body;
+    let pace;
+
+    //성별이 1 : 남, 2 : 여, 3 : 상관X?
+    if(gender === 2) {
+      switch(level) {
+        case 1:
+          pace = 8.45;
+          break;
+        case 2:
+          pace = 6.33;
+          break;
+        case 3:
+          pace = 4.35;
+          break;
+      }
+    } else {
+      switch(level) {
+        case 1:
+          pace = 9.45;
+          break;
+        case 2:
+          pace = 7.33;
+          break;
+        case 3:
+          pace = 5.35;
+          break;
+      }
+    }
+
+    try{
+      const result = {};
+      result.level = level;
+      result.win = 11;
+      result.lose = 5;
+      result.nickname = "성북천치타";
+      result.img = 3;
+      result.pace = pace;
+      result.distance = time * 1000 / pace;
+
+      return {code: "OPPONENT_RECORD_SUCCESS", result: result};
+
+    } catch(error){
+      return next(error);
+    }
     
   }
 };
