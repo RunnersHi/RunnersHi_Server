@@ -59,6 +59,8 @@ const record = {
     const coordiData = await pool.queryParam(coordinate);
 
 
+    console.log(data);
+    console.log(coordiData);
     if(data.length === 0 || coordiData.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
