@@ -158,12 +158,10 @@ module.exports = matching => {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
 
                     console.log("opponentInfo",
-                        {"roomName" : roomName, "name" : opponent.name, "level" : opponent.level,
+                        {"roomName" : roomName, "nickname" : opponent.name, "level" : opponent.level,
                         "win" : opponent.win, "lose" : opponent.lose, "image" : opponent.image});
 
-                    matching.to(socket.id).emit("opponentInfo",
-                        {"roomName" : roomName, "name" : opponent.name, "level" : opponent.level,
-                        "win" : opponent.win, "lose" : opponent.lose, "image" : opponent.image});
+                    matching.to(socket.id).emit("opponentInfo", roomName, opponent.name, opponent.level, opponent.win, opponent.lose, opponent.image);
                 }
                 catch(err) {
                     console.log("opponentInfo error");
