@@ -4,11 +4,13 @@ const table = 'user';
 const record = {
   getAllRecords: async (id) => {
 
+    let result_num;
+
     const query = 
     `SELECT SUBSTR(r.created_time, 1, 10) as date, r.distance, r.time, r.run_idx, r.result, r.game_idx
     FROM user u, run r
     WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
-    ORDER BY r.run_idx;`
+    ORDER BY r.run_idx`;
 
     const data = await pool.queryParam(query);
 
@@ -45,14 +47,14 @@ const record = {
     TIME(created_time) as create_time,
     TIME(end_time) as end_time
     FROM run
-    WHERE user_idx = "${user_idx}" AND run_idx = "${run_idx}";`
+    WHERE user_idx = "${user_idx}" AND run_idx = "${run_idx}"`;
 
     const coordinate =  
     `SELECT latitude, longitude 
-    From coordinate
-    WHERE run_idx =  "${run_idx}";`
+    FROM coordinate
+    WHERE run_idx =  "${run_idx}"`;
 
-    
+
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
 
@@ -67,7 +69,7 @@ const record = {
       start_time: data[0].create_time,
       end_time: data[0].end_time,
       coordinate: coordiData
-    }
+    };
 
     return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
    
@@ -82,15 +84,12 @@ const record = {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
-    let result = {};
-    let badge = [];
-    let bin = data[0].badge.toString(2);
+    const result = {badge : []};
+    const bin = data[0].badge;
 
     for(let i = 0; i < bin.length; i++){
-      badge[i] = (bin[i] === '1');
+      result.badge.push(bin[i] === '1');
     }
-
-    result.badge = badge;
     return result;
   },
 
@@ -101,7 +100,7 @@ const record = {
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
-    limit 1;`
+    limit 1`;
 
     const data = await pool.queryParam(query);
 
@@ -119,7 +118,7 @@ const record = {
       time: data[0].time,
       pace: data[0].pace,
       result: data_win_lose
-    }
+    };
 
     return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
     
@@ -131,7 +130,7 @@ const record = {
     `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
     FROM run r
     WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}";`
+    AND r.run_idx = "${run_idx}"`;
 
     const data = await pool.queryParam(query);
 
@@ -143,7 +142,7 @@ const record = {
         time: data[0].time,
         pace: data[0].pace,
         result: data[0].result
-      }
+      };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
     }
 
@@ -155,9 +154,9 @@ const record = {
      `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
      FROM run r
      WHERE r.game_idx = "${game_idx}"
-     AND r.user_idx != "${user_idx}";`
+     AND r.user_idx != "${user_idx}"`;
 
-     const query_nickname = `SELECT nickname FROM user WHERE user_idx = "${user_idx}";`
+     const query_nickname = `SELECT nickname FROM user WHERE user_idx = "${user_idx}"`;
  
      const data = await pool.queryParam(query);
      const user_nickname = await pool.queryParam(query_nickname);
@@ -172,7 +171,7 @@ const record = {
        time: data[0].time,
        result: data[0].result,
        pace: data[0].pace
-     }
+     };
  
       return {code: "USER_RECORD_SUCCESS", result: final_data};
      

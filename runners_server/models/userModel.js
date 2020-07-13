@@ -51,14 +51,12 @@ const userModel = {
             return {"code" : "LOGIN_FAIL", result : {}};
         } else{
             if(rows[0].password === config.do_cipher(userData.password, rows[0].salt)) {
-                userData.token = {
+                const token = {
                     "token": jwt.sign(userData, config.jwt.cert, {
                         expiresIn: "10h"
                     })
                 };
-                userData.password = undefined;
-                userData.id = undefined;
-                return ({"code": "LOGIN_SUCCESS", result: userData.token});
+                return ({"code": "LOGIN_SUCCESS", result: token});
             } else{
                 return {"code" : "LOGIN_FAIL", result : {token : ""}};
             }
@@ -103,8 +101,8 @@ const userModel = {
         if(rows.length === 0) {
             return "NON_EXISTENT_DATA";
         } else{
-            let result = rows[0];
-            let bin = rows[0].badge;
+            const result = rows[0];
+            const bin = rows[0].badge;
             result.badge = [];
             for(let i = 0; i < bin.length; i++){
                 result.badge.push(bin[i] === '1');
