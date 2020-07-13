@@ -131,13 +131,16 @@ matching.on('connection', (socket) => {
               }
               else if (socket.adapter.rooms[roomName].leftTime <= 0) {
                 const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+                const time = socket.adapter.rooms[roomName].time;
+                const wantGender = user.wantGender;
+                const level = user.level;
                 clearInterval(intervalId);
                 socket.leave(roomName, () => {
                   if (user.win === 0 && user.lose === 0) {
-                    matching.to(socket.id).emit("timeOver", 0);
+                    matching.to(socket.id).emit("timeOver", 0, time, wantGender, level);
                   }
                   else {
-                    matching.to(socket.id).emit("timeOver", 1);
+                    matching.to(socket.id).emit("timeOver", 1, time, wantGender, level);
                   }
                 })
               }
