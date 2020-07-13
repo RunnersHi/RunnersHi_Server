@@ -109,22 +109,24 @@ const record = {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
-    let result_num;
-    result_num = 1;
-    if(data[i].result === 1 || data[i].result === 5) {
-      result_num = 0;
-    } 
-    
-    final_data.push( {
-      date: data[i].date,
-      distance: data[i].distance,
-      time: data[i].time,
-      run_idx: data[i].run_idx,
-      result: result_num,
-      game_idx: data[i].game_idx,
-    });
+    return data;
 
-    return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
+    // let result_num;
+    // result_num = 1;
+    // if(data[0].result === 1 || data[0].result === 5) {
+    //   result_num = 0;
+    // } 
+    
+    // final_data.push( {
+    //   date: data[0].date,
+    //   distance: data[0].distance,
+    //   time: data[0].time,
+    //   run_idx: data[0].run_idx,
+    //   result: result_num,
+    //   game_idx: data[0].game_idx,
+    // });
+
+    // return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
     
   },
 

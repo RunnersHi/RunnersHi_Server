@@ -44,8 +44,23 @@ const record = {
     const user_idx = req.user_idx;
 
     try{
-      const result = await recordModel.getUserRecentRecord(user_idx);
-      return next(result);
+      const data = await recordModel.getUserRecentRecord(user_idx);
+
+      let result_num = 1;
+      if(data[0].result === 1 || data[0].result === 5) {
+        result_num = 0;
+      } 
+    
+      final_data =  {
+        date: data[0].date,
+        distance: data[0].distance,
+        time: data[0].time,
+        run_idx: data[0].run_idx,
+        result: result_num,
+        game_idx: data[0].game_idx,
+      };
+
+    return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
 
     } catch(error){
       return next(error);
@@ -83,25 +98,23 @@ const record = {
     let win;
     let lose;
 
-    console.log(time);
-
     //성별이 1 : 남, 2 : 여, 3 : 상관X?
-    if(gender === 2) {
+    if(gender === '2') {
       switch(level) {
         case '1':
           win = 3;
           lose = 2;
-          pace = 8.45;
+          pace = 10.9;
           break;
         case '2':
           win = 5;
           lose = 3;
-          pace = 6.33;
+          pace = 8.5;
           break;
         case '3':
           win = 4;
           lose = 1;
-          pace = 4.35;
+          pace = 6.9;
           break;
       }
     } else {
@@ -109,22 +122,21 @@ const record = {
         case '1':
           win = 3;
           lose = 2;
-          pace = 9.45;
+          pace = 7.9;
           break;
         case '2':
           win = 11;
           lose = 5;
-          pace = 7.33;
+          pace = 6.3;
           break;
         case '3':
           win = 4;
           lose = 1;
-          pace = 5.35;
+          pace = 4.9;
           break;
       }
     }
 
-    console.log("pace" + pace);
     try{
       const result = {};
       result.level = level;
@@ -133,7 +145,7 @@ const record = {
       result.nickname = "성북천치타";
       result.img = 3;
       result.pace = pace;
-      result.distance = (time * 1000 / pace).toFixed(2);
+      result.distance = (time / pace).toFixed(2);
 
       console.log(result.distance);
 

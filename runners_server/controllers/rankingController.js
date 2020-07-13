@@ -40,6 +40,25 @@ const ranking = {
     } catch(error){
       return next(error);
     }
+  },
+   //상대방최근기록
+   getOpponentRecent: async(req, res, next) => {
+     const user_idx = req.params.user_idx;
+    
+    try{
+      const result = await recordModel.getUserRecentRecord(user_idx);
+
+      const final_data = {
+        distance: result[0].distance,
+        pace : result[0].pace,
+        time : result[0].time
+      }
+      return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
+
+
+    } catch(error){
+      return next(error);
+    }
   }
 };
 
