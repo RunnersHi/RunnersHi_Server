@@ -12,9 +12,7 @@ const indexRouter = require('./routes/index.js');
 const errorHandler = require('./handlers/ErrorHandler');
 const responseHandler = require('./handlers/responseHandler');
 const socketModule = require('./modules/socket');
-const moment = require('moment');
-require('moment-timezone'); 
-moment.tz.setDefault("Asia/Seoul");
+
 
 server.listen(port);
 server.on('error', onError);

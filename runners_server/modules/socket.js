@@ -2,7 +2,8 @@ const moment = require('moment');
 const iconv = require('iconv-lite');
 const matchingModel = require('../models/matchingModel');
 const authModel = require('../models/authModel');
-
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul");
 
 
 let roomNum = 1;
