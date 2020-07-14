@@ -21,10 +21,6 @@ const record = {
     for(let i = 0; i < data.length; i++){
       result_num = 1;
       if(data[i].result === 1 || data[i].result === 5) {
-
-//         result_num = 0;
-//       } 
-
         result_num = 1;
       } else {
         result_num = 2;
@@ -58,13 +54,11 @@ const record = {
     FROM coordinate
     WHERE run_idx =  "${run_idx}"`;
 
-
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
 
-
     if(data.length === 0 || coordiData.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+      return "WRONG_PARM";
     }
 
     const real_result = {
@@ -75,8 +69,37 @@ const record = {
       coordinate: coordiData
     };
 
+    console.log(real_result);
+
     return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
    
+  },
+
+  getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
+
+    const query = 
+    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+    FROM run r
+    WHERE r.user_idx = "${user_idx}" 
+    AND r.run_idx = "${run_idx}"`;
+
+    const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      return "WRONG_PARM";
+    }
+    
+    let result_data=2;
+    if( data[0].result === 1 || data[0].result === 5 )
+      result_data = 1;
+
+      const final_data = {
+        distance: data[0].distance,
+        time: data[0].time,
+        pace: data[0].pace,
+        result: result_data
+       };
+      return {code: "USER_RECORD_SUCCESS", result: final_data};
   },
 
   getBadge: async(id) => {
@@ -101,7 +124,7 @@ const record = {
   getUserRecentRecord: async(id) => {
 
     const query = 
-    `SELECT r.distance, r.time, ( r.time * 1000 )/r.distance as pace,  r.result
+    `SELECT r.distance, r.time, ( r.time/60 )/(r.distance/1000) as pace,  r.result
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
@@ -142,37 +165,7 @@ const record = {
     
   },
 
-  getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
 
-    const query = 
-    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
-    FROM run r
-    WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}"`;
-
-    const data = await pool.queryParam(query);
-    
-
-    if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
-    }
-    
-    let result_data=1;
-    //승일경우
-    if( data[0].result === 1 || data[0].result === 5 )
-      result_data = 0;
-
-      const final_data = {
-        distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
-        result: result_data
-//       }
-//         result: data[0].result
-       };
-      return {code: "USER_RECORD_SUCCESS", result: final_data};
-
-  },
   //상대방 기록보기
   //쿼리문을 2개를 사용해서 접근하는 것이 과연 좋은 방법인가?! --> JOIN을 사용하는 것이 더 좋을까?
   getOpponentRecord: async(user_idx, game_idx) => {
@@ -188,7 +181,7 @@ const record = {
      const user_nickname = await pool.queryParam(query_nickname);
 
      if(data.length === 0) {
-      return {code: "OPPONENT_RECORD_SUCCESS", result: {}};
+      return "WRONG_PARM";
     } 
 
      const final_data = {

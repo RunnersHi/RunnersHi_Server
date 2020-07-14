@@ -45,18 +45,15 @@ const record = {
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
 
-      let result_num = 1;
+      let result_num = 2;
       if(data[0].result === 1 || data[0].result === 5) {
-        result_num = 0;
+        result_num = 1;
       } 
     
       final_data =  {
-        date: data[0].date,
         distance: data[0].distance,
         time: data[0].time,
-        run_idx: data[0].run_idx,
-        result: result_num,
-        game_idx: data[0].game_idx,
+        pace: data[0].pace
       };
 
     return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
@@ -84,6 +81,7 @@ const record = {
 
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
+
       return next(result);
 
     } catch(error){
