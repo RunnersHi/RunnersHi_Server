@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/config");
 
 const matchingController = {
-    
+
 };
 
 module.exports = matchingController;

@@ -63,7 +63,6 @@ const record = {
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
 
-
     console.log(data);
     console.log(coordiData);
     if(data.length === 0 || coordiData.length === 0) {

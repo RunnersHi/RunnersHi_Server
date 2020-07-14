@@ -13,8 +13,8 @@ const userModel = {
      ********************/
     register: async(userData)=>{
         const sql =
-            "INSERT INTO user(nickname, id, password, salt, gender, level, log_visibility, image) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
+            "INSERT INTO user(nickname, id, password, salt, gender, level, log_visibility, image, badge) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
         const rows = await pool.queryParamArr(sql, [
             userData.nickname,
             userData.id,
@@ -23,7 +23,8 @@ const userModel = {
             userData.gender,
             userData.level,
             userData.log_visibility,
-            userData.image,]);
+            userData.image,
+            "000000000000"]);
         if (rows.affectedRows === 1) {
             //response message result 에 들어갈 값들
             return {
