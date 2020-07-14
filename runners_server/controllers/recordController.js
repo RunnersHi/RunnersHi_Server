@@ -151,7 +151,7 @@ const record = {
       return next(error);
     }
   },
-  //상대방기록
+  //배지 상세 조회
   getBadgeDetail: async(req, res, next) => {
 
     try{
@@ -162,6 +162,16 @@ const record = {
       return next(error);
     }
   },
+  //배지 업데이트
+  updateBadge: async(req, res, next) => {
+    try{
+      await recordModel.updateBadge();
+      return next();
+    } catch(error){
+      return next(error);
+    }
+  }
+
 };
 
 module.exports = record;
