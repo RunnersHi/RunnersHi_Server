@@ -105,8 +105,11 @@ const record = {
     let win;
     let lose;
 
-    if(req.body.level === '' || req.body.gender === '' || req.body.time === '' )
+    if(req.body.level === undefined || req.body.gender === undefined || req.body.time === undefined )
       return next("NON_EXISTENT_DATA");
+
+    if(level <= 0 || level > 3 || gender <= 0 || gender > 2)
+      return next("CODITION_NOT_MATCH");
 
     //성별이 1 : 남, 2 : 여, 3 : 상관X?
     if(gender === '2') {
@@ -146,6 +149,11 @@ const record = {
           break;
       }
     }
+
+    console.log(gender);
+
+    if(gender === null)
+      return next("NON_EXISTENT_DATA");
 
     try{
       const result = {};

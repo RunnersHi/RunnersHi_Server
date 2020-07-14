@@ -12,13 +12,11 @@ module.exports = router => {
 
   router.get('/opponent/:game_idx', authController.auth, recordController.getOpponentRecord);
 
-  //러닝뱃지
   router.get('/badge', authController.auth, recordController.getBadge);
 
   //사용자의 최근 기록
   router.get('/recent', authController.auth, recordController.getUserRecentRecord);
 
-  
   //dummy data
   router.post('/match/opponent', recordController.postFindRunner);
 

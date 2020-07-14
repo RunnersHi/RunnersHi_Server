@@ -34,7 +34,13 @@
     "status": 403,
     "success" : false,
     "message": "맞지 않는 데이터입니다.",
-    "description": "Nonexistent data"
+    "result": "Nonexistent data"
+  },
+  "CODITION_NOT_MATCH" : {
+    "status": 400,
+    "success": true,
+    "message": "조건에 맞지 않는 데이터입니다.",
+    "result": ""
   },
 
 
