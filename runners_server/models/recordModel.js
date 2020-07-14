@@ -245,7 +245,43 @@ const record = {
     return ({"code" : "BADGE_DETAIL",
       result : result});
 
-  }
+  },
+  updateBadge1: async(user_idx)=>{
+
+  },
+  updateBadge2: async(user_idx)=>{
+
+  },
+  updateBadge3: async(user_idx)=>{
+
+  },
+  updateBadge4: async(user_idx)=>{
+
+  },
+  updateBadge5: async(user_idx)=>{
+
+  },
+  updateBadge6: async(user_idx)=>{
+
+  },
+  updateBadge7: async(user_idx)=>{
+
+  },
+  updateBadge8: async(user_idx)=>{
+
+  },
+  updateBadge9: async(user_idx)=>{
+
+  },
+  updateBadge10: async(user_idx)=>{
+
+  },
+  updateBadge11: async(user_idx)=>{
+
+  },
+  updateBadge12: async(user_idx)=>{
+
+  },
 };
 
 module.exports = record;

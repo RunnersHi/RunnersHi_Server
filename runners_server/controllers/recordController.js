@@ -165,7 +165,31 @@ const record = {
   //배지 업데이트
   updateBadge: async(req, res, next) => {
     try{
-      await recordModel.updateBadge();
+      const badge = await recordModel.getBadge();
+      if(!badge[0])
+        await recordModel.updateBadge1(req.user_idx);
+      if(!badge[1])
+        await recordModel.updateBadge2(req.user_idx);
+      if(!badge[2])
+        await recordModel.updateBadge3(req.user_idx);
+      if(!badge[3])
+        await recordModel.updateBadge4(req.user_idx);
+      if(!badge[4])
+        await recordModel.updateBadge5(req.user_idx);
+      if(!badge[5])
+        await recordModel.updateBadge6(req.user_idx);
+      if(!badge[6])
+        await recordModel.updateBadge7(req.user_idx);
+      if(!badge[7])
+        await recordModel.updateBadge8(req.user_idx);
+      if(!badge[8])
+        await recordModel.updateBadge9(req.user_idx);
+      if(!badge[9])
+        await recordModel.updateBadge10(req.user_idx);
+      if(!badge[10])
+        await recordModel.updateBadge11(req.user_idx);
+      if(!badge[11])
+        await recordModel.updateBadge12(req.user_idx);
       return next();
     } catch(error){
       return next(error);
