@@ -5,7 +5,8 @@ const record = {
   getAllRecords: async (id) => {
 
     const query = 
-    `SELECT SUBSTR(r.created_time, 1, 10) as date, r.distance, r.time, r.run_idx, r.result, r.game_idx
+    `SELECT SUBSTR(r.created_time, 1, 10) as date, r.distance, 
+    TIMEDIFF(r.end_time, r.created_time) as time, r.run_idx, r.result, r.game_idx
     FROM user u, run r
     WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
     ORDER BY r.run_idx`;
@@ -48,9 +49,10 @@ const record = {
     const query = 
     `SELECT MONTH(created_time) as month,
     DAY(created_time) as day,
+    TIMEDIFF(r.end_time, r.created_time) as time,
     TIME(created_time) as create_time,
     TIME(end_time) as end_time
-    FROM run
+    FROM run r
     WHERE user_idx = "${user_idx}" AND run_idx = "${run_idx}"`;
 
     const coordinate =  
@@ -58,11 +60,12 @@ const record = {
     FROM coordinate
     WHERE run_idx =  "${run_idx}"`;
 
-
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
 
 
+    console.log(data);
+    console.log(coordiData);
     if(data.length === 0 || coordiData.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
@@ -70,6 +73,7 @@ const record = {
     const real_result = {
       month: data[0].month,
       day: data[0].day,
+      time : data[0].time,
       start_time: data[0].create_time,
       end_time: data[0].end_time,
       coordinate: coordiData
@@ -100,7 +104,7 @@ const record = {
   getUserRecentRecord: async(id) => {
 
     const query = 
-    `SELECT r.distance, r.time, (r.time * 1000)/r.distance as pace,  r.result
+    `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace,  r.result
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
@@ -144,7 +148,7 @@ const record = {
   getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
 
     const query = 
-    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+    `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, r.result, (r.time * 1000)/r.distance as pace
     FROM run r
     WHERE r.user_idx = "${user_idx}" 
     AND r.run_idx = "${run_idx}"`;
@@ -156,19 +160,14 @@ const record = {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
     
-    let result_data=1;
-    //승일경우
-    if( data[0].result === 1 || data[0].result === 5 )
-      result_data = 0;
 
       const final_data = {
         distance: data[0].distance,
         time: data[0].time,
         pace: data[0].pace,
-        result: result_data
-//       }
-//         result: data[0].result
-       };
+        result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
+      };
+    
       return {code: "USER_RECORD_SUCCESS", result: final_data};
 
   },
@@ -176,7 +175,7 @@ const record = {
   //쿼리문을 2개를 사용해서 접근하는 것이 과연 좋은 방법인가?! --> JOIN을 사용하는 것이 더 좋을까?
   getOpponentRecord: async(user_idx, game_idx) => {
      const query = 
-     `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
+     `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace
      FROM run r
      WHERE r.game_idx = "${game_idx}"
      AND r.user_idx != "${user_idx}"`;
@@ -194,7 +193,6 @@ const record = {
        nickname: user_nickname[0].nickname,
        distance: data[0].distance,
        time: data[0].time,
-       result: data[0].result,
        pace: data[0].pace
      };
  
