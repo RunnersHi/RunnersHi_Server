@@ -15,5 +15,8 @@ module.exports = router => {
     //러너DetailProfile 
     router.get('/detail/:user_idx', authController.auth, rankingController.getDetailProfile);
 
+    //상대러너의 최근 기록
+    router.get('/opponent/recent/:user_idx', authController.auth, rankingController.getOpponentRecent);
+
     return router;
 };

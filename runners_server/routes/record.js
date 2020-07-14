@@ -21,6 +21,9 @@ module.exports = router => {
   //token, :run_idx를 통해 기록 조회
   router.get('/run/:run_idx', authController.auth, recordController.getUserRunIdxRecord);
 
+  //dummy data
+  router.post('/match/opponent', recordController.postFindRunner);
+
 
   return router;
 };

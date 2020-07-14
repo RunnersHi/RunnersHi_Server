@@ -20,13 +20,13 @@ const match = {
 
     getUserInfo: async (idx) => {
         try {
-            const user_fields = 'nickname, level, gender, image'
+            const user_fields = 'nickname, level, gender, image';
             const user_query = `SELECT ${user_fields} FROM user WHERE user_idx="${idx}"`;
             const user_result = await queryParam(user_query);
             const record_query = 
             `SELECT 
-            COUNT(if((user_idx="${idx}" AND result=0), 1, null)) as win, 
-            COUNT(if((user_idx="${idx}" AND (result=1 OR result=2)), 1, null)) as lose 
+            COUNT(if((user_idx="${idx}" AND (result=1 OR result=5)), 1, null)) as win, 
+            COUNT(if((user_idx="${idx}" AND (result=2 OR result=3)), 1, null)) as lose 
             FROM run`;
 
             const record_result = await queryParam(record_query);

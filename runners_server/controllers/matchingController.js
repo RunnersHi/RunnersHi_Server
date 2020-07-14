@@ -11,3 +11,9 @@ const auth = matchingModel.auth;
 //cipher
 const jwt = require("jsonwebtoken");
 const config = require("../config/config");
+
+const matchingController = {
+
+};
+
+module.exports = matchingController;
