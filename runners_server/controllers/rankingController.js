@@ -29,7 +29,6 @@ const ranking = {
     }
   },
 
-  //DetailProfile
   getDetailProfile: async(req, res, next) => {
     const user_idx = req.params.user_idx;
     let final_data = {};
@@ -46,9 +45,6 @@ const ranking = {
       const recentrecord = await recordModel.getUserRecentRecord(user_idx);
       const badge = await recordModel.getBadge(user_idx);
 
-      //console.log("constroller  " + recentrecord);
-
-      //어떤처리를 해야하나?!
       if(recentrecord === null || badge === null) 
        return next();
 
@@ -64,7 +60,6 @@ const ranking = {
     }
   },
 
-   //상대방최근기록
    getOpponentRecent: async(req, res, next) => {
      const user_idx = req.params.user_idx;
     

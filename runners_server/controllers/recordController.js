@@ -54,16 +54,6 @@ const record = {
         distance: data[0].distance,
         time: data[0].time,
         pace: data[0].pace
-
-    
-//       const final_data =  {
-//         date: data[0].date,
-//         distance: data[0].distance,
-//         time: data[0].time,
-//         run_idx: data[0].run_idx,
-//         result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2,
-//         game_idx: data[0].game_idx,
-
       };
 
     return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
