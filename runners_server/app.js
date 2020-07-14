@@ -18,13 +18,6 @@ const moment = require('moment');
 require('moment-timezone'); 
 moment.tz.setDefault("Asia/Seoul");
 
-// var recordRouter = require('./routes/record');
-// var rankingRouter = require('./routes/ranking');
-
-// app.use('/ranking', rankingRouter);
-// app.use('/record', recordRouter);
-
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
@@ -130,9 +123,18 @@ matching.on('connection', (socket) => {
                 matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
               }
               else if (socket.adapter.rooms[roomName].leftTime <= 0) {
+                const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+                const time = socket.adapter.rooms[roomName].time;
+                const wantGender = user.wantGender;
+                const level = user.level;
                 clearInterval(intervalId);
                 socket.leave(roomName, () => {
-                  matching.to(socket.id).emit("timeOver");
+                  if (user.win === 0 && user.lose === 0) {
+                    matching.to(socket.id).emit("timeOver", 0, time, wantGender, level);
+                  }
+                  else {
+                    matching.to(socket.id).emit("timeOver", 1, time, wantGender, level);
+                  }
                 })
               }
           }, 3000);
@@ -274,6 +276,7 @@ matching.on('connection', (socket) => {
           const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
           socket.leave("roomName", async () => {
             if (socket.adapter.rooms[roomName].length === 1) {
+              socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = distance;
               await matchingModel.storeRunningData(distance, time, coordinates, 3, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
               matching.to(opponent.id).emit("opponentStopped", roomName);
             }
