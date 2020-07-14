@@ -38,6 +38,9 @@ module.exports = matching => {
                     const user = await (async function decodeToken(token) {
                         const userIdx = await authModel.verify(token);
                         let userInfo = await matchingModel.getUserInfo(userIdx);
+                        if (typeof userInfo === 'string') {
+                            console.log(userInfo);
+                        }
                         userInfo.id = socket.id;
                         userInfo.idx = userIdx;
                         return userInfo;
