@@ -13,6 +13,7 @@ const record = {
     ORDER BY r.run_idx`;
 
     const data = await pool.queryParam(query);
+    let result_num;
 
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
@@ -20,7 +21,12 @@ const record = {
     const final_data = [];
 
     for(let i = 0; i < data.length; i++){
+      result_num = 1;
       if(data[i].result === 1 || data[i].result === 5) {
+
+//         result_num = 0;
+//       } 
+
         result_num = 1;
       } else {
         result_num = 2;
@@ -107,20 +113,33 @@ const record = {
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
+
+    return data;
+
+//     const final_data = {
+//       distance: data[0].distance,
+//       time: data[0].time,
+//       pace: data[0].pace,
+//       result: data_win_lose
+//     };
+
+
+    // let result_num;
+    // result_num = 1;
+    // if(data[0].result === 1 || data[0].result === 5) {
+    //   result_num = 0;
+    // } 
     
-    let data_win_lose = 0;
-    if(data[0].result === 1 || data[0].result === 5){
-      data_win_lose = 1;
-    }
+    // final_data.push( {
+    //   date: data[0].date,
+    //   distance: data[0].distance,
+    //   time: data[0].time,
+    //   run_idx: data[0].run_idx,
+    //   result: result_num,
+    //   game_idx: data[0].game_idx,
+    // });
 
-    const final_data = {
-      distance: data[0].distance,
-      time: data[0].time,
-      pace: data[0].pace,
-      result: data_win_lose
-    };
-
-    return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
+    // return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
     
   },
 
@@ -133,18 +152,26 @@ const record = {
     AND r.run_idx = "${run_idx}"`;
 
     const data = await pool.queryParam(query);
+    
 
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
-    } else {
+    }
+    
+    let result_data=1;
+    //승일경우
+    if( data[0].result === 1 || data[0].result === 5 )
+      result_data = 0;
+
       const final_data = {
         distance: data[0].distance,
         time: data[0].time,
         pace: data[0].pace,
-        result: data[0].result
-      };
+        result: result_data
+//       }
+//         result: data[0].result
+//       };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
-    }
 
   },
   //상대방 기록보기
