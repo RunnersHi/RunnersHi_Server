@@ -12,7 +12,6 @@ const record = {
     ORDER BY r.run_idx`;
 
     const data = await pool.queryParam(query);
-    let result_num;
 
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
@@ -20,23 +19,12 @@ const record = {
     const final_data = [];
 
     for(let i = 0; i < data.length; i++){
-      result_num = 1;
-      if(data[i].result === 1 || data[i].result === 5) {
-
-//         result_num = 0;
-//       } 
-
-        result_num = 1;
-      } else {
-        result_num = 2;
-      }
-      
       final_data.push( {
         date: data[i].date,
         distance: data[i].distance,
         time: data[i].time,
         run_idx: data[i].run_idx,
-        result: result_num,
+        result: (data[i].result === 1 || data[i].result === 5) ? 1 : 2,
         game_idx: data[i].game_idx,
       });
     }
@@ -110,7 +98,6 @@ const record = {
     limit 1`;
 
     const data = await pool.queryParam(query);
-
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
@@ -158,16 +145,14 @@ const record = {
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
+    const final_data = {
+      distance: data[0].distance,
+      time: data[0].time,
+      pace: data[0].pace,
+      result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
+    };
     
-
-      const final_data = {
-        distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
-        result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
-      };
-    
-      return {code: "USER_RECORD_SUCCESS", result: final_data};
+    return {code: "USER_RECORD_SUCCESS", result: final_data};
 
   },
   //상대방 기록보기

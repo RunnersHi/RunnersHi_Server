@@ -46,17 +46,13 @@ const record = {
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
 
-      let result_num = 1;
-      if(data[0].result === 1 || data[0].result === 5) {
-        result_num = 0;
-      } 
     
-      final_data =  {
+      const final_data =  {
         date: data[0].date,
         distance: data[0].distance,
         time: data[0].time,
         run_idx: data[0].run_idx,
-        result: result_num,
+        result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2,
         game_idx: data[0].game_idx,
       };
 
