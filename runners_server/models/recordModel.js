@@ -97,10 +97,11 @@ const record = {
     return result;
   },
 
+  //최근기록 
   getUserRecentRecord: async(id) => {
 
     const query = 
-    `SELECT r.distance, r.time, (r.time * 1000)/r.distance as pace,  r.result
+    `SELECT r.distance, r.time, ( r.time * 1000 )/r.distance as pace,  r.result
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
