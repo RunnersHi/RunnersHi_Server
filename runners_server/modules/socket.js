@@ -1,5 +1,5 @@
 const moment = require('moment');
-const iconv = require('iconv-lite');
+const base64url = require('base64url');
 const matchingModel = require('../models/matchingModel');
 const authModel = require('../models/authModel');
 require('moment-timezone'); 
@@ -161,7 +161,7 @@ module.exports = matching => {
             else {
                 try {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-                    matching.to(socket.id).emit("opponentInfo", roomName, opponent.name,
+                    matching.to(socket.id).emit("opponentInfo", roomName, base64url(opponent.name),
                         opponent.level, opponent.win, opponent.lose, opponent.image);
                 }
                 catch(err) {

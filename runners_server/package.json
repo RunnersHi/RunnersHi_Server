@@ -6,6 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "base64url": "^3.0.1",
     "clean-css": "^4.2.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
