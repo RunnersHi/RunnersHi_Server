@@ -19,7 +19,7 @@ const record = {
     const final_data = [];
 
     for(let i = 0; i < data.length; i++){
-      final_data.push( {
+      final_data.push({
         date: data[i].date,
         distance: data[i].distance,
         time: data[i].time,
@@ -182,6 +182,69 @@ const record = {
  
       return {code: "USER_RECORD_SUCCESS", result: final_data};
      
+  },
+  getBadgeDetail: async(user_idx, flag) => {
+
+    const titles = ["첫 승 달성", "10승 달성", "50승 달성", "최고 페이스", "최장 거리", "최저 페이스",
+    "50시간 달성", "100시간 달성", "150시간 달성", "10일 연속 러닝", "연속 5승", "연속 10승"];
+
+    const contents = ["첫 승을 달성하신\n러너에게 드리는 뱃지입니다", "10승을 달성하신\n러너에게 드리는 뱃지입니다",
+    "50승을 달성하신\n러너에게 드리는 뱃지입니다", "최고 페이스를 경신하신\n러너에게 드리는 뱃지입니다",
+      "최장 거리를 경신하신\n러너에게 드리는 뱃지입니다", "최저 페이스를 경신하신\n러너에게 드리는 뱃지입니다",
+    "50시간 러닝을 달성하신\n러너에게 드리는 뱃집입니다", "100시간 러닝을 달성하신\n러너에게 드리는 뱃지입니다",
+    "150시간 러닝을 달성하신\n러너에게 드리는 뱃지입니다", "10일 연속 러닝을 하신\n러너에게 드리는 뱃지입니다",
+    "연속 5승을 달성하신\n러너에게 드리는 뱃지입니다", "연속 10승을 달성하신\n러너에게 드리는 뱃지입니다"];
+
+    const littleContents = ["알을 깨고 나오셨군요!", "러닝 병아리로 거듭나셨네요!", "50승 멘트줘",
+    "최고 페이스 날짜", "최장 거리 날짜", "최저 페이스 날짜",
+    "티끌모아 태산이에요\n100시간이 코 앞이에요", "100시간 멘트주세요", "150시간 멘트주세요",
+    "스트라이크!\n지치지 않는 체력이 대단해요", "5승 멘트주세요", "10승 멘트주세요"];
+
+    const result =  {
+      title : titles[flag],
+      content : contents[flag],
+      littleContent : littleContents[flag],
+      option : ""
+    };
+
+
+    if(flag === 3 || flag === 4 || flag === 5){
+
+      let query =
+          `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as time
+     FROM run r
+     WHERE user_idx = ? AND ((r.time / 60) / (r.distance / 1000)) < 100
+     ORDER BY `;
+
+      switch(flag){
+        case 3:
+          query += `pace`;
+          break;
+        case 4:
+          query += `distance DESC`;
+          break;
+        case 5:
+          query += `pace DESC`
+      }
+      query += ` LIMIT 1`;
+      const rows = await pool.queryParamArr(query, [user_idx]);
+      result.littleContent = rows[0].time;
+
+      console.log(rows);
+      switch(flag){
+      case 3:
+        result.option = rows[0].pace;
+        break;
+      case 4:
+        result.option = rows[0].distance;
+        break;
+      case 5:
+        result.option = rows[0].pace;
+      }
+    }
+    return ({"code" : "BADGE_DETAIL",
+      result : result});
+
   }
 };
 

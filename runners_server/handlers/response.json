@@ -116,6 +116,12 @@
     "success": true,
     "message": "임시 비밀번호 전송 완료",
     "result" : ""
+  },
+  "BADGE_DETAIL" : {
+    "status" : 200,
+    "success" : true,
+    "message" : "badge detail",
+    "result" : ""
   }
 
 

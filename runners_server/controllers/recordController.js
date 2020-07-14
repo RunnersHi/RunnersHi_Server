@@ -150,7 +150,18 @@ const record = {
     } catch(error){
       return next(error);
     }
-  }
+  },
+  //상대방기록
+  getBadgeDetail: async(req, res, next) => {
+
+    try{
+      const result = await recordModel.getBadgeDetail(req.user_idx, parseInt(req.params.flag));
+      return next(result);
+
+    } catch(error){
+      return next(error);
+    }
+  },
 };
 
 module.exports = record;
