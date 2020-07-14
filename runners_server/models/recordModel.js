@@ -102,8 +102,8 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      //return "SUCCESS_BUT_NO_DATA";
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+      return "SUCCESS_BUT_NO_DATA";
+      //return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
     const result = {badge : []};
@@ -189,12 +189,20 @@ const record = {
   //쿼리문을 2개를 사용해서 접근하는 것이 과연 좋은 방법인가?! --> JOIN을 사용하는 것이 더 좋을까?
   getOpponentRecord: async(user_idx, game_idx) => {
      const query = 
-     `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace
-     FROM run r
-     WHERE r.game_idx = "${game_idx}"
-     AND r.user_idx != "${user_idx}"`;
+     `
+     SELECT 
+      r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace
+     FROM 
+      run r
+     WHERE 
+      r.game_idx = "${game_idx}"
+     AND 
+      r.user_idx != "${user_idx}"`;
 
-     const query_nickname = `SELECT nickname FROM user WHERE user_idx = "${user_idx}"`;
+     const query_nickname = `
+     SELECT nickname 
+     FROM user 
+     WHERE user_idx = "${user_idx}"`;
  
      const data = await pool.queryParam(query);
      const user_nickname = await pool.queryParam(query_nickname);
@@ -210,7 +218,7 @@ const record = {
        pace: data[0].pace
      };
  
-      return {code: "USER_RECORD_SUCCESS", result: final_data};
+      return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
      
   },
   getBadgeDetail: async(user_idx, flag) => {
