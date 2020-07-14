@@ -55,7 +55,7 @@ const record = {
     `SELECT latitude, longitude 
     FROM coordinate
     WHERE run_idx =  "${run_idx}"`;
-    
+
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
 
