@@ -30,6 +30,15 @@ const match = {
             FROM run`;
 
             const record_result = await queryParam(record_query);
+
+            if (record_result.win === undefined) {
+                record_result.win = 0;
+            }
+
+            if (record_result.lose === undefined) {
+                record_result.lose = 0;
+            }
+            
             console.log("User Result: ", user_result);
             console.log("Win Result: ", record_result.win);
             console.log("Lose Result: ", record_result.lose);
