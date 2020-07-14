@@ -10,6 +10,7 @@ const ranking = {
       return next(error);
     }
   },
+
   winner: async(req, res, next) => {
     try{
       const result = await rankingModel.winner();
@@ -18,6 +19,7 @@ const ranking = {
       return next(error);
     }
   },
+
   loser: async(req, res, next) => {
     try{
       const result = await rankingModel.loser();
@@ -26,13 +28,22 @@ const ranking = {
       return next(error);
     }
   },
+
   getDetailProfile: async(req, res, next) => {
     const user_idx = req.params.user_idx;
     let final_data = {};
 
+    if(user_idx === undefined) 
+      return next("NO_EXIST_PARAMETER");
+
     try{
       const user_data = await rankingModel.getDetailProfile(user_idx);
+
+      if(user_data.nickname === null)
+        return next("WRONG_PARM");
+
       const badge = await recordModel.getBadge(user_idx);
+
       final_data = user_data;
       final_data.badge = badge.badge;
 
@@ -41,6 +52,7 @@ const ranking = {
       return next(error);
     }
   },
+  
    //상대방최근기록
    getOpponentRecent: async(req, res, next) => {
      const user_idx = req.params.user_idx;

@@ -1,6 +1,5 @@
 
 const recordModel = require("../models/recordModel");
-const authModel = require("../models/authModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -98,6 +97,9 @@ const record = {
     let win;
     let lose;
 
+    if(req.body.level === '' || req.body.gender === '' || req.body.time === '' )
+      return next("NON_EXISTENT_DATA");
+
     //성별이 1 : 남, 2 : 여, 3 : 상관X?
     if(gender === '2') {
       switch(level) {
@@ -146,8 +148,6 @@ const record = {
       result.img = 3;
       result.pace = pace;
       result.distance = (time / pace).toFixed(2);
-
-      console.log(result.distance);
 
       return next({code: "OPPONENT_RECORD_SUCCESS", result: result});
 

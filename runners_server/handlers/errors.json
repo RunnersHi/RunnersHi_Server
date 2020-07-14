@@ -38,7 +38,13 @@
   },
 
 
-  "9401": {
+  "NO_EXIST_PARAMETER": {
+    "status": 400,
+    "success" : false,
+    "message": "필요한 파라미터가 존재하지 않습니다.",
+    "description": "invalid parameter"
+  },
+  "WRONG_PARM": {
     "status": 400,
     "success" : false,
     "message": "파라미터가 잘못되었습니다.",
