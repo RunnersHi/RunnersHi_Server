@@ -161,7 +161,7 @@ module.exports = matching => {
             else {
                 try {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-                    matching.to(socket.id).emit("opponentInfo", roomName, iconv.encode(opponent.name, 'utf-8'),
+                    matching.to(socket.id).emit("opponentInfo", roomName, opponent.name,
                         opponent.level, opponent.win, opponent.lose, opponent.image);
                 }
                 catch(err) {
