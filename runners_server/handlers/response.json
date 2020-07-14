@@ -96,7 +96,7 @@
   "USER_RECORD_SUCCESS": {
     "status": 200,
     "success": true,
-    "message": "러너의 해당 기록 조회 성공",
+    "message": "러너의 러닝 기록(pace,time) 조회 성공",
     "result" : ""
   },
   "OPPONENT_RECORD_SUCCESS": {

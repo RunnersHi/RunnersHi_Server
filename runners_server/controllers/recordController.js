@@ -1,6 +1,5 @@
 
 const recordModel = require("../models/recordModel");
-const authModel = require("../models/authModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -46,14 +45,25 @@ const record = {
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
 
+      let result_num = 2;
+      if(data[0].result === 1 || data[0].result === 5) {
+        result_num = 1;
+      } 
     
-      const final_data =  {
-        date: data[0].date,
+      final_data =  {
         distance: data[0].distance,
         time: data[0].time,
-        run_idx: data[0].run_idx,
-        result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2,
-        game_idx: data[0].game_idx,
+        pace: data[0].pace
+
+    
+//       const final_data =  {
+//         date: data[0].date,
+//         distance: data[0].distance,
+//         time: data[0].time,
+//         run_idx: data[0].run_idx,
+//         result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2,
+//         game_idx: data[0].game_idx,
+
       };
 
     return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
@@ -81,6 +91,7 @@ const record = {
 
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
+
       return next(result);
 
     } catch(error){
@@ -93,6 +104,9 @@ const record = {
     let pace;
     let win;
     let lose;
+
+    if(req.body.level === '' || req.body.gender === '' || req.body.time === '' )
+      return next("NON_EXISTENT_DATA");
 
     //성별이 1 : 남, 2 : 여, 3 : 상관X?
     if(gender === '2') {
@@ -142,8 +156,6 @@ const record = {
       result.img = 3;
       result.pace = pace;
       result.distance = (time / pace).toFixed(2);
-
-      console.log(result.distance);
 
       return next({code: "OPPONENT_RECORD_SUCCESS", result: result});
 
