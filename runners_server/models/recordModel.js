@@ -4,8 +4,6 @@ const table = 'user';
 const record = {
   getAllRecords: async (id) => {
 
-    let result_num;
-
     const query = 
     `SELECT SUBSTR(r.created_time, 1, 10) as date, r.distance, r.time, r.run_idx, r.result, r.game_idx
     FROM user u, run r
@@ -170,7 +168,7 @@ const record = {
         result: result_data
 //       }
 //         result: data[0].result
-//       };
+       };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
 
   },
