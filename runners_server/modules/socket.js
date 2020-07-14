@@ -2,7 +2,8 @@ const moment = require('moment');
 const iconv = require('iconv-lite');
 const matchingModel = require('../models/matchingModel');
 const authModel = require('../models/authModel');
-
+require('moment-timezone'); 
+moment.tz.setDefault("Asia/Seoul");
 
 
 let roomNum = 1;
@@ -157,7 +158,7 @@ module.exports = matching => {
             else {
                 try {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
-                    matching.to(socket.id).emit("opponentInfo", roomName, opponent.name,
+                    matching.to(socket.id).emit("opponentInfo", roomName, iconv.encode(opponent.name, 'euc-kr'),
                         opponent.level, opponent.win, opponent.lose, opponent.image);
                 }
                 catch(err) {
