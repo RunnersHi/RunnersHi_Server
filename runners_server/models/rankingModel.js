@@ -1,6 +1,6 @@
 const pool = require('../models/pool');
 
-const record = {
+const ranking = {
 
   winner: async () => {
     //승만 볼게 아니라 패도 봐야한다...!
@@ -24,7 +24,7 @@ const record = {
  
     const data = await pool.queryParam(query);
 
-    if(data.length == 0) {
+    if(data.length === 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     }
 
@@ -70,7 +70,7 @@ const record = {
     const data = await pool.queryParam(query);
     const final_data = [];
 
-    if(data.length == 0) {
+    if(data.length === 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     }
 
@@ -113,7 +113,7 @@ const record = {
     const data = await pool.queryParam(query);
     const final_data = [];
 
-    if(data.length == 0) {
+    if(data.length === 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } 
 
@@ -143,13 +143,12 @@ const record = {
 
     const data = await pool.queryParam(query);
 
-    if(data.length == 0) {
+    if(data.length === 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } else {
       return data[0];
     }
   }
-
 };
 
-module.exports = record;
+module.exports = ranking;
