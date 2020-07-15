@@ -12,8 +12,10 @@ module.exports = matching => {
     matching.on('connection', socket =>{
         console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
+        matching.to(socket.id).emit("start", socket.id);
+
         setInterval(function(){
-            matching.to(socket.id).emit("ping", socket.id);
+            matching.to(socket.id).emit("ping");
         }, 9000);
 
         socket.on('pong', () => {
@@ -109,18 +111,9 @@ module.exports = matching => {
                             matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
                         }
                         else if (socket.adapter.rooms[roomName].leftTime <= 0) {
-                            const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
-                            const time = socket.adapter.rooms[roomName].time;
-                            const wantGender = user.wantGender;
-                            const level = user.level;
                             clearInterval(intervalId);
                             socket.leave(roomName, () => {
-                                if (user.win === 0 && user.lose === 0) {
-                                    matching.to(socket.id).emit("timeOver", 0, time, wantGender, level);
-                                }
-                                else {
-                                    matching.to(socket.id).emit("timeOver", 1, time, wantGender, level);
-                                }
+                                matching.to(socket.id).emit("timeOver");
                             })
                         }
                     }, 3000);
