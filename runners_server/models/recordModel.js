@@ -165,7 +165,7 @@ const record = {
     SELECT 
       r.distance, r.time,
       TIMEDIFF(r.end_time, r.created_time) as time_diff,  
-      r.result, r.game_idx, 
+      r.result, r.game_idx,
       SUBSTR(r.created_time, 1, 10) as created_time
     FROM 
       run r
