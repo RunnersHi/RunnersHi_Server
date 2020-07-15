@@ -45,6 +45,7 @@ const record = {
 
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
+      const image = await recordModel.getUserImg(user_idx);
 
       let result_num = 2;
       if(data[0].result === 1 || data[0].result === 5) {
@@ -54,7 +55,10 @@ const record = {
       final_data =  {
         distance: data[0].distance,
         time: data[0].time,
-        pace: data[0].pace
+        pace: data[0].pace,
+        image: image[0].image,
+        result: data[0].result,
+        created_time: data[0].created_time
       };
 
     return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});

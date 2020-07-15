@@ -2,6 +2,20 @@ const pool = require('./pool');
 const table = 'user';
 
 const record = {
+  getUserImg: async (user_idx) => {
+    const query = 
+    `
+    SELECT 
+      image
+    FROM 
+      user
+    WHERE 
+      user_idx = "${user_idx}"
+    `;
+
+    const image = await pool.queryParam(query);
+    return image;
+  },
   getAllRecords: async (id) => {
 
     const query = 
@@ -118,11 +132,19 @@ const record = {
 
     const query = 
 
-    `SELECT 
-    r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace,  r.result, r.game_idx
-    FROM run r
-    WHERE r.user_idx = "${id}"
-    ORDER BY r.run_idx DESC 
+    `
+    SELECT 
+      r.distance, 
+      TIMEDIFF(r.end_time, r.created_time) as time, 
+      (r.time * 1000)/r.distance as pace,  
+      r.result, r.game_idx, 
+      SUBSTR(r.created_time, 1, 10) as created_time
+    FROM 
+      run r
+    WHERE 
+      r.user_idx = "${id}"
+    ORDER BY 
+      r.run_idx DESC 
     limit 1`;
 
     const data = await pool.queryParam(query);
