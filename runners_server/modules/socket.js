@@ -283,7 +283,7 @@ module.exports = matching => {
                 console.log("endRunning roomName error");
                 matching.to(socket.id).emit("error");
             }
-            else if (!distance || typeof distance !== 'number') {
+            else if (distance !== 0 && !distance || typeof distance !== 'number') {
                 console.log("endRunning distance error: ", distance);
                 matching.to(socket.id).emit("error");
             }
