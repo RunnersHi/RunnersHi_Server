@@ -20,6 +20,5 @@ module.exports = router => {
   //badge detail
   router.get('/badge/detail/:flag', authController.auth, recordController.getBadgeDetail);
 
-
   return router;
 };
