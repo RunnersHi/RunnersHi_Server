@@ -179,74 +179,80 @@ const record = {
   },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
-    const user_idx = req.user_idx;
 
     try{
-      const badgeFlag = "111111111111";
-      const badge = await recordModel.getBadge(req.user_idx);
-      
+      const result = await recordModel.getBadge(req.params.user_idx);
+      const badge = result.badge;
+
       if(!badge[0]){
-        const result = await recordModel.updateBadgeByWin(req.user_idx, 1);
-        if(!result)
-          badgeFlag[0] = "0";
+        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 1);
+        if(result){
+          badge[0] = true;
+        }
       }
       if(!badge[1]){
-        const result = await recordModel.updateBadgeByWin(req.user_idx, 5);
-        if(!result)
-          badgeFlag[1] = "0";
+        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 5);
+        if(result){
+          badge[1] = true;
+        }
       }
       if(!badge[2]){
-        const result = await recordModel.updateBadgeByWin(req.user_idx, 10);
-        if(!result)
-          badgeFlag[2] = "0";
+        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 10);
+        if(result){
+          badge[2] = true;
+        }
       }
       if(!badge[3]){
-        const result = await recordModel.updateBadgeByPace(req.user_idx, true);
-        if(!result)
-          badgeFlag[3] = "0";
+        const result = await recordModel.updateBadgeByPace(req.params.user_idx, true);
+        if(result){
+          badge[3] = true;
+        }
       }
       if(!badge[4]){
-        const result = await recordModel.updateBadgeByDistance(req.user_idx);
-        if(!result)
-          badgeFlag[4] = "0";
+        const result = await recordModel.updateBadgeByDistance(req.params.user_idx);
+        if(result)
+          badge[4] = true;
       }
       if(!badge[5]){
-        const result = await recordModel.updateBadgeByPace(req.user_idx, false);
-        if(!result)
-          badgeFlag[5] = "0";
+        const result = await recordModel.updateBadgeByPace(req.params.user_idx, false);
+        if(result)
+          badge[5] = true;
       }
- 
+
       if(!badge[6] || !badge[7] || !badge[8])
       {
-        const total_time = await recordModel.getSumRunningTime(user_idx);
-        if( 180000 <= total_time && total_time < 360000)
-          badge[6] = 1;
-        if( 36000 <= total_time && total_time < 540000)
-          badge[7] = 1;
-        if( total_time >= 54000 )
-          badge[8] = 1;
+        const total_time = await recordModel.getSumRunningTime(req.params.user_idx);
+
+        if(!badge[6] && total_time >= 180000)
+          badge[6] = true;
+        if(!badge[7] && total_time >= 360000)
+          badge[7] = true;
+        if(!badge[8] && total_time >= 540000)
+          badge[8] = true;
       }
       if(!badge[9])
       {
-        const coutinuous = await recordModel.getContinuityRunning(user_idx);
+        const coutinuous = await recordModel.getContinuityRunning(req.params.user_idx);
 
-        if(coutinuous >= 10) 
-          badge[9] = 1; 
+        if(coutinuous >= 10)
+          badge[9] = '0';
       }
 
       if(!badge[10] || !badge[11]) {
-        const continuityWin = await recordModel.getContinuityWin(user_idx);
-        
-        if(continuityWin >= 5 && continuityWin < 10)
-        {
-          badge[10] = 1;
-        }
-        else if(continuityWin >= 10){
-          badge[11] = 1;
-        }
+        const continuityWin = await recordModel.getContinuityWin(req.params.user_idx);
+        if(!badge[10] && continuityWin >= 5)
+          badge[10] = '0';
+        if(!badge[11] && continuityWin >= 10)
+          badge[11] = '0';
       }
-      
-      await recordModel.updateBadge(req.user_idx, badgeFlag);
+      let badgeFlag = "";
+      for(let i = 0; i < badge.length; i++){
+        if(badge[i])
+          badgeFlag += "1";
+        else badgeFlag += "0";
+      }
+
+      await recordModel.updateBadge(req.params.user_idx, badgeFlag);
 
       return next();
     } catch(error){

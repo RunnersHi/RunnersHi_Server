@@ -311,7 +311,7 @@ const record = {
   },
   
   updateBadgeByWin: async(user_idx, win)=>{
-    const query = `SELECT COUNT(IF(result = 1 OR result = 2)) as win FROM run WHERE user_idx = ?`;
+    const query = `SELECT COUNT(IF(result = 1, 1, null) OR IF(result = 5, 1, null)) as win FROM run WHERE user_idx = ?`;
     const rows = await pool.queryParamArr(query, [user_idx]);
     return win <= rows[0].win;
   },
@@ -339,8 +339,7 @@ const record = {
       WHERE user_idx = ${user_idx}
       `;
 
-      const data = await pool.queryParam(query);
-      return data;
+    return await pool.queryParam(query);
   },
 
   getContinuityWin: async(user_idx) => {
@@ -357,9 +356,9 @@ const record = {
       if(data.length < 5)
         return 0;
       
-      let count;
+      let count = 0;
       let max_count =0;
-      for(var i = 0; i<data.length; i++) {
+      for(let i = 0; i<data.length; i++) {
         if(data[i].result === 1 || data[i].result === 5) {
           count++;
         }
@@ -383,7 +382,7 @@ const record = {
       WHERE 
         user_idx = ${user_idx}
       ORDER BY 
-        date_diff
+        diff
       `;
 
       const data = await pool.queryParam(query);
@@ -392,7 +391,7 @@ const record = {
       let continueous = 0;
       let max = 0;
 
-      for(var i=1; i<data.length; i++) {
+      for(let i=1; i<data.length; i++) {
         if( (start+1) === data[i].diff) {
           start++;
           continueous++;
@@ -428,7 +427,7 @@ const record = {
 
     const distanceRows = await pool.queryParamArr(query, [user_idx]);
 
-    query = `SELECT distance FROM run WHERE user_idx = ? 
+    query = `SELECT distance FROM run r WHERE user_idx = ? 
       AND ((r.time / 60) / (r.distance / 1000)) < 100 AND distance > ?`;
 
     const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);

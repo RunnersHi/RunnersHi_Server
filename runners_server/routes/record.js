@@ -17,8 +17,9 @@ module.exports = router => {
 
   router.post('/match/opponent', recordController.postFindRunner);
 
-  //badge detail
   router.get('/badge/detail/:flag', authController.auth, recordController.getBadgeDetail);
+
+  router.get('/badge/update/:user_idx', recordController.updateBadge);
 
   return router;
 };
