@@ -16,6 +16,10 @@ module.exports = matching => {
             matching.to(socket.id).emit("ping", socket.id);
         }, 9000);
 
+        socket.on('pong', () => {
+
+        });
+
         socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
             console.log(socket.id, " send joinRoom");
 
@@ -41,7 +45,7 @@ module.exports = matching => {
                         const userIdx = await authModel.verify(token);
                         let userInfo = await matchingModel.getUserInfo(userIdx);
                         if (typeof userInfo === 'string') {
-                            console.log(userInfo);
+                            throw(userInfo);
                         }
                         userInfo.id = socket.id;
                         userInfo.idx = userIdx;
