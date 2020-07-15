@@ -279,8 +279,12 @@ module.exports = matching => {
 
         socket.on("endRunning", (roomName, distance) => {
             console.log(socket.id, " send endRunning");
-            if (!roomName || !distance || typeof roomName !== 'string' || typeof distance !== 'number') {
-                console.log("endRunning parameter error");
+            if (!roomName || typeof roomName !== 'string') {
+                console.log("endRunning roomName error");
+                matching.to(socket.id).emit("error");
+            }
+            else if (!distance || typeof distance !== 'number') {
+                console.log("endRunning distance error");
                 matching.to(socket.id).emit("error");
             }
             else {
