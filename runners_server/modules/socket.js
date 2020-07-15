@@ -12,8 +12,10 @@ module.exports = matching => {
     matching.on('connection', socket =>{
         console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
+        matching.to(socket.id).emit("start", socket.id);
+
         setInterval(function(){
-            matching.to(socket.id).emit("ping", socket.id);
+            matching.to(socket.id).emit("ping");
         }, 9000);
 
         socket.on('pong', () => {
