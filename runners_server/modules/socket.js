@@ -12,8 +12,10 @@ module.exports = matching => {
     matching.on('connection', socket =>{
         console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
+        matching.to(socket.id).emit("start", socket.id);
+
         setInterval(function(){
-            matching.to(socket.id).emit("ping", socket.id);
+            matching.to(socket.id).emit("ping");
         }, 9000);
 
         socket.on('pong', () => {
@@ -115,12 +117,7 @@ module.exports = matching => {
                             const level = user.level;
                             clearInterval(intervalId);
                             socket.leave(roomName, () => {
-                                if (user.win === 0 && user.lose === 0) {
-                                    matching.to(socket.id).emit("timeOver", 0, time, wantGender, level);
-                                }
-                                else {
-                                    matching.to(socket.id).emit("timeOver", 1, time, wantGender, level);
-                                }
+                                matching.to(socket.id).emit("timeOver", time, wantGender, level);
                             })
                         }
                     }, 3000);
@@ -282,8 +279,12 @@ module.exports = matching => {
 
         socket.on("endRunning", (roomName, distance) => {
             console.log(socket.id, " send endRunning");
-            if (!roomName || !distance || typeof roomName !== 'string' || typeof distance !== 'number') {
-                console.log("endRunning parameter error");
+            if (!roomName || typeof roomName !== 'string') {
+                console.log("endRunning roomName error");
+                matching.to(socket.id).emit("error");
+            }
+            else if (!distance || typeof distance !== 'number') {
+                console.log("endRunning distance error: ", distance);
                 matching.to(socket.id).emit("error");
             }
             else {

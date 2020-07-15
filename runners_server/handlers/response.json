@@ -119,6 +119,12 @@
     "success" : true,
     "message" : "badge detail",
     "result" : ""
+  },
+  "POST_RUN" : {
+    "status" : 200,
+    "success" : true,
+    "message" : "post run",
+    "result" : ""
   }
 
 

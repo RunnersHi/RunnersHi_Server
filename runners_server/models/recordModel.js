@@ -290,7 +290,7 @@ const record = {
   },
   
   updateBadgeByWin: async(user_idx, win)=>{
-    const query = `SELECT COUNT(IF(result = 1 OR result = 2)) as win FROM run WHERE user_idx = ?`;
+    const query = `SELECT COUNT(IF(result = 1, 1, null) OR IF(result = 5, 1, null)) as win FROM run WHERE user_idx = ?`;
     const rows = await pool.queryParamArr(query, [user_idx]);
     return win <= rows[0].win;
   },
@@ -303,8 +303,7 @@ const record = {
       WHERE user_idx = ${user_idx}
       `;
 
-      const data = await pool.queryParam(query);
-      return data;
+    return await pool.queryParam(query);
   },
 
   getContinuityWin: async(user_idx) => {
@@ -321,9 +320,9 @@ const record = {
       if(data.length < 5)
         return 0;
       
-      let count;
+      let count = 0;
       let max_count =0;
-      for(var i = 0; i<data.length; i++) {
+      for(let i = 0; i<data.length; i++) {
         if(data[i].result === 1 || data[i].result === 5) {
           count++;
         }
@@ -359,7 +358,7 @@ const record = {
       let continueous = 0;
       let max = 0;
 
-      for(var i=1; i<data.length; i++) {
+      for(let i=1; i<data.length; i++) {
         if( (start+1) === data[i].diff) {
           start++;
           continueous++;
@@ -395,12 +394,25 @@ const record = {
 
     const distanceRows = await pool.queryParamArr(query, [user_idx]);
 
-    query = `SELECT distance FROM run WHERE user_idx = ? 
+    query = `SELECT distance FROM run r WHERE user_idx = ? 
       AND ((r.time / 60) / (r.distance / 1000)) < 100 AND distance > ?`;
 
     const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);
 
     return rows.length !== 0;
+  },
+  postRun: async(userData) => {
+    const run_query = `INSERT INTO run (distance, time, result, created_time, end_time, user_idx, game_idx) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    const run_result = await pool.queryParamArr(run_query, [userData.distance,
+      userData.time, userData.result, userData.created_time, userData.end_time, userData.user_idx, userData.game_idx]);
+
+    console.log(userData.coordinates);
+    const run_idx = run_result.insertId;
+    const coordinate_query = `INSERT INTO coordinate SET ?, run_idx = ${run_idx}`;
+    await pool.queryParamArr(coordinate_query, userData.coordinates);
+
+    return run_idx;
   }
 };
 
