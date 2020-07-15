@@ -268,7 +268,6 @@ const record = {
       const rows = await pool.queryParamArr(query, [user_idx]);
       result.littleContent = rows[0].time;
 
-      console.log(rows);
       switch(flag){
       case 3:
         result.option = rows[0].pace;
@@ -284,14 +283,42 @@ const record = {
       result : result});
 
   },
-  updateBadge1: async(user_idx)=>{
+  updateBadge: async(user_idx, badgeFlag)=>{
+    const query = `UPDATE user SET badge = ? WHERE user_idx = ?`;
+    await pool.queryParamArr(query, [badgeFlag, user_idx]);
+  },
+  updateBadgeByWin: async(user_idx, win)=>{
+    const query = `SELECT COUNT(IF(result = 1 OR result = 2)) as win FROM run WHERE user_idx = ?`;
+    const rows = await pool.queryParamArr(query, [user_idx]);
+    return win <= rows[0].win;
 
   },
-  updateBadge2: async(user_idx)=>{
+  updateBadgeByPace: async(user_idx, top)=>{
+    let query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? ORDER BY run_idx LIMIT 1`;
 
+    const paceRows = await pool.queryParamArr(query, [user_idx]);
+
+    if(top)
+      query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND ((r.time / 60) / (r.distance / 1000)) < ?`;
+    else
+      query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND ((r.time / 60) / (r.distance / 1000)) > ?`;
+
+    const rows = await pool.queryParamArr(query, [user_idx, paceRows[0].pace]);
+    return rows.length !== 0;
   },
-  updateBadge3: async(user_idx)=>{
+  updateBadgeByDistance: async(user_idx)=>{
+    let query = `SELECT distance FROM run WHERE user_idx = ? ORDER BY run_idx LIMIT 1`;
 
+    const distanceRows = await pool.queryParamArr(query, [user_idx]);
+
+    query = `SELECT distance FROM run WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND distance > ?`;
+
+    const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);
+
+    return rows.length !== 0;
   },
   updateBadge4: async(user_idx)=>{
 

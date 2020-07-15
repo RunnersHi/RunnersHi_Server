@@ -50,7 +50,7 @@ const record = {
         result_num = 1;
       } 
     
-      final_data =  {
+      const final_data =  {
         distance: data[0].distance,
         time: data[0].time,
         pace: data[0].pace
@@ -175,31 +175,69 @@ const record = {
   //배지 업데이트
   updateBadge: async(req, res, next) => {
     try{
-      const badge = await recordModel.getBadge();
-      if(!badge[0])
-        await recordModel.updateBadge1(req.user_idx);
-      if(!badge[1])
-        await recordModel.updateBadge2(req.user_idx);
-      if(!badge[2])
-        await recordModel.updateBadge3(req.user_idx);
-      if(!badge[3])
-        await recordModel.updateBadge4(req.user_idx);
-      if(!badge[4])
-        await recordModel.updateBadge5(req.user_idx);
-      if(!badge[5])
-        await recordModel.updateBadge6(req.user_idx);
-      if(!badge[6])
-        await recordModel.updateBadge7(req.user_idx);
-      if(!badge[7])
-        await recordModel.updateBadge8(req.user_idx);
-      if(!badge[8])
-        await recordModel.updateBadge9(req.user_idx);
-      if(!badge[9])
-        await recordModel.updateBadge10(req.user_idx);
-      if(!badge[10])
-        await recordModel.updateBadge11(req.user_idx);
-      if(!badge[11])
-        await recordModel.updateBadge12(req.user_idx);
+      const badgeFlag = "111111111111";
+      const badge = await recordModel.getBadge(req.user_idx);
+      if(!badge[0]){
+        const result = await recordModel.updateBadgeByWin(req.user_idx, 1);
+        if(!result)
+          badgeFlag[0] = "0";
+      }
+      if(!badge[1]){
+        const result = await recordModel.updateBadgeByWin(req.user_idx, 5);
+        if(!result)
+          badgeFlag[1] = "0";
+      }
+      if(!badge[2]){
+        const result = await recordModel.updateBadgeByWin(req.user_idx, 10);
+        if(!result)
+          badgeFlag[2] = "0";
+      }
+      if(!badge[3]){
+        const result = await recordModel.updateBadgeByPace(req.user_idx, true);
+        if(!result)
+          badgeFlag[3] = "0";
+      }
+      if(!badge[4]){
+        const result = await recordModel.updateBadgeByDistance(req.user_idx);
+        if(!result)
+          badgeFlag[4] = "0";
+      }
+      if(!badge[5]){
+        const result = await recordModel.updateBadgeByPace(req.user_idx, false);
+        if(!result)
+          badgeFlag[5] = "0";
+      }
+      if(!badge[6]){
+        const result = await recordModel.updateBadge7(req.user_idx);
+        if(!result)
+          badgeFlag[6] = "0";
+      }
+      if(!badge[7]){
+        const result = await recordModel.updateBadge8(req.user_idx);
+        if(!result)
+          badgeFlag[7] = "0";
+      }
+      if(!badge[8]){
+        const result = await recordModel.updateBadge9(req.user_idx);
+        if(!result)
+          badgeFlag[8] = "0";
+      }
+      if(!badge[9]){
+        const result = await recordModel.updateBadge10(req.user_idx);
+        if(!result)
+          badgeFlag[9] = "0";
+      }
+      if(!badge[10]){
+        const result = await recordModel.updateBadge11(req.user_idx);
+        if(!result)
+          badgeFlag[10] = "0";
+      }
+      if(!badge[11]){
+        const result = await recordModel.updateBadge12(req.user_idx);
+        if(!result)
+          badgeFlag[11] = "0";
+      }
+      await recordModel.updateBadge(req.user_idx, badgeFlag);
       return next();
     } catch(error){
       return next(error);
