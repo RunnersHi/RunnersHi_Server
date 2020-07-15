@@ -242,6 +242,7 @@ const record = {
       return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
      
   },
+  
   getBadgeDetail: async(user_idx, flag) => {
 
     const titles = ["첫 승 달성", "10승 달성", "50승 달성", "최고 페이스", "최장 거리", "최저 페이스",
@@ -288,7 +289,6 @@ const record = {
       const rows = await pool.queryParamArr(query, [user_idx]);
       result.littleContent = rows[0].time;
 
-      console.log(rows);
       switch(flag){
       case 3:
         result.option = rows[0].pace;
@@ -304,6 +304,18 @@ const record = {
       result : result});
 
   },
+
+  updateBadge: async(user_idx, badgeFlag)=>{
+    const query = `UPDATE user SET badge = ? WHERE user_idx = ?`;
+    await pool.queryParamArr(query, [badgeFlag, user_idx]);
+  },
+  
+  updateBadgeByWin: async(user_idx, win)=>{
+    const query = `SELECT COUNT(IF(result = 1 OR result = 2)) as win FROM run WHERE user_idx = ?`;
+    const rows = await pool.queryParamArr(query, [user_idx]);
+    return win <= rows[0].win;
+  },
+
 
   // getSumWin: async(user_idx) => {
 
@@ -360,7 +372,7 @@ const record = {
       }
       return max_count;
   },
-
+  
   getContinuityRunning: async(user_idx) => {
     const query =
       `
@@ -395,43 +407,34 @@ const record = {
       return max;
   },
 
-  updateBadge1: async(user_idx)=>{
-    
-  },
+  updateBadgeByPace: async(user_idx, top)=>{
+    let query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? ORDER BY run_idx LIMIT 1`;
 
-  updateBadge2: async(user_idx)=>{
+    const paceRows = await pool.queryParamArr(query, [user_idx]);
 
-  },
-  updateBadge3: async(user_idx)=>{
+    if(top)
+      query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND ((r.time / 60) / (r.distance / 1000)) < ?`;
+    else
+      query = `SELECT ((r.time / 60) / (r.distance / 1000)) as pace FROM run r WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND ((r.time / 60) / (r.distance / 1000)) > ?`;
 
+    const rows = await pool.queryParamArr(query, [user_idx, paceRows[0].pace]);
+    return rows.length !== 0;
   },
-  updateBadge4: async(user_idx)=>{
+  
+  updateBadgeByDistance: async(user_idx)=>{
+    let query = `SELECT distance FROM run WHERE user_idx = ? ORDER BY run_idx LIMIT 1`;
 
-  },
-  updateBadge5: async(user_idx)=>{
+    const distanceRows = await pool.queryParamArr(query, [user_idx]);
 
-  },
-  updateBadge6: async(user_idx)=>{
+    query = `SELECT distance FROM run WHERE user_idx = ? 
+      AND ((r.time / 60) / (r.distance / 1000)) < 100 AND distance > ?`;
 
-  },
-  updateBadge7: async(user_idx)=>{
+    const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);
 
-  },
-  updateBadge8: async(user_idx)=>{
-
-  },
-  updateBadge9: async(user_idx)=>{
-
-  },
-  updateBadge10: async(user_idx)=>{
-
-  },
-  updateBadge11: async(user_idx)=>{
-
-  },
-  updateBadge12: async(user_idx)=>{
-
-  },
+    return rows.length !== 0;
+  }
 };
 
 module.exports = record;

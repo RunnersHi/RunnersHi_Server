@@ -89,7 +89,7 @@ const match = {
             const coordinate_fields = `latitude, longitude, run_idx`;
             const coordinate_query = `INSERT INTO coordinate (${coordinate_fields}) VALUES (?, ?, ${run_idx})`;
             const coordinate_result = await queryParamArr(coordinate_query, coordinates);
-            return coordinate_result.affectedRows;
+            return run_idx;
         }
         catch (err) {
             console.log("Store Data Error");
