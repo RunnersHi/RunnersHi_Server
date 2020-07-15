@@ -7,7 +7,6 @@ const record = {
     try{
       const result = await recordModel.getAllRecords(id);
       return next(result);
-
     } catch(error){
       return next(error);
     }
@@ -146,8 +145,6 @@ const record = {
           break;
       }
     }
-
-    console.log(gender);
 
     if(gender === null)
       return next("NON_EXISTENT_DATA");
