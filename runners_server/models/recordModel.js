@@ -117,10 +117,6 @@ const record = {
     }
 
     const pace_data = await record.getPace(data[0].time, data[0].distance);
-
-    // console.log("date" + data[0].time);
-    // console.log(pace_minute);
-    // console.log(pace_second);
     
     let result_data=2;
     if( data[0].result === 1 || data[0].result === 5 )
@@ -156,12 +152,10 @@ const record = {
   getUserRecentRecord: async(id) => {
 
     const query = 
-
     `
     SELECT 
-      r.distance, 
-      TIMEDIFF(r.end_time, r.created_time) as time, 
-      (r.time * 1000)/r.distance as pace,  
+      r.distance, r.time,
+      TIMEDIFF(r.end_time, r.created_time) as time_diff,  
       r.result, r.game_idx, 
       SUBSTR(r.created_time, 1, 10) as created_time
     FROM 
@@ -178,32 +172,6 @@ const record = {
     }
 
     return data;
-
-//     const final_data = {
-//       distance: data[0].distance,
-//       time: data[0].time,
-//       pace: data[0].pace,
-//       result: data_win_lose
-//     };
-
-
-    // let result_num;
-    // result_num = 1;
-    // if(data[0].result === 1 || data[0].result === 5) {
-    //   result_num = 0;
-    // } 
-    
-    // final_data.push( {
-    //   date: data[0].date,
-    //   distance: data[0].distance,
-    //   time: data[0].time,
-    //   run_idx: data[0].run_idx,
-    //   result: result_num,
-    //   game_idx: data[0].game_idx,
-    // });
-
-    // return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
-    
   },
 
   // getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
@@ -237,7 +205,8 @@ const record = {
      const query = 
      `
      SELECT 
-      r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace
+      r.distance, r.time,
+      TIMEDIFF(r.end_time, r.created_time) as diff_time
      FROM 
       run r
      WHERE 
@@ -257,15 +226,18 @@ const record = {
       return "WRONG_PARM";
     } 
 
+    const pace_data = await record.getPace(data[0].time, data[0].distance);
+    console.log(pace_data);
+
      const final_data = {
        nickname: user_nickname[0].nickname,
        distance: data[0].distance,
-       time: data[0].time,
-       pace: data[0].pace
+       time: data[0].diff_time,
+       pace_minute: pace_data.pace_minute,
+       pace_second: pace_data.pace_second
      };
  
       return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
-     
   },
   
   getBadgeDetail: async(user_idx, flag) => {

@@ -48,12 +48,15 @@ const record = {
       let result_num = 2;
       if(data[0].result === 1 || data[0].result === 5) {
         result_num = 1;
-      } 
-    
+      }
+      
+      const pace_data = await record.getPace(data[0].time, data[0].distance);
+
       const final_data =  {
         distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
+        time: data[0].time_diff,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second,
         image: image[0].image,
         result: data[0].result,
         created_time: data[0].created_time
