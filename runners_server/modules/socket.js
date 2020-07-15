@@ -12,7 +12,9 @@ module.exports = matching => {
     matching.on('connection', socket =>{
         console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
-        matching.to(socket.id).emit("start", socket.id);
+        setInterval(function(){
+            matching.to(socket.id).emit("ping", socket.id);
+        }, 9000);
 
         socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
             console.log(socket.id, " send joinRoom");
@@ -322,6 +324,7 @@ module.exports = matching => {
                 const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
                 const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
                 let result;
+                const gameIdx = socket.adapter.rooms[roomName].gameIdx;
                 try {
                     socket.leave("roomName", async () => {
                         if (user.distance > opponent.distance) {
@@ -333,8 +336,8 @@ module.exports = matching => {
                         else {
                             result = 5
                         }
-                        await matchingModel.storeRunningData(distance, time, coordinates, result, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
-                        matching.to(socket.id).emit("compareResult", result);
+                        const runIdx = await matchingModel.storeRunningData(distance, time, coordinates, result, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+                        matching.to(socket.id).emit("compareResult", gameIdx, runIdx);
                     })
                 }
                 catch (err) {
