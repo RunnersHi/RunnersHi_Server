@@ -277,7 +277,8 @@ const record = {
 
       switch(flag){
       case 3:
-        result.option = rows[0].pace;
+        const pace = await record.getPace(rows[0].pace);
+        result.option = pace.pace_minute + "\'" + pace.pace_second + "\"";
         break;
       case 4:
         result.option = rows[0].distance;
@@ -451,7 +452,7 @@ const record = {
     let index = 0;
     index += 12 * (gender - 1);
     index += 4 * (level - 1);
-    if(time === 5400) index += 4;
+    if(time === 5400) index += 3;
     else index += (time-1800) / 900;
     let userData = userDatas[index];
     userData.nickname = "밍찔이";
