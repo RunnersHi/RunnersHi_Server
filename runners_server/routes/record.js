@@ -21,5 +21,7 @@ module.exports = router => {
 
   router.get('/badge/update/:user_idx', recordController.updateBadge);
 
+  router.post('/run', authController.auth, recordController.postRun);
+
   return router;
 };

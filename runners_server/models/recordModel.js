@@ -433,6 +433,18 @@ const record = {
     const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);
 
     return rows.length !== 0;
+  },
+  postRun: async(userData) => {
+    const run_query = `INSERT INTO run (distance, time, result, created_time, end_time, user_idx, game_idx) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    const run_result = await pool.queryParamArr(run_query, [userData.distance,
+      userData.time, userData.result, userData.created_time, userData.end_time, userData.user_idx, userData.game_idx]);
+
+    const run_idx = run_result.insertId;
+    const coordinate_query = `INSERT INTO coordinate (latitude, longitude, run_idx) VALUES (?, ?, ${run_idx})`;
+    await pool.queryParamArr(coordinate_query, userData.coordinates);
+
+    return run_idx;
   }
 };
 

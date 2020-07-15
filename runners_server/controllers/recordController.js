@@ -1,4 +1,5 @@
 
+const matchingModel = require("../models/matchingModel");
 const recordModel = require("../models/recordModel");
 const userModel = require("../models/userModel");
 
@@ -173,6 +174,25 @@ const record = {
       const result = await recordModel.getBadgeDetail(req.user_idx, parseInt(req.params.flag));
       return next(result);
 
+    } catch(error){
+      return next(error);
+    }
+  },
+
+  postRun: async(req, res, next) => {
+    try{
+      const game_idx = await matchingModel.newGameIdx();
+      const userData = {
+        "distance" : req.body.distance,
+        "time" : req.body.time,
+        "result" : parseInt(req.body.result),
+        "created_time" : req.body.created_time,
+        "end_time" : req.body.end_time,
+        "user_idx" : req.user_idx,
+        "game_idx" : game_idx
+      };
+      const result = await recordModel.postRun(userData);
+      return next({"code" : "POST_RUN", result : {"run_idx" : result}});
     } catch(error){
       return next(error);
     }
