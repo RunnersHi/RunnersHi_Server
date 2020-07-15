@@ -131,7 +131,6 @@ const ranking = {
   },
 
   getDetailProfile: async(id) => {
-    
     const query = 
     `
     SELECT u.nickname, u.image, u.level,
@@ -146,6 +145,7 @@ const ranking = {
     return data[0];
     
   }
+  
 };
 
 module.exports = ranking;

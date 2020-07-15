@@ -1,7 +1,6 @@
 
 const matchingModel = require("../models/matchingModel");
 const recordModel = require("../models/recordModel");
-const userModel = require("../models/userModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -10,7 +9,6 @@ const record = {
     try{
       const result = await recordModel.getAllRecords(id);
       return next(result);
-
     } catch(error){
       return next(error);
     }
@@ -51,12 +49,15 @@ const record = {
       let result_num = 2;
       if(data[0].result === 1 || data[0].result === 5) {
         result_num = 1;
-      } 
-    
+      }
+      
+      const pace_data = await record.getPace(data[0].time, data[0].distance);
+
       const final_data =  {
         distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
+        time: data[0].time_diff,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second,
         image: image[0].image,
         result: data[0].result,
         created_time: data[0].created_time
@@ -95,6 +96,7 @@ const record = {
     }
   },
 
+  //time고려 
   postFindRunner: async(req, res, next) => {
     const {level, gender, time} = req.body;
     let pace;
@@ -145,8 +147,6 @@ const record = {
           break;
       }
     }
-
-    console.log(gender);
 
     if(gender === null)
       return next("NON_EXISTENT_DATA");
@@ -245,6 +245,7 @@ const record = {
 
       if(!badge[6] || !badge[7] || !badge[8])
       {
+
         const total_time = await recordModel.getSumRunningTime(req.params.user_idx);
 
         if(!badge[6] && total_time >= 180000)
@@ -253,6 +254,7 @@ const record = {
           badge[7] = true;
         if(!badge[8] && total_time >= 540000)
           badge[8] = true;
+
       }
       if(!badge[9])
       {
