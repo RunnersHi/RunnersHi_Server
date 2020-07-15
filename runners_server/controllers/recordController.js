@@ -1,6 +1,4 @@
-
 const recordModel = require("../models/recordModel");
-const userModel = require("../models/userModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -94,6 +92,7 @@ const record = {
     }
   },
 
+  //time고려 
   postFindRunner: async(req, res, next) => {
     const {level, gender, time} = req.body;
     let pace;
@@ -220,7 +219,7 @@ const record = {
       {
         const total_time = await recordModel.getSumRunningTime(user_idx);
         if( 180000 <= total_time && total_time < 360000)
-          badge[6] = 1;
+          badgeFlag[6] = "0";
         if( 36000 <= total_time && total_time < 540000)
           badge[7] = 1;
         if( total_time >= 54000 )

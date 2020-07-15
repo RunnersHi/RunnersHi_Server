@@ -16,6 +16,19 @@ const record = {
     const image = await pool.queryParam(query);
     return image;
   },
+
+  getPace: async (time, distance) => {
+
+    let pace_minute = ( time /60 ) / ( distance / 1000 );
+    let pace_second = (pace_minute - Math.floor(pace_minute)) * 60;
+
+    const result = {};
+    result.pace_minute = Math.floor(pace_minute);
+    result.pace_second = Math.floor(pace_second);
+
+    return result;
+  },
+
   getAllRecords: async (id) => {
 
     const query = 
@@ -28,7 +41,7 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+      return "SUCCESS_BUT_NO_DATA";
     } 
     const final_data = [];
 
@@ -78,8 +91,6 @@ const record = {
       coordinate: coordiData
     };
 
-    console.log(real_result);
-
     return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
    
   },
@@ -87,16 +98,29 @@ const record = {
   getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
 
     const query = 
-    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
-    FROM run r
-    WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}"`;
+    `SELECT 
+      r.distance, 
+      r.time,
+      TIMEDIFF(r.end_time, r.created_time) as time_diff, 
+      r.result
+    FROM 
+      run r
+    WHERE 
+      r.user_idx = "${user_idx}" 
+    AND 
+      r.run_idx = "${run_idx}"`;
 
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
       return "WRONG_PARM";
     }
+
+    const pace_data = await record.getPace(data[0].time, data[0].distance);
+
+    // console.log("date" + data[0].time);
+    // console.log(pace_minute);
+    // console.log(pace_second);
     
     let result_data=2;
     if( data[0].result === 1 || data[0].result === 5 )
@@ -104,8 +128,9 @@ const record = {
 
       const final_data = {
         distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
+        time: data[0].time_diff,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second,
         result: result_data
        };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
@@ -181,30 +206,30 @@ const record = {
     
   },
 
-  getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
+  // getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
 
-    const query = 
-    `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, r.result, (r.time * 1000)/r.distance as pace
-    FROM run r
-    WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}"`;
+  //   const query = 
+  //   `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, r.result, (r.time * 1000)/r.distance as pace
+  //   FROM run r
+  //   WHERE r.user_idx = "${user_idx}" 
+  //   AND r.run_idx = "${run_idx}"`;
 
-    const data = await pool.queryParam(query);
+  //   const data = await pool.queryParam(query);
     
 
-    if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
-    }
-    const final_data = {
-      distance: data[0].distance,
-      time: data[0].time,
-      pace: data[0].pace,
-      result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
-    };
+  //   if(data.length === 0) {
+  //     return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+  //   }
+  //   const final_data = {
+  //     distance: data[0].distance,
+  //     time: data[0].time,
+  //     pace: data[0].pace,
+  //     result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
+  //   };
     
-    return {code: "USER_RECORD_SUCCESS", result: final_data};
+  //   return {code: "USER_RECORD_SUCCESS", result: final_data};
 
-  },
+  // },
 
   //상대방 기록보기
   //쿼리문을 2개를 사용해서 접근하는 것이 과연 좋은 방법인가?! --> JOIN을 사용하는 것이 더 좋을까?
@@ -316,21 +341,6 @@ const record = {
     return win <= rows[0].win;
   },
 
-
-  // getSumWin: async(user_idx) => {
-
-  //   const query = 
-  //   `SELECT
-  //     COUNT(IF(r.result = 1, 5, null)) as win,
-  //     FROM run r
-  //     WHERE r.user_idx = ${user_idx}
-  //     GROUP BY r.user_idx
-  //     `;
-
-  //     const sum = await pool.queryParam(query);
-  //     return sum;
-  // },
-
   getSumRunningTime: async(user_idx) => {
     const query =
       `
@@ -376,17 +386,20 @@ const record = {
   getContinuityRunning: async(user_idx) => {
     const query =
       `
-      SELECT 
+      SELECT DISTINCT
         DATEDIFF(NOW(), created_time) as diff 
       FROM 
         run
       WHERE 
         user_idx = ${user_idx}
       ORDER BY 
-        date_diff
+        diff
       `;
 
       const data = await pool.queryParam(query);
+
+      if(data.length < 10)
+        return 0;
 
       let start = data[0].diff;
       let continueous = 0;
