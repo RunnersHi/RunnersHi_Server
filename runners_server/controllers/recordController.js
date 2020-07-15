@@ -201,6 +201,31 @@ const record = {
       return next(error);
     }
   },
+  withMe: async(req, res, next) => {
+    if(!req.body.level || !req.body.gender || !req.body.time){
+      return next("NON_EXISTENT_DATA");
+    }
+    try{
+      let userData = await userModel.selectUserDataNoBadge(req.user_idx);
+      userData = await userModel.selectRun(userData);
+      userData.user_idx = undefined;
+      const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
+      if(distance !== null){
+        userData.pace = distance.pace;
+        userData.distance = distance.distance;
+        userData.time = distance.time;
+        userData.isDummy = false;
+        return next({"code" : "GET_MY_RECENT", result : userData});
+      } else{
+        const userData = await recordModel.getDummy(req.body.level, req.body.gender, req.body.time);
+
+        return next({"code" : "GET_DUMMY_DATA", result : userData});
+      }
+    } catch(error){
+      return next(error);
+    }
+
+  },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
 

@@ -23,5 +23,7 @@ module.exports = router => {
 
   router.post('/run/post', authController.auth, recordController.postRun);
 
+  router.post('/run/withme', authController.auth, recordController.withMe);
+
   return router;
 };
