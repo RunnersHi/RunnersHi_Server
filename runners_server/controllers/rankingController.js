@@ -45,13 +45,16 @@ const ranking = {
       const recentrecord = await recordModel.getUserRecentRecord(user_idx);
       const badge = await recordModel.getBadge(user_idx);
 
+      const pace_data = await recordModel.getPace(recentrecord[0].time, recentrecord[0].distance);
+
       if(recentrecord === null || badge === null) 
        return next();
 
       final_data = user_data;
       final_data.distance = recentrecord[0].distance;
       final_data.time = recentrecord[0].time;
-      final_data.pace = recentrecord[0].pace;
+      final_data.pace_minute = pace_data.pace_minute;
+      final_data.pace_second = pace_data.pace_second;
       final_data.badge = badge.badge;
 
       return next({code : "RUNNER_DETAIL_PROFILE_SUCCESS", result : final_data});

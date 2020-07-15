@@ -51,7 +51,7 @@ const record = {
         result_num = 1;
       }
       
-      const pace_data = await record.getPace(data[0].time, data[0].distance);
+      const pace_data = await recordModel.getPace(data[0].time, data[0].distance);
 
       const final_data =  {
         distance: data[0].distance,
@@ -59,7 +59,7 @@ const record = {
         pace_minute: pace_data.pace_minute,
         pace_second: pace_data.pace_second,
         image: image[0].image,
-        result: data[0].result,
+        result: result_num,
         created_time: data[0].created_time
       };
 
