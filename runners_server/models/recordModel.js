@@ -343,19 +343,34 @@ const record = {
     const query =
       `
       SELECT 
-        DATE_FORMAT(created_time, "%Y %c %e") as date, 
-        ROW_NUMBER() over(order by date) AS user_idx,
-        DATEDIFF(day, date, NOW()) as diff_day,
-        (ROW_NUMBER() OVER(order by date) + DATEDIFF(day, date, NOW()) as consecutive_day
-        from run
-      FROM run
-      WHERE user_idx = ${user_idx}
-      ORDER BY run_idx
+        DATEDIFF(NOW(), created_time) as diff 
+      FROM 
+        run
+      WHERE 
+        user_idx = ${user_idx}
+      ORDER BY 
+        date_diff
       `;
 
       const data = await pool.queryParam(query);
 
+      let start = data[0].diff;
+      let continueous = 0;
+      let max = 0;
 
+      for(var i=1; i<data.length; i++) {
+        if( (start+1) === data[i].diff) {
+          start++;
+          continueous++;
+        }
+        else {
+          if(max < continueous)
+            max = continueous;
+          start = data[i].diff;
+          continueous = 0;
+        }
+      }
+      return max;
   },
 
   updateBadge1: async(user_idx)=>{

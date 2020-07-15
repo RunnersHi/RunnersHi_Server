@@ -212,7 +212,12 @@ const record = {
 
 
       if(!badge[9])
-        await recordModel.updateBadge10(req.user_idx);
+      {
+        const coutinuous = await recordModel.getContinuityRunning(user_idx);
+
+        if(coutinuous >= 10) 
+          badge[9] = 1; 
+      }
 
       if(!badge[10] || !badge[11]) {
         const continuityWin = await recordModel.getContinuityWin(user_idx);
