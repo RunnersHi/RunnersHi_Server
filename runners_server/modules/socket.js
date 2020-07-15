@@ -284,7 +284,7 @@ module.exports = matching => {
                 matching.to(socket.id).emit("error");
             }
             else if (!distance || typeof distance !== 'number') {
-                console.log("endRunning distance error");
+                console.log("endRunning distance error: " console.log(distance));
                 matching.to(socket.id).emit("error");
             }
             else {
