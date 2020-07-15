@@ -157,6 +157,13 @@ const record = {
     }
     return result;
   },
+  getRecentRecordByTime: async(user_idx, time)=>{
+    const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
+    FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
+    const rows = await pool.queryParamArr(query, [user_idx, time]);
+    if(rows.length === 0) return null;
+    else return rows[0];
+  },
 
   getUserRecentRecord: async(id) => {
 
@@ -413,6 +420,44 @@ const record = {
     await pool.queryParamArr(coordinate_query, userData.coordinates);
 
     return run_idx;
+  },
+  getDummy : async(level, gender, time)=>{
+    let userDatas = [
+      {gender : 1, level : 1, time : 1800, distance : 3760, pace : 7.978723404, win : 3, lose : 2},
+      {gender : 1, level : 1, time : 2700, distance : 5600, pace : 8.035714286, win : 3, lose : 2},
+      {gender : 1, level : 1, time : 3600, distance : 6980, pace : 8.595988539, win : 3, lose : 2},
+      {gender : 1, level : 1, time : 5400, distance : 9780, pace : 9.202453988, win : 3, lose : 2},
+      {gender : 1, level : 2, time : 1800, distance : 4760, pace : 6.302521008, win : 5, lose : 3},
+      {gender : 1, level : 2, time : 2700, distance : 6900, pace : 6.52173913, win : 5, lose : 3},
+      {gender : 1, level : 2, time : 3600, distance : 8550, pace : 7.01754386, win : 5, lose : 3},
+      {gender : 1, level : 2, time : 5400, distance : 12010, pace : 7.493755204, win : 5, lose : 3},
+      {gender : 1, level : 3, time : 1800, distance : 6010, pace : 4.991680532, win : 4, lose : 1},
+      {gender : 1, level : 3, time : 2700, distance : 8020, pace : 5.610972569, win : 4, lose : 1},
+      {gender : 1, level : 3, time : 3600, distance : 10230, pace : 5.865102639, win : 4, lose : 1},
+      {gender : 1, level : 3, time : 5400, distance : 14890, pace : 6.04432505, win : 4, lose : 1},
+      {gender : 2, level : 1, time : 1800, distance : 2740, pace : 10.94890511, win : 3, lose : 2},
+      {gender : 2, level : 1, time : 2700, distance : 3500, pace : 12.85714286, win : 3, lose : 2},
+      {gender : 2, level : 1, time : 3600, distance : 4300, pace : 13.95348837, win : 3, lose : 2},
+      {gender : 2, level : 1, time : 5400, distance : 5700, pace : 15.78947368, win : 3, lose : 2},
+      {gender : 2, level : 2, time : 1800, distance : 3520, pace : 8.522727273, win : 5, lose : 3},
+      {gender : 2, level : 2, time : 2700, distance : 4980, pace : 9.036144578, win : 5, lose : 3},
+      {gender : 2, level : 2, time : 3600, distance : 5500, pace : 10.90909091, win : 5, lose : 3},
+      {gender : 2, level : 2, time : 5400, distance : 6980, pace : 12.89398281, win : 5, lose : 3},
+      {gender : 2, level : 3, time : 1800, distance : 4300, pace : 6.976744186, win : 4, lose : 1},
+      {gender : 2, level : 3, time : 2700, distance : 6020, pace : 7.475083056, win : 4, lose : 1},
+      {gender : 2, level : 3, time : 3600, distance : 7320, pace : 8.196721311, win : 4, lose : 1},
+      {gender : 2, level : 3, time : 5400, distance : 9020, pace : 9.977827051, win : 4, lose : 1},
+    ];
+    let index = 0;
+    index += 12 * (gender - 1);
+    index += 4 * (level - 1);
+    index += (time-1800) / 900;
+    let userData = userDatas[index];
+    userData.nickname = "밍찔이";
+    userData.image = 8;
+    userData.isDummy = true;
+
+    return userData;
   }
 };
 

@@ -111,6 +111,17 @@ const userModel = {
             return result;
         }
     },
+    selectUserDataNoBadge: async(user_idx) => {
+        const sql = "SELECT user_idx, nickname, gender, level, image FROM user WHERE user_idx = ? ";
+
+        const rows = await pool.queryParamArr(sql, [user_idx]);
+        if(rows.length === 0) {
+            return "NON_EXISTENT_DATA";
+        } else{
+            const result = rows[0];
+            return result;
+        }
+    },
     /*******************
      *  Profile
      *  @param: userData : {user_idx}

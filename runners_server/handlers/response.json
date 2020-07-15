@@ -125,7 +125,17 @@
     "success" : true,
     "message" : "post run",
     "result" : ""
+  },
+  "GET_MY_RECENT" : {
+    "status" : 200,
+    "success" : true,
+    "message" : "get my recent",
+    "result" : ""
+  },
+  "GET_DUMMY_DATA" : {
+    "status" : 200,
+    "success" : true,
+    "message" : "get dummy data",
+    "result" : ""
   }
-
-
 }
