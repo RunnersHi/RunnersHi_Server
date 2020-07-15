@@ -161,7 +161,7 @@ const record = {
     const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
     FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
     const rows = await pool.queryParamArr(query, [user_idx, time]);
-    if(rows.length === 0) return null;
+    if(rows.length === 0) return false;
     else return rows[0];
   },
 
