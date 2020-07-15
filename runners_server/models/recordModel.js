@@ -103,7 +103,6 @@ const record = {
 
     if(data.length === 0) {
       return "SUCCESS_BUT_NO_DATA";
-      //return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
     const result = {badge : []};
@@ -115,12 +114,12 @@ const record = {
     return result;
   },
 
-  //최근기록 
   getUserRecentRecord: async(id) => {
 
     const query = 
 
-    `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace,  r.result
+    `SELECT 
+    r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace,  r.result, r.game_idx
     FROM run r
     WHERE r.user_idx = "${id}"
     ORDER BY r.run_idx DESC 
@@ -245,7 +244,6 @@ const record = {
       option : ""
     };
 
-
     if(flag === 3 || flag === 4 || flag === 5){
 
       let query =
@@ -284,9 +282,86 @@ const record = {
       result : result});
 
   },
-  updateBadge1: async(user_idx)=>{
+
+  // getSumWin: async(user_idx) => {
+
+  //   const query = 
+  //   `SELECT
+  //     COUNT(IF(r.result = 1, 5, null)) as win,
+  //     FROM run r
+  //     WHERE r.user_idx = ${user_idx}
+  //     GROUP BY r.user_idx
+  //     `;
+
+  //     const sum = await pool.queryParam(query);
+  //     return sum;
+  // },
+
+  getSumRunningTime: async(user_idx) => {
+    const query =
+      `
+      SELECT SUM(time) as total_time
+      FROM run
+      WHERE user_idx = ${user_idx}
+      `;
+
+      const data = await pool.queryParam(query);
+      return data;
+  },
+
+  getContinuityWin: async(user_idx) => {
+    const query =
+      `
+      SELECT result, created_time
+      FROM run
+      WHERE user_idx = ${user_idx}
+      ORDER BY run_idx
+      `;
+
+      const data = await pool.queryParam(query);
+
+      if(data.length < 5)
+        return 0;
+      
+      let count;
+      let max_count =0;
+      for(var i = 0; i<data.length; i++) {
+        if(data[i].result === 1 || data[i].result === 5) {
+          count++;
+        }
+        else {
+          if(count > max_count){
+            max_count = count;
+          }
+          count = 0;
+        }
+      }
+      return max_count;
+  },
+
+  getContinuityRunning: async(user_idx) => {
+    const query =
+      `
+      SELECT 
+        DATE_FORMAT(created_time, "%Y %c %e") as date, 
+        ROW_NUMBER() over(order by date) AS user_idx,
+        DATEDIFF(day, date, NOW()) as diff_day,
+        (ROW_NUMBER() OVER(order by date) + DATEDIFF(day, date, NOW()) as consecutive_day
+        from run
+      FROM run
+      WHERE user_idx = ${user_idx}
+      ORDER BY run_idx
+      `;
+
+      const data = await pool.queryParam(query);
+
 
   },
+
+  updateBadge1: async(user_idx)=>{
+    
+  },
+
   updateBadge2: async(user_idx)=>{
 
   },

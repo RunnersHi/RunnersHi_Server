@@ -1,5 +1,6 @@
 
 const recordModel = require("../models/recordModel");
+const userModel = require("../models/userModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -74,7 +75,7 @@ const record = {
       return next(error);
     }
   },
-  //상대방기록
+
   getOpponentRecord: async(req, res, next) => {
     const game_idx = req.params.game_idx;
     const user_idx = req.user_idx;
@@ -174,8 +175,11 @@ const record = {
   },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
+    const user_idx = req.user_idx;
+
     try{
       const badge = await recordModel.getBadge();
+
       if(!badge[0])
         await recordModel.updateBadge1(req.user_idx);
       if(!badge[1])
@@ -188,18 +192,44 @@ const record = {
         await recordModel.updateBadge5(req.user_idx);
       if(!badge[5])
         await recordModel.updateBadge6(req.user_idx);
-      if(!badge[6])
-        await recordModel.updateBadge7(req.user_idx);
-      if(!badge[7])
-        await recordModel.updateBadge8(req.user_idx);
-      if(!badge[8])
-        await recordModel.updateBadge9(req.user_idx);
+
+
+      if(!badge[6] || !badge[7] || !badge[8])
+      {
+        const total_time = await recordModel.getSumRunningTime(user_idx);
+        if( 180000 <= total_time && total_time < 360000)
+          badge[6] = 1;
+        if( 36000 <= total_time && total_time < 540000)
+          badge[7] = 1;
+        if( total_time >= 54000 )
+          badge[8] = 1;
+      }
+      //   await recordModel.updateBadge7(req.user_idx);
+      // if(!badge[7])
+      //   await recordModel.updateBadge8(req.user_idx);
+      // if(!badge[8])
+      //   await recordModel.updateBadge9(req.user_idx);
+
+
       if(!badge[9])
         await recordModel.updateBadge10(req.user_idx);
-      if(!badge[10])
-        await recordModel.updateBadge11(req.user_idx);
-      if(!badge[11])
-        await recordModel.updateBadge12(req.user_idx);
+
+      if(!badge[10] || !badge[11]) {
+        const continuityWin = await recordModel.getContinuityWin(user_idx);
+        
+        if(continuityWin >= 5 && continuityWin < 10)
+        {
+          badge[10] = 1;
+        }
+        else if(continuityWin >= 10){
+          badge[11] = 1;
+        }
+
+      }
+      // if(!badge[10])
+      //   await recordModel.updateBadge11(req.user_idx);
+      // if(!badge[11])
+      //   await recordModel.updateBadge12(req.user_idx);
       return next();
     } catch(error){
       return next(error);
