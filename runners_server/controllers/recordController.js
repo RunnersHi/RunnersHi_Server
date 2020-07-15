@@ -1,5 +1,6 @@
 
 const recordModel = require("../models/recordModel");
+const userModel = require("../models/userModel");
 
 const record = {
   getAllRecords: async(req, res, next) => {
@@ -44,6 +45,7 @@ const record = {
 
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
+      const image = await recordModel.getUserImg(user_idx);
 
       let result_num = 2;
       if(data[0].result === 1 || data[0].result === 5) {
@@ -53,7 +55,10 @@ const record = {
       const final_data =  {
         distance: data[0].distance,
         time: data[0].time,
-        pace: data[0].pace
+        pace: data[0].pace,
+        image: image[0].image,
+        result: data[0].result,
+        created_time: data[0].created_time
       };
 
     return next({code: "GET_RECENT_RECORD_SUCCESS", result: final_data});
@@ -74,7 +79,7 @@ const record = {
       return next(error);
     }
   },
-  //상대방기록
+
   getOpponentRecord: async(req, res, next) => {
     const game_idx = req.params.game_idx;
     const user_idx = req.user_idx;
@@ -174,9 +179,12 @@ const record = {
   },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
+    const user_idx = req.user_idx;
+
     try{
       const badgeFlag = "111111111111";
       const badge = await recordModel.getBadge(req.user_idx);
+      
       if(!badge[0]){
         const result = await recordModel.updateBadgeByWin(req.user_idx, 1);
         if(!result)
@@ -207,37 +215,39 @@ const record = {
         if(!result)
           badgeFlag[5] = "0";
       }
-      if(!badge[6]){
-        const result = await recordModel.updateBadge7(req.user_idx);
-        if(!result)
-          badgeFlag[6] = "0";
+ 
+      if(!badge[6] || !badge[7] || !badge[8])
+      {
+        const total_time = await recordModel.getSumRunningTime(user_idx);
+        if( 180000 <= total_time && total_time < 360000)
+          badge[6] = 1;
+        if( 36000 <= total_time && total_time < 540000)
+          badge[7] = 1;
+        if( total_time >= 54000 )
+          badge[8] = 1;
       }
-      if(!badge[7]){
-        const result = await recordModel.updateBadge8(req.user_idx);
-        if(!result)
-          badgeFlag[7] = "0";
+      if(!badge[9])
+      {
+        const coutinuous = await recordModel.getContinuityRunning(user_idx);
+
+        if(coutinuous >= 10) 
+          badge[9] = 1; 
       }
-      if(!badge[8]){
-        const result = await recordModel.updateBadge9(req.user_idx);
-        if(!result)
-          badgeFlag[8] = "0";
+
+      if(!badge[10] || !badge[11]) {
+        const continuityWin = await recordModel.getContinuityWin(user_idx);
+        
+        if(continuityWin >= 5 && continuityWin < 10)
+        {
+          badge[10] = 1;
+        }
+        else if(continuityWin >= 10){
+          badge[11] = 1;
+        }
       }
-      if(!badge[9]){
-        const result = await recordModel.updateBadge10(req.user_idx);
-        if(!result)
-          badgeFlag[9] = "0";
-      }
-      if(!badge[10]){
-        const result = await recordModel.updateBadge11(req.user_idx);
-        if(!result)
-          badgeFlag[10] = "0";
-      }
-      if(!badge[11]){
-        const result = await recordModel.updateBadge12(req.user_idx);
-        if(!result)
-          badgeFlag[11] = "0";
-      }
+      
       await recordModel.updateBadge(req.user_idx, badgeFlag);
+
       return next();
     } catch(error){
       return next(error);
