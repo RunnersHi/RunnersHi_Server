@@ -277,14 +277,12 @@ const record = {
 
       switch(flag){
       case 3:
+      case 5:
         const pace = await record.getPace(rows[0].pace);
         result.option = pace.pace_minute + "\'" + pace.pace_second + "\"";
         break;
       case 4:
         result.option = rows[0].distance;
-        break;
-      case 5:
-        result.option = rows[0].pace;
       }
     }
     return ({"code" : "BADGE_DETAIL",
