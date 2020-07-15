@@ -440,8 +440,9 @@ const record = {
     const run_result = await pool.queryParamArr(run_query, [userData.distance,
       userData.time, userData.result, userData.created_time, userData.end_time, userData.user_idx, userData.game_idx]);
 
+    console.log(userData.coordinates);
     const run_idx = run_result.insertId;
-    const coordinate_query = `INSERT INTO coordinate (latitude, longitude, run_idx) VALUES (?, ?, ${run_idx})`;
+    const coordinate_query = `INSERT INTO coordinate SET ?, run_idx = ${run_idx}`;
     await pool.queryParamArr(coordinate_query, userData.coordinates);
 
     return run_idx;

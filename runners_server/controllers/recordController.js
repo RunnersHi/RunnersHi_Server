@@ -180,6 +180,9 @@ const record = {
   },
 
   postRun: async(req, res, next) => {
+    if(!req.body.distance || !req.body.time || !req.body.result || !req.body.created_time || !req.body.end_time || !req.body.coordinates){
+      return next("NON_EXISTENT_DATA");
+    }
     try{
       const game_idx = await matchingModel.newGameIdx();
       const userData = {
@@ -189,7 +192,8 @@ const record = {
         "created_time" : req.body.created_time,
         "end_time" : req.body.end_time,
         "user_idx" : req.user_idx,
-        "game_idx" : game_idx
+        "game_idx" : game_idx,
+        "coordinates" : req.body.coordinates
       };
       const result = await recordModel.postRun(userData);
       return next({"code" : "POST_RUN", result : {"run_idx" : result}});
