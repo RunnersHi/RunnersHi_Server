@@ -1,4 +1,4 @@
-
+const userModel = require("../models/userModel");
 const matchingModel = require("../models/matchingModel");
 const recordModel = require("../models/recordModel");
 
