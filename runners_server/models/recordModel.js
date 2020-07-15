@@ -451,7 +451,8 @@ const record = {
     let index = 0;
     index += 12 * (gender - 1);
     index += 4 * (level - 1);
-    index += (time-1800) / 900;
+    if(time === 5400) index += 4;
+    else index += (time-1800) / 900;
     let userData = userDatas[index];
     userData.nickname = "밍찔이";
     userData.image = 8;
