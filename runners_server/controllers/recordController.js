@@ -196,7 +196,7 @@ const record = {
         "coordinates" : req.body.coordinates
       };
       const result = await recordModel.postRun(userData);
-      return next({"code" : "POST_RUN", result : {"run_idx" : result}});
+      return next({"code" : "POST_RUN", result : {"run_idx" : result, "game_idx" : game_idx}});
     } catch(error){
       return next(error);
     }
