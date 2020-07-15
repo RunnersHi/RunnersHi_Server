@@ -234,7 +234,7 @@ module.exports = matching => {
                 console.log("stopRunning roomName error");
                 matching.to(socket.id).emit("error");
             }
-            else if (!distance || typeof distance !== 'number') {
+            else if (distance !== 0 && !distance || typeof distance !== 'number') {
                 console.log("stopRunning distance error");
                 matching.to(socket.id).emit("error");
             }
@@ -305,7 +305,7 @@ module.exports = matching => {
                 console.log("compareResult roomName error");
                 matching.to(socket.id).emit("error");
             }
-            else if (!distance || typeof distance !== 'number') {
+            else if (distance !== 0 && !distance || typeof distance !== 'number') {
                 console.log("compareResult distance error");
                 matching.to(socket.id).emit("error");
             }
