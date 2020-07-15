@@ -256,7 +256,7 @@ const record = {
     if(flag === 3 || flag === 4 || flag === 5){
 
       let query =
-          `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as time
+          `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as created_time, time
      FROM run r
      WHERE user_idx = ? AND ((r.time / 60) / (r.distance / 1000)) < 100
      ORDER BY `;
@@ -273,13 +273,13 @@ const record = {
       }
       query += ` LIMIT 1`;
       const rows = await pool.queryParamArr(query, [user_idx]);
-      result.littleContent = rows[0].time;
+      result.littleContent = rows[0].created_time;
 
       switch(flag){
       case 3:
       case 5:
-        const pace = await record.getPace(rows[0].pace);
-        result.option = pace.pace_minute + "\'" + pace.pace_second + "\"";
+        const pace = await record.getPace(rows[0].time, rows[0].distance);
+        result.option = pace.pace_minute + "'" + pace.pace_second + `"`;
         break;
       case 4:
         result.option = rows[0].distance;
