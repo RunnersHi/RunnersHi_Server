@@ -1,5 +1,6 @@
 //mysql connection
 const pool = require('./pool');
+const recordModel = require('../models/recordModel');
 
 //cipher
 const jwt = require("jsonwebtoken");
@@ -134,7 +135,7 @@ const userModel = {
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
                 case 1:
-                case 4:
+                case 5:
                     userData.win++;
                     break;
                 case 2:

@@ -186,14 +186,14 @@ const record = {
     try{
       const game_idx = await matchingModel.newGameIdx();
       const userData = {
-        "distance" : req.body.distance,
-        "time" : req.body.time,
-        "result" : parseInt(req.body.result),
-        "created_time" : req.body.created_time,
-        "end_time" : req.body.end_time,
-        "user_idx" : req.user_idx,
-        "game_idx" : game_idx,
-        "coordinates" : req.body.coordinates
+        distance : req.body.distance,
+        time : req.body.time,
+        result : parseInt(req.body.result),
+        created_time : req.body.created_time,
+        end_time : req.body.end_time,
+        user_idx : req.user_idx,
+        game_idx : game_idx,
+        coordinates : req.body.coordinates
       };
       const result = await recordModel.postRun(userData);
       return next({"code" : "POST_RUN", result : {"run_idx" : result, "game_idx" : game_idx}});
@@ -210,15 +210,20 @@ const record = {
       userData = await userModel.selectRun(userData);
       userData.user_idx = undefined;
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
-      if(distance !== null){
-        userData.pace = distance.pace;
+      const pace = await recordModel.getPace(req.body.time, distance.distance);
+      if(distance){
+        userData.pace_minute = pace.pace_minute;
+        userData.pace_second = pace.pace_second;
         userData.distance = distance.distance;
         userData.time = distance.time;
         userData.isDummy = false;
         return next({"code" : "GET_MY_RECENT", result : userData});
       } else{
         const userData = await recordModel.getDummy(req.body.level, req.body.gender, req.body.time);
-
+        const pace = await recordModel.getPace(req.body.time, userData.distance);
+        userData.pace = undefined;
+        userData.pace_minute = pace.pace_minute;
+        userData.pace_second = pace.pace_second;
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
     } catch(error){
