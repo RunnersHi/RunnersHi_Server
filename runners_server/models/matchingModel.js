@@ -88,14 +88,16 @@ const match = {
             const run_idx = run_result.insertId;
             const coordinate_fields = `latitude, longitude, run_idx`;
             let coordinateArr = [];
-
-            for (var i = 0; i < coordinates.length; i++) {
-                let temp = Object.values(coordinates[i]);
-                temp.push(run_idx);
-                coordinateArr.push(temp);
+            if (coordinates.length !== 0) {
+                for (var i = 0; i < coordinates.length; i++) {
+                    let temp = Object.values(coordinates[i]);
+                    temp.push(run_idx);
+                    coordinateArr.push(temp);
+                }
+                const coordinate_query = `INSERT INTO coordinate (${coordinate_fields}) VALUES ?`;
+                const coordinate_result = await queryParamArr(coordinate_query, [coordinateArr]);
             }
-            const coordinate_query = `INSERT INTO coordinate (${coordinate_fields}) VALUES ?`;
-            const coordinate_result = await queryParamArr(coordinate_query, [coordinateArr]);
+            
             return run_idx;
         }
         catch (err) {
