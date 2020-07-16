@@ -301,6 +301,7 @@ module.exports = matching => {
 
         socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
             console.log(socket.id, " send compareResult");
+            console.log(`RoomName: ${roomName}, Distance: ${distance}, Time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
             if (!roomName || typeof roomName !== 'string') {
                 console.log("compareResult roomName error");
                 matching.to(socket.id).emit("error");
