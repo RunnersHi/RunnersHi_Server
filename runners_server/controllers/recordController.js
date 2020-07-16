@@ -209,6 +209,8 @@ const record = {
       //console.log(userData);
 
       userData.user_idx = undefined;
+
+      console.log("밍찔이" + userData.result);
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);

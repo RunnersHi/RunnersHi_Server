@@ -18,7 +18,6 @@ const record = {
   },
 
   getPace: async (time, distance) => {
-
     let pace_minute = ( time /60 ) / ( distance / 1000 );
     let pace_second = (pace_minute - Math.floor(pace_minute)) * 60;
 
@@ -86,9 +85,9 @@ const record = {
       run_idx =  "${run_idx}"`;
 
     const data = await pool.queryParam(query);
-    const coordiData = await pool.queryParam(coordinate);
+    let coordiData = await pool.queryParam(coordinate);
 
-    if(data.length === 0 || coordiData.length === 0) {
+    if(data.length === 0 ) {
       return "WRONG_PARM";
     }
 
@@ -105,7 +104,6 @@ const record = {
   },
 
   getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
-
     const query = 
     `SELECT 
       r.distance, 

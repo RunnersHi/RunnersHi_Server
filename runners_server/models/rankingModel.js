@@ -98,7 +98,7 @@ const ranking = {
     const query = 
     `
     SELECT u.nickname, u.image, u.level,
-    COUNT(IF(r.result = 1, 2, null)) as win,
+    COUNT(IF(r.result = 1, 1, null) || IF(r.result = 5, 1, null)) as win,
     COUNT(IF(r.result = 2, 1, null)) as lose
     FROM user u 
     LEFT JOIN run r ON u.user_idx = r.user_idx
@@ -109,10 +109,8 @@ const ranking = {
     if(data.length === 0) {
       return {code : "WRONG_PARM", result : {}};
     } 
-
     return data[0];
   }
-  
 };
 
 module.exports = ranking;
