@@ -12,7 +12,9 @@ module.exports = matching => {
     matching.on('connection', socket =>{
         console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
 
-        matching.to(socket.id).emit("start", socket.id);
+        matching.to(socket.id).emit("start", [socket.id]);
+
+        console.log(`Now Socket: ${socket.adapter.rooms}`)
 
         setInterval(function(){
             matching.to(socket.id).emit("ping");
@@ -297,6 +299,7 @@ module.exports = matching => {
 
         socket.on("compareResult", (param) => {
             console.log(`${socket.id} sent compareResult with roomName: ${param.roomName}, distance: ${param.distance}, time: ${param.time}, coordinates: ${param.coordinates}, createdTime: ${param.createdTime}, endTime: ${param.endTime}`);
+            
             if (!param.roomName || typeof param.roomName !== 'string') {
                 console.log("compareResult roomName error");
                 matching.to(socket.id).emit("error");
