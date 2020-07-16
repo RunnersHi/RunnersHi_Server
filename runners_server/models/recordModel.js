@@ -16,19 +16,36 @@ const record = {
     const image = await pool.queryParam(query);
     return image;
   },
+
+  getPace: async (time, distance) => {
+
+    let pace_minute = ( time /60 ) / ( distance / 1000 );
+    let pace_second = (pace_minute - Math.floor(pace_minute)) * 60;
+
+    const result = {};
+    result.pace_minute = Math.floor(pace_minute);
+    result.pace_second = Math.floor(pace_second);
+
+    return result;
+  },
+
   getAllRecords: async (id) => {
 
     const query = 
-    `SELECT SUBSTR(r.created_time, 1, 10) as date, r.distance, 
-    TIMEDIFF(r.end_time, r.created_time) as time, r.run_idx, r.result, r.game_idx
-    FROM user u, run r
-    WHERE u.user_idx = "${id}" AND u.user_idx = r.user_idx 
-    ORDER BY r.run_idx`;
+    `SELECT 
+      SUBSTR(r.created_time, 1, 10) as date, r.distance, 
+      TIMEDIFF(r.end_time, r.created_time) as time, r.run_idx, r.result, r.game_idx
+    FROM 
+      user u, run r
+    WHERE 
+      u.user_idx = "${id}" AND u.user_idx = r.user_idx 
+    ORDER BY 
+      r.run_idx`;
 
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+      return "SUCCESS_BUT_NO_DATA";
     } 
     const final_data = [];
 
@@ -49,18 +66,24 @@ const record = {
   getDetailRecord: async(user_idx, run_idx) => {
    
     const query = 
-    `SELECT MONTH(created_time) as month,
-    DAY(created_time) as day,
-    TIMEDIFF(r.end_time, r.created_time) as time,
-    TIME(created_time) as create_time,
-    TIME(end_time) as end_time
-    FROM run r
-    WHERE user_idx = "${user_idx}" AND run_idx = "${run_idx}"`;
+    `SELECT 
+      MONTH(created_time) as month,
+      DAY(created_time) as day,
+      TIMEDIFF(r.end_time, r.created_time) as time,
+      TIME(created_time) as create_time,
+      TIME(end_time) as end_time
+    FROM 
+      run r
+    WHERE 
+      user_idx = "${user_idx}" AND run_idx = "${run_idx}"`;
 
     const coordinate =  
-    `SELECT latitude, longitude 
-    FROM coordinate
-    WHERE run_idx =  "${run_idx}"`;
+    `SELECT 
+      latitude, longitude 
+    FROM 
+      coordinate
+    WHERE 
+      run_idx =  "${run_idx}"`;
 
     const data = await pool.queryParam(query);
     const coordiData = await pool.queryParam(coordinate);
@@ -78,25 +101,31 @@ const record = {
       coordinate: coordiData
     };
 
-    console.log(real_result);
-
     return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
-   
   },
 
   getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
 
     const query = 
-    `SELECT r.distance, r.time, r.result, (r.time * 1000)/r.distance as pace
-    FROM run r
-    WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}"`;
+    `SELECT 
+      r.distance, 
+      r.time,
+      TIMEDIFF(r.end_time, r.created_time) as time_diff, 
+      r.result
+    FROM 
+      run r
+    WHERE 
+      r.user_idx = "${user_idx}" 
+    AND 
+      r.run_idx = "${run_idx}"`;
 
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
       return "WRONG_PARM";
     }
+
+    const pace_data = await record.getPace(data[0].time, data[0].distance);
     
     let result_data=2;
     if( data[0].result === 1 || data[0].result === 5 )
@@ -104,8 +133,9 @@ const record = {
 
       const final_data = {
         distance: data[0].distance,
-        time: data[0].time,
-        pace: data[0].pace,
+        time: data[0].time_diff,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second,
         result: result_data
        };
       return {code: "USER_RECORD_SUCCESS", result: final_data};
@@ -127,17 +157,22 @@ const record = {
     }
     return result;
   },
+  getRecentRecordByTime: async(user_idx, time)=>{
+    const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
+    FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
+    const rows = await pool.queryParamArr(query, [user_idx, time]);
+    if(rows.length === 0) return false;
+    else return rows[0];
+  },
 
   getUserRecentRecord: async(id) => {
 
     const query = 
-
     `
     SELECT 
-      r.distance, 
-      TIMEDIFF(r.end_time, r.created_time) as time, 
-      (r.time * 1000)/r.distance as pace,  
-      r.result, r.game_idx, 
+      r.distance, r.time,
+      TIMEDIFF(r.end_time, r.created_time) as time_diff,  
+      r.result, r.game_idx,
       SUBSTR(r.created_time, 1, 10) as created_time
     FROM 
       run r
@@ -153,57 +188,6 @@ const record = {
     }
 
     return data;
-
-//     const final_data = {
-//       distance: data[0].distance,
-//       time: data[0].time,
-//       pace: data[0].pace,
-//       result: data_win_lose
-//     };
-
-
-    // let result_num;
-    // result_num = 1;
-    // if(data[0].result === 1 || data[0].result === 5) {
-    //   result_num = 0;
-    // } 
-    
-    // final_data.push( {
-    //   date: data[0].date,
-    //   distance: data[0].distance,
-    //   time: data[0].time,
-    //   run_idx: data[0].run_idx,
-    //   result: result_num,
-    //   game_idx: data[0].game_idx,
-    // });
-
-    // return {code: "GET_RECENT_RECORD_SUCCESS", result: final_data};
-    
-  },
-
-  getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
-
-    const query = 
-    `SELECT r.distance, TIMEDIFF(r.end_time, r.created_time) as time, r.result, (r.time * 1000)/r.distance as pace
-    FROM run r
-    WHERE r.user_idx = "${user_idx}" 
-    AND r.run_idx = "${run_idx}"`;
-
-    const data = await pool.queryParam(query);
-    
-
-    if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
-    }
-    const final_data = {
-      distance: data[0].distance,
-      time: data[0].time,
-      pace: data[0].pace,
-      result: (data[0].result === 1 || data[0].result === 5) ? 1 : 2
-    };
-    
-    return {code: "USER_RECORD_SUCCESS", result: final_data};
-
   },
 
   //상대방 기록보기
@@ -212,7 +196,8 @@ const record = {
      const query = 
      `
      SELECT 
-      r.distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time * 1000)/r.distance as pace
+      r.distance, r.time,
+      TIMEDIFF(r.end_time, r.created_time) as diff_time
      FROM 
       run r
      WHERE 
@@ -231,16 +216,17 @@ const record = {
      if(data.length === 0) {
       return "WRONG_PARM";
     } 
+    const pace_data = await record.getPace(data[0].time, data[0].distance);
 
      const final_data = {
        nickname: user_nickname[0].nickname,
        distance: data[0].distance,
-       time: data[0].time,
-       pace: data[0].pace
+       time: data[0].diff_time,
+       pace_minute: pace_data.pace_minute,
+       pace_second: pace_data.pace_second
      };
  
       return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
-     
   },
   
   getBadgeDetail: async(user_idx, flag) => {
@@ -253,12 +239,13 @@ const record = {
       "최장 거리를 경신하신\n러너에게 드리는 뱃지입니다", "최저 페이스를 경신하신\n러너에게 드리는 뱃지입니다",
     "50시간 러닝을 달성하신\n러너에게 드리는 뱃집입니다", "100시간 러닝을 달성하신\n러너에게 드리는 뱃지입니다",
     "150시간 러닝을 달성하신\n러너에게 드리는 뱃지입니다", "10일 연속 러닝을 하신\n러너에게 드리는 뱃지입니다",
-    "연속 5승을 달성하신\n러너에게 드리는 뱃지입니다", "연속 10승을 달성하신\n러너에게 드리는 뱃지입니다"];
+    "연속 5승을 하신\n러너에게 드리는 뱃지입니다", "연속 10승을 하신\n러너에게 드리는 뱃지입니다"];
 
-    const littleContents = ["알을 깨고 나오셨군요!", "러닝 병아리로 거듭나셨네요!", "50승 멘트줘",
+
+    const littleContents = ["알을 깨고 나오셨군요!", "러닝 병아리로 거듭나셨네요!", "오늘 저녁은 치킨이닭!",
     "최고 페이스 날짜", "최장 거리 날짜", "최저 페이스 날짜",
-    "티끌모아 태산이에요\n100시간이 코 앞이에요", "100시간 멘트주세요", "150시간 멘트주세요",
-    "스트라이크!\n지치지 않는 체력이 대단해요", "5승 멘트주세요", "10승 멘트주세요"];
+    "티끌모아 태산이에요\n100시간이 코 앞이에요", "당신은 아무래도\n좀 달릴 줄 아는 러너인 것 같군요", "150시간의 러닝을 통해\n더욱 건강해진 것을 축하해요",
+    "스트라이크!\n지치지 않는 체력이 대단해요", "연속 5승으로 만족하실 건 아니죠?\n연속 10승에 도전해보세요", "이 러너가 요즘 잘 달린다는\n소문이 있던데요?"];
 
     const result =  {
       title : titles[flag],
@@ -270,7 +257,7 @@ const record = {
     if(flag === 3 || flag === 4 || flag === 5){
 
       let query =
-          `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as time
+          `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as created_time, time
      FROM run r
      WHERE user_idx = ? AND ((r.time / 60) / (r.distance / 1000)) < 100
      ORDER BY `;
@@ -287,17 +274,16 @@ const record = {
       }
       query += ` LIMIT 1`;
       const rows = await pool.queryParamArr(query, [user_idx]);
-      result.littleContent = rows[0].time;
+      result.littleContent = rows[0].created_time;
 
       switch(flag){
       case 3:
-        result.option = rows[0].pace;
+      case 5:
+        const pace = await record.getPace(rows[0].time, rows[0].distance);
+        result.option = pace.pace_minute + "'" + pace.pace_second + `"`;
         break;
       case 4:
         result.option = rows[0].distance;
-        break;
-      case 5:
-        result.option = rows[0].pace;
       }
     }
     return ({"code" : "BADGE_DETAIL",
@@ -311,25 +297,10 @@ const record = {
   },
   
   updateBadgeByWin: async(user_idx, win)=>{
-    const query = `SELECT COUNT(IF(result = 1 OR result = 2)) as win FROM run WHERE user_idx = ?`;
+    const query = `SELECT COUNT(IF(result = 1, 1, null) OR IF(result = 5, 1, null)) as win FROM run WHERE user_idx = ?`;
     const rows = await pool.queryParamArr(query, [user_idx]);
     return win <= rows[0].win;
   },
-
-
-  // getSumWin: async(user_idx) => {
-
-  //   const query = 
-  //   `SELECT
-  //     COUNT(IF(r.result = 1, 5, null)) as win,
-  //     FROM run r
-  //     WHERE r.user_idx = ${user_idx}
-  //     GROUP BY r.user_idx
-  //     `;
-
-  //     const sum = await pool.queryParam(query);
-  //     return sum;
-  // },
 
   getSumRunningTime: async(user_idx) => {
     const query =
@@ -339,8 +310,7 @@ const record = {
       WHERE user_idx = ${user_idx}
       `;
 
-      const data = await pool.queryParam(query);
-      return data;
+    return await pool.queryParam(query);
   },
 
   getContinuityWin: async(user_idx) => {
@@ -357,9 +327,9 @@ const record = {
       if(data.length < 5)
         return 0;
       
-      let count;
+      let count = 0;
       let max_count =0;
-      for(var i = 0; i<data.length; i++) {
+      for(let i = 0; i<data.length; i++) {
         if(data[i].result === 1 || data[i].result === 5) {
           count++;
         }
@@ -376,23 +346,26 @@ const record = {
   getContinuityRunning: async(user_idx) => {
     const query =
       `
-      SELECT 
+      SELECT DISTINCT
         DATEDIFF(NOW(), created_time) as diff 
       FROM 
         run
       WHERE 
         user_idx = ${user_idx}
       ORDER BY 
-        date_diff
+        diff
       `;
 
       const data = await pool.queryParam(query);
+
+      if(data.length < 10)
+        return 0;
 
       let start = data[0].diff;
       let continueous = 0;
       let max = 0;
 
-      for(var i=1; i<data.length; i++) {
+      for(let i=1; i<data.length; i++) {
         if( (start+1) === data[i].diff) {
           start++;
           continueous++;
@@ -428,12 +401,63 @@ const record = {
 
     const distanceRows = await pool.queryParamArr(query, [user_idx]);
 
-    query = `SELECT distance FROM run WHERE user_idx = ? 
+    query = `SELECT distance FROM run r WHERE user_idx = ? 
       AND ((r.time / 60) / (r.distance / 1000)) < 100 AND distance > ?`;
 
     const rows = await pool.queryParamArr(query, [user_idx, distanceRows[0].distance]);
 
     return rows.length !== 0;
+  },
+  postRun: async(userData) => {
+    const run_query = `INSERT INTO run (distance, time, result, created_time, end_time, user_idx, game_idx) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    const run_result = await pool.queryParamArr(run_query, [userData.distance,
+      userData.time, userData.result, userData.created_time, userData.end_time, userData.user_idx, userData.game_idx]);
+
+    const run_idx = run_result.insertId;
+    const coordinate_query = `INSERT INTO coordinate SET ?, run_idx = ${run_idx}`;
+    await pool.queryParamArr(coordinate_query, userData.coordinates);
+
+    return run_idx;
+  },
+  getDummy : async(level, gender, time)=>{
+    let userDatas = [
+      {gender : 1, level : 1, time : "00:30:00", distance : 3760, pace : 7.978723404, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "00:45:00", distance : 5600, pace : 8.035714286, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "01:00:00", distance : 6980, pace : 8.595988539, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "01:30:00", distance : 9780, pace : 9.202453988, win : 3, lose : 2},
+      {gender : 1, level : 2, time : "00:30:00", distance : 4760, pace : 6.302521008, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "00:45:00", distance : 6900, pace : 6.52173913, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "01:00:00", distance : 8550, pace : 7.01754386, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "01:30:00", distance : 12010, pace : 7.493755204, win : 5, lose : 3},
+      {gender : 1, level : 3, time : "00:30:00", distance : 6010, pace : 4.991680532, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "00:45:00", distance : 8020, pace : 5.610972569, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "01:00:00", distance : 10230, pace : 5.865102639, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "01:30:00", distance : 14890, pace : 6.04432505, win : 4, lose : 1},
+      {gender : 2, level : 1, time : "00:30:00", distance : 2740, pace : 10.94890511, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "00:45:00", distance : 3500, pace : 12.85714286, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "01:00:00", distance : 4300, pace : 13.95348837, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "01:30:00", distance : 5700, pace : 15.78947368, win : 3, lose : 2},
+      {gender : 2, level : 2, time : "00:30:00", distance : 3520, pace : 8.522727273, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "00:45:00", distance : 4980, pace : 9.036144578, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "01:00:00", distance : 5500, pace : 10.90909091, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "01:30:00", distance : 6980, pace : 12.89398281, win : 5, lose : 3},
+      {gender : 2, level : 3, time : "00:30:00", distance : 4300, pace : 6.976744186, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "00:45:00", distance : 6020, pace : 7.475083056, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "01:00:00", distance : 7320, pace : 8.196721311, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "01:30:00", distance : 9020, pace : 9.977827051, win : 4, lose : 1},
+    ];
+    let index = 0;
+    index += 12 * (gender - 1);
+    index += 4 * (level - 1);
+    if(time === 5400) index += 3;
+    else index += (time-1800) / 900;
+    let userData = userDatas[index];
+    userData.nickname = "밍찔이";
+    userData.image = 8;
+    userData.isDummy = true;
+
+    return userData;
   }
 };
 
