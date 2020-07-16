@@ -155,7 +155,7 @@ module.exports = matching => {
         });
 
         socket.on('opponentInfo', (roomName) => {
-            console.log(socket.id, " sent opponentInfo at: ", roomName);
+            console.log(socket.id, " sent opponentInfo with roomName: ", roomName);
             if (!roomName || typeof roomName !== 'string') {
                 console.log('opponentInfo roomName error');
                 matching.to(socket.id).emit("error");
@@ -223,30 +223,30 @@ module.exports = matching => {
             }
         });
 
-        socket.on("stopRunning", (roomName, distance, time, coordinates, createdTime, endTime) => {
-            console.log(`${socket.id} sent stopRunning with roomName: ${roomName}, distance: ${distance}, time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
+        socket.on("stopRunning", (param) => {
+            console.log(`${socket.id} sent stopRunning with roomName: ${param.roomName}, distance: ${param.distance}, time: ${param.time}, coordinates: ${param.coordinates}, createdTime: ${param.createdTime}, endTime: ${param.endTime}`);
 
-            if (!roomName || typeof roomName !== 'string') {
+            if (!param.roomName || typeof param.roomName !== 'string') {
                 console.log("stopRunning roomName error");
                 matching.to(socket.id).emit("error");
             }
-            else if (distance !== 0 && !distance || typeof distance !== 'number') {
+            else if (param.distance !== 0 && !distance || typeof param.distance !== 'number') {
                 console.log("stopRunning distance error");
                 matching.to(socket.id).emit("error");
             }
-            else if (!time || typeof time !== 'number') {
+            else if (!param.time || typeof param.time !== 'number') {
                 console.log('stopRunning time error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!coordinates || typeof coordinates !== 'object') {
+            else if (!param.coordinates || typeof param.coordinates !== 'object') {
                 console.log('stopRunning coordinates error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!createdTime || typeof createdTime !== 'string') {
+            else if (!param.createdTime || typeof param.createdTime !== 'string') {
                 console.log('stopRunning createdTime error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!endTime || typeof endTime !== 'string') {
+            else if (!param.endTime || typeof param.endTime !== 'string') {
                 console.log('stopRunning endTime error');
                 matching.to(socket.id).emit("error");
             }
@@ -256,12 +256,12 @@ module.exports = matching => {
                     const opponent = socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id);
                     socket.leave("roomName", async () => {
                         if (socket.adapter.rooms[roomName].length === 1) {
-                            socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = distance;
-                            await matchingModel.storeRunningData(distance, time, coordinates, 3, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+                            socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = param.distance;
+                            await matchingModel.storeRunningData(param.distance, param.time, param.coordinates, 3, param.createdTime, param.endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
                             matching.to(opponent.id).emit("opponentStopped", roomName);
                         }
                         else {
-                            await matchingModel.storeRunningData(distance, time, coordinates, 4, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+                            await matchingModel.storeRunningData(param.distance, param.time, param.coordinates, 4, param.createdTime, param.endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
                         }
                         matching.to(socket.id).emit("stopRunning");
                     })
@@ -295,30 +295,30 @@ module.exports = matching => {
             }
         });
 
-        socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
-            console.log(`${socket.id} sent compareResult with roomName: ${roomName}, distance: ${distance}, time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
-            if (!roomName || typeof roomName !== 'string') {
+        socket.on("compareResult", (param) => {
+            console.log(`${socket.id} sent compareResult with roomName: ${param.roomName}, distance: ${param.distance}, time: ${param.time}, coordinates: ${param.coordinates}, createdTime: ${param.createdTime}, endTime: ${param.endTime}`);
+            if (!param.roomName || typeof param.roomName !== 'string') {
                 console.log("compareResult roomName error");
                 matching.to(socket.id).emit("error");
             }
-            else if (distance !== 0 && !distance || typeof distance !== 'number') {
+            else if (param.distance !== 0 && !param.distance || typeof param.distance !== 'number') {
                 console.log("compareResult distance error");
                 matching.to(socket.id).emit("error");
             }
-            else if (!time || typeof time !== 'number') {
+            else if (!param.time || typeof param.time !== 'number') {
                 console.log('compareResult time error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!coordinates || typeof coordinates !== 'object') {
+            else if (!param.coordinates || typeof param.coordinates !== 'object') {
                 console.log('typeof coordinates: ', typeof coordinates);
                 console.log('compareResult coordinates error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!createdTime || typeof createdTime !== 'string') {
+            else if (!param.createdTime || typeof param.createdTime !== 'string') {
                 console.log('compareResult createdTime error');
                 matching.to(socket.id).emit("error");
             }
-            else if (!endTime || typeof endTime !== 'string') {
+            else if (!param.endTime || typeof param.endTime !== 'string') {
                 console.log('compareResult endTime error');
                 matching.to(socket.id).emit("error");
             }
@@ -338,7 +338,7 @@ module.exports = matching => {
                         else {
                             result = 5
                         }
-                        const runIdx = await matchingModel.storeRunningData(distance, time, coordinates, result, createdTime, endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
+                        const runIdx = await matchingModel.storeRunningData(param.distance, param.time, param.coordinates, param.result, param.createdTime, param.endTime, user.idx, socket.adapter.rooms[roomName].gameIdx);
                         matching.to(socket.id).emit("compareResult", gameIdx, runIdx);
                     })
                 }
