@@ -86,7 +86,7 @@ const ranking = {
       const pace_data = await recordModel.getPace(recentrecord[0].time, recentrecord[0].distance);
 
       if(recentrecord === null || badge === null || pace_data == null) 
-        return next("ACCESS_NON_DATA_FOR_IDX");
+        return next("WRONG_PARM");
 
       final_data = user_data;
       final_data.distance = recentrecord[0].distance;

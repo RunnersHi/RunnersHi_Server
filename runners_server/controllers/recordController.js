@@ -222,12 +222,16 @@ const record = {
         userData.pace = undefined;
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
+
+        const isUpdate = record.updateBadge(req.params.user_idx);
+        
+        console.log(isUpdate);
+
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
     } catch(error){
       return next(error);
     }
-
   },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
@@ -308,7 +312,7 @@ const record = {
 
       await recordModel.updateBadge(req.params.user_idx, badgeFlag);
 
-      return next();
+      return true;
     } catch(error){
       return next(error);
     }

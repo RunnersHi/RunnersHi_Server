@@ -74,7 +74,7 @@
   },
   "SUCCESS_BUT_NO_DATA": {
     "status": 200,
-    "success": true,
+    "success": false,
     "message": "조회 성공 BUT 데이터는 없습니다.",
     "result" : ""
   },
