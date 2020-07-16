@@ -300,7 +300,9 @@ module.exports = matching => {
             else {
                 try {
                     socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id).distance = distance;
-                    matching.to(socket.id).emit("endRunning", roomName);
+                    if (socket.adapter.rooms[roomName].userList.find(user => user.id !== socket.id).distance >= 0) {
+                        matching.to(roomName).emit("endRunning", roomName);
+                    }
                 }
                 catch (err) {
                     console.log("endRunning error");
