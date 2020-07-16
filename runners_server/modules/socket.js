@@ -10,7 +10,7 @@ let roomNum = 1;
 
 module.exports = matching => {
     matching.on('connection', socket =>{
-        console.log("소켓 사용자 들어왔다 at ", moment().format("YYYY-MM-DD HH:MM:SS"));
+        console.log("소켓 사용자 들어왔다 at ", moment().format("LTS"));
 
         matching.to(socket.id).emit("start", [socket.id]);
 
