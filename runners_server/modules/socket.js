@@ -16,7 +16,7 @@ module.exports = matching => {
 
         setInterval(function(){
             matching.to(socket.id).emit("ping");
-        }, 9000);
+        }, 3000);
 
         socket.on('pong', () => {
 
@@ -310,7 +310,7 @@ module.exports = matching => {
                 matching.to(socket.id).emit("error");
             }
             else if (!param.coordinates || typeof param.coordinates !== 'object') {
-                console.log('typeof coordinates: ', typeof coordinates);
+                console.log('typeof coordinates: ', typeof param.coordinates);
                 console.log('compareResult coordinates error');
                 matching.to(socket.id).emit("error");
             }
