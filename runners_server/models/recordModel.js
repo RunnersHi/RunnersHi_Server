@@ -196,7 +196,7 @@ const record = {
      const query = 
      `
      SELECT 
-      r.distance, r.time,
+      r.distance, r.time, r.user_idx,
       TIMEDIFF(r.end_time, r.created_time) as diff_time
      FROM 
       run r
@@ -205,12 +205,14 @@ const record = {
      AND 
       r.user_idx != "${user_idx}"`;
 
-     const query_nickname = `
-     SELECT nickname 
-     FROM user 
-     WHERE user_idx = "${user_idx}"`;
  
      const data = await pool.queryParam(query);
+
+    const query_nickname = `
+     SELECT nickname 
+     FROM user 
+     WHERE user_idx = "${data[0].user_idx}"`;
+
      const user_nickname = await pool.queryParam(query_nickname);
 
      if(data.length === 0) {
