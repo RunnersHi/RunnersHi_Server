@@ -14,7 +14,7 @@ module.exports = matching => {
 
         matching.to(socket.id).emit("start", [socket.id]);
 
-        console.log(`Now Socket: ${socket.adapter.rooms}`)
+        console.log(`Now Socket: ${Object.entries(socket.adapter.rooms)}`)
 
         setInterval(function(){
             matching.to(socket.id).emit("ping");
