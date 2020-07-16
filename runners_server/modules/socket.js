@@ -17,13 +17,13 @@ module.exports = matching => {
         console.log(`Now Socket: `);
         console.table(socket.adapter.rooms);
 
-        // setInterval(function(){
-        //     matching.to(socket.id).emit("ping");
-        // }, 3000);
+        setInterval(function(){
+            matching.to(socket.id).emit("ping");
+        }, 3000);
 
-        // socket.on('pong', () => {
+        socket.on('pong', () => {
 
-        // });
+        });
 
         socket.on('test', (arr) => {
             console.log("typeof arr: ", typeof arr);
