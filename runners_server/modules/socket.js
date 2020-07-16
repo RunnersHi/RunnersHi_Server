@@ -23,7 +23,7 @@ module.exports = matching => {
         });
 
         socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
-            console.log(socket.id, " send joinRoom");
+            console.log(`${socket.id} sent joinRoom with time: ${time}, wantGender: ${wantGender}, leftTime: ${leftTime}`);
 
             if (!token || typeof token !== 'string') {
                 console.log("joinRoom parameter error");
@@ -97,8 +97,7 @@ module.exports = matching => {
         });
 
         socket.on('startCount', (roomName) => {
-            console.log(socket.id, " send startCount");
-            console.log("Given RoomName: ", roomName);
+            console.log(`${socket.id} sent startCount with roomName: ${roomName}`);
             if (!roomName || typeof roomName !== 'string') {
                 console.log("startCount roomName error");
                 matching.to(socket.id).emit("error");
@@ -122,7 +121,7 @@ module.exports = matching => {
                         }
                     }, 3000);
                     socket.on("stopCount", (roomName) => {
-                        console.log(socket.id, " send stopCount");
+                        console.log(`${socket.id} sent stopCount with roomName: ${roomName}`);
                         if (!roomName || typeof roomName !== 'string') {
                             console.log("stopCount roomName error");
                             matching.to(socket.id).emit("error");
@@ -136,7 +135,7 @@ module.exports = matching => {
                         }
                     });
                     socket.on("endCount", (roomName) => {
-                        console.log(socket.id, " send endCount in roomName ", roomName);
+                        console.log(socket.id, " sent endCount in roomName: ", roomName);
                         if (!roomName || typeof roomName !== 'string') {
                             console.log("endCount roomName error");
                             matching.to(socket.id).emit("error");
@@ -156,7 +155,7 @@ module.exports = matching => {
         });
 
         socket.on('opponentInfo', (roomName) => {
-            console.log(socket.id, " send opponentInfo at ", roomName);
+            console.log(socket.id, " sent opponentInfo at: ", roomName);
             if (!roomName || typeof roomName !== 'string') {
                 console.log('opponentInfo roomName error');
                 matching.to(socket.id).emit("error");
@@ -168,16 +167,13 @@ module.exports = matching => {
                         opponent.level, opponent.win, opponent.lose, opponent.image);
                 }
                 catch(err) {
-
                     throw (err);
                 }
             }
         });
 
         socket.on("readyToRun", (roomName) => {
-            console.log(socket.id, " send readyToRun");
-            console.log("ReadyToRun RoomName: ", roomName);
-            console.log("ReadyToRun Room: ", socket.adapter.rooms[roomName]);
+            console.log(socket.id, " sent readyToRun with roomName: ", roomName);
             if (!roomName || typeof roomName !== 'string') {
                 console.log('readyToRun roomName error');
                 matching.to(socket.id).emit("error");
@@ -206,7 +202,7 @@ module.exports = matching => {
         });
 
         socket.on("kmPassed", (roomName, km) => {
-            console.log(socket.id, " send kmPassed");
+            console.log(`${socket.id} sent kmPassed with roomName: ${roomName}, km: ${km}`);
             if (!roomName || typeof roomName !== 'string') {
                 console.log('kmPassed roomName error');
                 matching.to(socket.id).emit("error");
@@ -228,7 +224,7 @@ module.exports = matching => {
         });
 
         socket.on("stopRunning", (roomName, distance, time, coordinates, createdTime, endTime) => {
-            console.log(socket.id, " send stopRunning");
+            console.log(`${socket.id} sent stopRunning with roomName: ${roomName}, distance: ${distance}, time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
 
             if (!roomName || typeof roomName !== 'string') {
                 console.log("stopRunning roomName error");
@@ -278,7 +274,7 @@ module.exports = matching => {
         });
 
         socket.on("endRunning", (roomName, distance) => {
-            console.log(socket.id, " send endRunning");
+            console.log(`${socket.id} sent endRunning with roomName: ${roomName}, distance: ${distance}`);
             if (!roomName || typeof roomName !== 'string') {
                 console.log("endRunning roomName error");
                 matching.to(socket.id).emit("error");
@@ -300,8 +296,7 @@ module.exports = matching => {
         });
 
         socket.on("compareResult", (roomName, distance, time, coordinates, createdTime, endTime) => {
-            console.log(socket.id, " send compareResult");
-            console.log(`RoomName: ${roomName}, Distance: ${distance}, Time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
+            console.log(`${socket.id} sent compareResult with roomName: ${roomName}, distance: ${distance}, time: ${time}, coordinates: ${coordinates}, createdTime: ${createdTime}, endTime: ${endTime}`);
             if (!roomName || typeof roomName !== 'string') {
                 console.log("compareResult roomName error");
                 matching.to(socket.id).emit("error");
@@ -315,6 +310,7 @@ module.exports = matching => {
                 matching.to(socket.id).emit("error");
             }
             else if (!coordinates || typeof coordinates !== 'object') {
+                console.log('typeof coordinates: ', typeof coordinates);
                 console.log('compareResult coordinates error');
                 matching.to(socket.id).emit("error");
             }
