@@ -137,5 +137,11 @@
     "success" : true,
     "message" : "get dummy data",
     "result" : ""
+  },
+  "NO_OPPONENT" : {
+    "status" : 200,
+    "success" : false,
+    "message" : "no opponent",
+    "result" : ""
   }
 }
