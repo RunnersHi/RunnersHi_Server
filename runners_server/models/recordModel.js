@@ -456,7 +456,7 @@ const record = {
     userData.isDummy = true;
 
     return userData;
-  }
+  },
 };
 
 module.exports = record;
