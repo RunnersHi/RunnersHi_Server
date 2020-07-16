@@ -23,14 +23,16 @@
 
 ###  :loudspeaker: 핵심 기능
 
-**1. 실시간 매칭**   
+**1. 실시간 매칭**     
+
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningmain.PNG" width="20%" height="50%">   
 
 - 러닝목표시간, 러너의 성별에 맞는 사람을 실시간으로 매칭한다.
    - 매칭이 된다면, 소켓 통신을 통해 상대방 러너와 대결을 시작한다.
    - 매칭이 되지 않는다면, 과거의 자신과 대결하게 된다.
 
-**2. 러닝**   
+**2. 러닝**    
+
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="20%" height="50%">   
 
 - 실제 달리고 있는 거리, 시간, 페이스 등을 실시간으로 알려준다. 
@@ -38,7 +40,8 @@
 - 음성피드백을 통해, 현재 몇 시간이 남았는지 알려준다. 
 - 자신이 달렸던 길을 좌표, 지도를 통해 경로를 그려준다. 
 
-**3. 러닝 기록**
+**3. 러닝 기록**   
+
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningrecord.PNG" width="20%" height="50%">   
 
 - 이전에 달렸던 나의 러닝 기록들을 볼 수 있다.
@@ -118,9 +121,9 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
 
 
 ### ⚙️ Dependencies
+```
 
-------------
-"dependencies": {
+   "dependencies": {
     "base64url": "^3.0.1",
     "clean-css": "^4.2.3",
     "cookie-parser": "~1.4.4",
@@ -141,8 +144,8 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
     "pug": "2.0.0-beta11",
     "socket.io": "^2.3.0"
   }
->  
 
+```
 
 ### 💻 역할분담
 
