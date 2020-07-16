@@ -115,7 +115,7 @@ module.exports = matching => {
                     const intervalId = setInterval(function() {
                         if (!socket.adapter.rooms[roomName]) {
                             clearInterval(intervalId);
-                            throw (err);
+                            throw ('Room Not Found');
                         }
                         else {
                             socket.adapter.rooms[roomName].leftTime -= 3;
