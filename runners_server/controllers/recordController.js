@@ -18,7 +18,7 @@ const record = {
   getDetailRecord: async(req, res, next) => {
     const run_idx = req.params.run_idx;
     const user_idx = req.user_idx;
-
+    
     try{
       const result = await recordModel.getDetailRecord(user_idx, run_idx);
       return next(result);
