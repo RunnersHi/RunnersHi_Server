@@ -205,6 +205,9 @@ const record = {
     try{
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
+
+      //console.log(userData);
+
       userData.user_idx = undefined;
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       if(distance){
