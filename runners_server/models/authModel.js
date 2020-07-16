@@ -50,9 +50,7 @@ const authModel = {
 
 
     return data[0].user_idx;
-  },
-
- 
+  }
 
 };
 
