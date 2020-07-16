@@ -8,6 +8,7 @@ const record = {
 
     try{
       const result = await recordModel.getAllRecords(id);
+      
       return next(result);
     } catch(error){
       return next(error);
@@ -204,7 +205,12 @@ const record = {
     try{
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
+
+      //console.log(userData);
+
       userData.user_idx = undefined;
+
+      console.log("밍찔이" + userData.result);
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
@@ -221,12 +227,16 @@ const record = {
         userData.pace = undefined;
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
+
+        const isUpdate = record.updateBadge(req.params.user_idx);
+        
+        console.log(isUpdate);
+
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
     } catch(error){
       return next(error);
     }
-
   },
   //배지 업데이트
   updateBadge: async(req, res, next) => {
@@ -307,7 +317,7 @@ const record = {
 
       await recordModel.updateBadge(req.params.user_idx, badgeFlag);
 
-      return next();
+      return true;
     } catch(error){
       return next(error);
     }
