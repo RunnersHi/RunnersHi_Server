@@ -3,11 +3,11 @@ const authController = require('../controllers/authController');
 
 module.exports = router => {
 
-  router.get('/runner', rankingController.runner);
+  router.get('/runner', authController.auth, rankingController.runner);
 
-  router.get('/winner', rankingController.winner);
+  router.get('/winner', authController.auth, rankingController.winner);
     
-  router.get('/loser', rankingController.loser);
+  router.get('/loser', authController.auth, rankingController.loser);
 
   router.get('/detail/:user_idx', authController.auth, rankingController.getDetailProfile);
 

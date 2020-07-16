@@ -187,6 +187,12 @@ const record = {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     }
 
+    let result_num = 2;
+    if(data[0].result === 1 || data[0].result === 5) {
+      result_num = 1;
+    }
+
+    data[0].result = result_num;
     return data;
   },
 
