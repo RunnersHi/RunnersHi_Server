@@ -88,11 +88,7 @@ const record = {
 
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
-      if(result === "WRONG_PARM"){
-
-      } else{
-        return next(result);
-      }
+      return next(result);
 
     } catch(error){
       return next(error);
