@@ -14,7 +14,10 @@ module.exports = matching => {
 
         matching.to(socket.id).emit("start", [socket.id]);
 
-        console.log(`Now Socket: ${Object.entries(socket.adapter.rooms)}`)
+        console.log(`Now Socket: `);
+        for (var i = 0; i < Object.entries(socket.adapter.rooms).length; i++) {
+            console.log("Room ", i ,": ", Object.entries(socket.adapter.rooms)[i]);
+        }
 
         setInterval(function(){
             matching.to(socket.id).emit("ping");
@@ -25,7 +28,7 @@ module.exports = matching => {
         });
 
         socket.on('test', (arr) => {
-            console.log("typeof arr: ", arr);
+            console.log("typeof arr: ", typeof arr);
             console.log("arr: ", arr);
         });
 
