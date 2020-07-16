@@ -79,7 +79,7 @@ const match = {
 
     storeRunningData: async(distance, time, coordinates, result, created_time, end_time, user_idx, game_idx) => {
         const run_fields = 'distance, time, result, created_time, end_time, user_idx, game_idx';
-        const questions = "?, ?, ?, ?, ?";
+        const questions = "?, ?, ?, ?, ?, ?, ?";
         const run_query = `INSERT INTO run (${run_fields}) VALUES (${questions})`;
         const run_values = [distance, time, result, created_time, end_time, user_idx, game_idx];
         
