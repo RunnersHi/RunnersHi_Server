@@ -218,15 +218,13 @@ const record = {
     } 
     const pace_data = await record.getPace(data[0].time, data[0].distance);
 
-     const final_data = {
-       nickname: user_nickname[0].nickname,
-       distance: data[0].distance,
-       time: data[0].diff_time,
-       pace_minute: pace_data.pace_minute,
-       pace_second: pace_data.pace_second
-     };
- 
-      return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
+    return {
+        nickname: user_nickname[0].nickname,
+        distance: data[0].distance,
+        time: data[0].diff_time,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second
+      };
   },
   
   getBadgeDetail: async(user_idx, flag) => {
