@@ -208,25 +208,27 @@ const record = {
  
      const data = await pool.queryParam(query);
 
-    const query_nickname = `
+    if(data.length === 0) {
+      return {code : "NO_OPPONENT", result :{}};
+    } else{
+
+      const query_nickname = `
      SELECT nickname 
      FROM user 
      WHERE user_idx = "${data[0].user_idx}"`;
 
-     const user_nickname = await pool.queryParam(query_nickname);
+      const user_nickname = await pool.queryParam(query_nickname);
 
-     if(data.length === 0) {
-      return {code : "NO_OPPONENT", result :{}};
-    } 
-    const pace_data = await record.getPace(data[0].time, data[0].distance);
+      const pace_data = await record.getPace(data[0].time, data[0].distance);
 
-     return {code : "OPPONENT_RECORD_SUCCESS", result : {
-         nickname: user_nickname[0].nickname,
-         distance: data[0].distance,
-         time: data[0].diff_time,
-         pace_minute: pace_data.pace_minute,
-         pace_second: pace_data.pace_second
-       }};
+      return {code : "OPPONENT_RECORD_SUCCESS", result : {
+          nickname: user_nickname[0].nickname,
+          distance: data[0].distance,
+          time: data[0].diff_time,
+          pace_minute: pace_data.pace_minute,
+          pace_second: pace_data.pace_second
+        }};
+    }
   },
   
   getBadgeDetail: async(user_idx, flag) => {
