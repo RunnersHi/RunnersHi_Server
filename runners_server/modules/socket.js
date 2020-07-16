@@ -113,19 +113,25 @@ module.exports = matching => {
             else {
                 try {
                     const intervalId = setInterval(function() {
-                        socket.adapter.rooms[roomName].leftTime -= 3;
-                        if (socket.adapter.rooms[roomName].leftTime > 0) {
-                            matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
-                        }
-                        else if (socket.adapter.rooms[roomName].leftTime <= 0) {
-                            const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
-                            const time = socket.adapter.rooms[roomName].time;
-                            const wantGender = user.wantGender;
-                            const level = user.level;
+                        if (!socket.adapter.rooms[roomName]) {
                             clearInterval(intervalId);
-                            socket.leave(roomName, () => {
-                                matching.to(socket.id).emit("timeOver", time, wantGender, level);
-                            })
+                            throw (err);
+                        }
+                        else {
+                            socket.adapter.rooms[roomName].leftTime -= 3;
+                            if (socket.adapter.rooms[roomName].leftTime > 0) {
+                                matching.to(socket.id).emit("timeLeft", socket.adapter.rooms[roomName].leftTime);
+                            }
+                            else if (socket.adapter.rooms[roomName].leftTime <= 0) {
+                                const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+                                const time = socket.adapter.rooms[roomName].time;
+                                const wantGender = user.wantGender;
+                                const level = user.level;
+                                clearInterval(intervalId);
+                                socket.leave(roomName, () => {
+                                    matching.to(socket.id).emit("timeOver", time, wantGender, level);
+                                })
+                            }
                         }
                     }, 3000);
                     socket.on("stopCount", (roomName) => {
@@ -359,6 +365,7 @@ module.exports = matching => {
         });
 
         socket.on("disconnect", (reason) => {
+            socket.emit("disconnect");
             console.log("user disconnected : " + reason);
         });
     });
