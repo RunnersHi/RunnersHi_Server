@@ -1,6 +1,6 @@
 # 🏃🏻‍♂️🏃🏻‍♀️ 러너스하이 Server Repository 🏃🏻‍♂️🏃🏻‍♀️
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runnershi.jpg" width="20%" height="20%">
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/로고.png" width="20%" height="20%">
 
 ### 러닝을 게임처럼, 러너스하이
 
