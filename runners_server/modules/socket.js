@@ -15,9 +15,7 @@ module.exports = matching => {
         matching.to(socket.id).emit("start", [socket.id]);
 
         console.log(`Now Socket: `);
-        for (var i = 0; i < Object.entries(socket.adapter.rooms).length; i++) {
-            console.log("Room ", i ,": ", Object.entries(socket.adapter.rooms)[i]);
-        }
+        console.table(socket.adapter.rooms);
 
         setInterval(function(){
             matching.to(socket.id).emit("ping");
