@@ -4,17 +4,41 @@ const recordModel = require("../models/recordModel");
 const ranking = {
   runner: async(req, res, next) => {
     try{
-      const result = await rankingModel.runner();
-      return next(result);
+      const data = await rankingModel.runner();
+      const final_data = [];
+
+      for(let i = 0; i < data.length; i++){
+      final_data.push( {
+        nickname: data[i].nickname,
+        image: data[i].image,
+        user_idx: data[i].user_idx,
+        distance_sum: data[i].sum
+      });
+    }
+      return next( {code : "RUNNER_SUCCESS", result : final_data } );
     } catch(error){
       return next(error);
     }
   },
 
-  winner: async(req, res, next) => {
+  winner: async(req, res, next) => {  
     try{
-      const result = await rankingModel.winner();
-      return next(result);
+      const data = await rankingModel.winner();
+
+      const final_data = [];
+      for(let i = 0; i < data.length; i++){
+        if(data[i].win + data[i].lose != 0) {
+          final_data.push( {
+            nickname: data[i].nickname,
+            image: data[i].image,
+            user_idx: data[i].user_idx,
+            win: data[i].win,
+            lose: data[i].lose
+          });
+        }
+      }
+
+      return next( {code : "WINNER_SUCCESS", result : final_data } );
     } catch(error){
       return next(error);
     }
@@ -22,8 +46,23 @@ const ranking = {
 
   loser: async(req, res, next) => {
     try{
-      const result = await rankingModel.loser();
-      return next(result);
+      const data = await rankingModel.loser();
+
+      const final_data = [];
+  
+      for(let i = 0; i < data.length; i++){
+  
+        if(data[i].win + data[i].lose != 0) {
+          final_data.push( {
+            nickname: data[i].nickname,
+            image: data[i].image,
+            user_idx: data[i].user_idx,
+            win: data[i].win,
+            lose: data[i].lose
+          });
+        }
+      }
+      return next({code : "LOSER_SUCCESS", result : final_data});
     } catch(error){
       return next(error);
     }
