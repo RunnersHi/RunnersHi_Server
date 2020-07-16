@@ -102,15 +102,14 @@ const ranking = {
     }
   },
 
-   getOpponentRecent: async(req, res, next) => {
-     const user_idx = req.params.user_idx;
+  getOpponentRecent: async(req, res, next) => {
+    const user_idx = req.params.user_idx;
     
     try{
       const result = await recordModel.getUserRecentRecord(user_idx);
 
       if(result.nickname === null)
         return next("WRONG_PARM");
-        
 
       const final_data = {
         distance: result[0].distance,
