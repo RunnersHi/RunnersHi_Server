@@ -218,15 +218,13 @@ const record = {
     } 
     const pace_data = await record.getPace(data[0].time, data[0].distance);
 
-     const final_data = {
-       nickname: user_nickname[0].nickname,
-       distance: data[0].distance,
-       time: data[0].diff_time,
-       pace_minute: pace_data.pace_minute,
-       pace_second: pace_data.pace_second
-     };
- 
-      return {code: "OPPONENT_RECORD_SUCCESS", result: final_data};
+    return {
+        nickname: user_nickname[0].nickname,
+        distance: data[0].distance,
+        time: data[0].diff_time,
+        pace_minute: pace_data.pace_minute,
+        pace_second: pace_data.pace_second
+      };
   },
   
   getBadgeDetail: async(user_idx, flag) => {
@@ -259,7 +257,7 @@ const record = {
       let query =
           `SELECT r.distance, ((r.time / 60) / (r.distance / 1000)) as pace, SUBSTR(r.created_time, 1, 10) as created_time, time
      FROM run r
-     WHERE user_idx = ? AND ((r.time / 60) / (r.distance / 1000)) < 100
+     WHERE user_idx = ? AND ((r.time / 60) / (r.distance / 1000)) < 60
      ORDER BY `;
 
       switch(flag){
@@ -422,30 +420,30 @@ const record = {
   },
   getDummy : async(level, gender, time)=>{
     let userDatas = [
-      {gender : 1, level : 1, time : "00:30:00", distance : 3760, pace : 7.978723404, win : 3, lose : 2},
-      {gender : 1, level : 1, time : "00:45:00", distance : 5600, pace : 8.035714286, win : 3, lose : 2},
-      {gender : 1, level : 1, time : "01:00:00", distance : 6980, pace : 8.595988539, win : 3, lose : 2},
-      {gender : 1, level : 1, time : "01:30:00", distance : 9780, pace : 9.202453988, win : 3, lose : 2},
-      {gender : 1, level : 2, time : "00:30:00", distance : 4760, pace : 6.302521008, win : 5, lose : 3},
-      {gender : 1, level : 2, time : "00:45:00", distance : 6900, pace : 6.52173913, win : 5, lose : 3},
-      {gender : 1, level : 2, time : "01:00:00", distance : 8550, pace : 7.01754386, win : 5, lose : 3},
-      {gender : 1, level : 2, time : "01:30:00", distance : 12010, pace : 7.493755204, win : 5, lose : 3},
-      {gender : 1, level : 3, time : "00:30:00", distance : 6010, pace : 4.991680532, win : 4, lose : 1},
-      {gender : 1, level : 3, time : "00:45:00", distance : 8020, pace : 5.610972569, win : 4, lose : 1},
-      {gender : 1, level : 3, time : "01:00:00", distance : 10230, pace : 5.865102639, win : 4, lose : 1},
-      {gender : 1, level : 3, time : "01:30:00", distance : 14890, pace : 6.04432505, win : 4, lose : 1},
-      {gender : 2, level : 1, time : "00:30:00", distance : 2740, pace : 10.94890511, win : 3, lose : 2},
-      {gender : 2, level : 1, time : "00:45:00", distance : 3500, pace : 12.85714286, win : 3, lose : 2},
-      {gender : 2, level : 1, time : "01:00:00", distance : 4300, pace : 13.95348837, win : 3, lose : 2},
-      {gender : 2, level : 1, time : "01:30:00", distance : 5700, pace : 15.78947368, win : 3, lose : 2},
-      {gender : 2, level : 2, time : "00:30:00", distance : 3520, pace : 8.522727273, win : 5, lose : 3},
-      {gender : 2, level : 2, time : "00:45:00", distance : 4980, pace : 9.036144578, win : 5, lose : 3},
-      {gender : 2, level : 2, time : "01:00:00", distance : 5500, pace : 10.90909091, win : 5, lose : 3},
-      {gender : 2, level : 2, time : "01:30:00", distance : 6980, pace : 12.89398281, win : 5, lose : 3},
-      {gender : 2, level : 3, time : "00:30:00", distance : 4300, pace : 6.976744186, win : 4, lose : 1},
-      {gender : 2, level : 3, time : "00:45:00", distance : 6020, pace : 7.475083056, win : 4, lose : 1},
-      {gender : 2, level : 3, time : "01:00:00", distance : 7320, pace : 8.196721311, win : 4, lose : 1},
-      {gender : 2, level : 3, time : "01:30:00", distance : 9020, pace : 9.977827051, win : 4, lose : 1},
+      {gender : 1, level : 1, time : "00:30:00", distance : 3760, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "00:45:00", distance : 5600, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "01:00:00", distance : 6980, win : 3, lose : 2},
+      {gender : 1, level : 1, time : "01:30:00", distance : 9780, win : 3, lose : 2},
+      {gender : 1, level : 2, time : "00:30:00", distance : 4760, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "00:45:00", distance : 6900, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "01:00:00", distance : 8550, win : 5, lose : 3},
+      {gender : 1, level : 2, time : "01:30:00", distance : 12010, win : 5, lose : 3},
+      {gender : 1, level : 3, time : "00:30:00", distance : 6010, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "00:45:00", distance : 8020, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "01:00:00", distance : 10230, win : 4, lose : 1},
+      {gender : 1, level : 3, time : "01:30:00", distance : 14890, win : 4, lose : 1},
+      {gender : 2, level : 1, time : "00:30:00", distance : 2740, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "00:45:00", distance : 3500, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "01:00:00", distance : 4300, win : 3, lose : 2},
+      {gender : 2, level : 1, time : "01:30:00", distance : 5700, win : 3, lose : 2},
+      {gender : 2, level : 2, time : "00:30:00", distance : 3520, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "00:45:00", distance : 4980, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "01:00:00", distance : 5500, win : 5, lose : 3},
+      {gender : 2, level : 2, time : "01:30:00", distance : 6980, win : 5, lose : 3},
+      {gender : 2, level : 3, time : "00:30:00", distance : 4300, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "00:45:00", distance : 6020, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "01:00:00", distance : 7320, win : 4, lose : 1},
+      {gender : 2, level : 3, time : "01:30:00", distance : 9020, win : 4, lose : 1},
     ];
     let index = 0;
     index += 12 * (gender - 1);

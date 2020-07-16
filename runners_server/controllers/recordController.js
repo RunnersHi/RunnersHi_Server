@@ -88,8 +88,11 @@ const record = {
 
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
+      if(result === "WRONG_PARM"){
 
-      return next(result);
+      } else{
+        return next(result);
+      }
 
     } catch(error){
       return next(error);
@@ -202,7 +205,7 @@ const record = {
     }
   },
   withMe: async(req, res, next) => {
-    if(!req.body.level || !req.body.gender || !req.body.time){
+    if(!req.body.time){
       return next("NON_EXISTENT_DATA");
     }
     try{
@@ -210,8 +213,8 @@ const record = {
       userData = await userModel.selectRun(userData);
       userData.user_idx = undefined;
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
-      const pace = await recordModel.getPace(req.body.time, distance.distance);
       if(distance){
+        const pace = await recordModel.getPace(req.body.time, distance.distance);
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
         userData.distance = distance.distance;
@@ -219,7 +222,8 @@ const record = {
         userData.isDummy = false;
         return next({"code" : "GET_MY_RECENT", result : userData});
       } else{
-        const userData = await recordModel.getDummy(req.body.level, req.body.gender, req.body.time);
+        userData = await recordModel.getDummy(
+            req.body.level ? req.body.level : userData.level, req.body.gender ? req.body.gender : userData.gender, req.body.time);
         const pace = await recordModel.getPace(req.body.time, userData.distance);
         userData.pace = undefined;
         userData.pace_minute = pace.pace_minute;
@@ -314,8 +318,7 @@ const record = {
     } catch(error){
       return next(error);
     }
-  }
-
+  },
 };
 
 module.exports = record;

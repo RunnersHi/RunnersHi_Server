@@ -119,8 +119,7 @@ const userModel = {
         if(rows.length === 0) {
             return "NON_EXISTENT_DATA";
         } else{
-            const result = rows[0];
-            return result;
+            return rows[0];
         }
     },
     /*******************
