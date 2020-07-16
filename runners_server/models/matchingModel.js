@@ -94,7 +94,7 @@ const match = {
                 temp.push(run_idx);
                 coordinateArr.push(temp);
             }
-            const coordinate_query = `INSERT INTO coordinate ${coordinate_fields} VALUES ?`;
+            const coordinate_query = `INSERT INTO coordinate (${coordinate_fields}) VALUES ?`;
             const coordinate_result = await queryParamArr(coordinate_query, [coordinateArr]);
             return run_idx;
         }
