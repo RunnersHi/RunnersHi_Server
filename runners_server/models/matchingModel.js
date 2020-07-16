@@ -87,8 +87,15 @@ const match = {
             const run_result = await queryParamArr(run_query, run_values);
             const run_idx = run_result.insertId;
             const coordinate_fields = `latitude, longitude, run_idx`;
-            const coordinate_query = `INSERT INTO coordinate SET ?, run_idx=${run_idx}`;
-            const coordinate_result = await queryParamArr(coordinate_query, coordinates);
+            let coordinateArr = [];
+
+            for (var i = 0; i < userData.coordinates.length; i++) {
+                let temp = Object.values(userData.coordinates[i]);
+                temp.push(run_idx);
+                coordinateArr.push(temp);
+            }
+            const coordinate_query = `INSERT INTO coordinate ${coordinate_fields} VALUES ?`;
+            const coordinate_result = await queryParamArr(coordinate_query, [coordinateArr]);
             return run_idx;
         }
         catch (err) {
