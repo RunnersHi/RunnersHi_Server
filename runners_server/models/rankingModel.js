@@ -3,7 +3,6 @@ const pool = require('../models/pool');
 const ranking = {
 
   winner: async () => {
-    //승만 볼게 아니라 패도 봐야한다...!
     const query = 
     `SELECT 
       u.nickname, u.image, u.user_idx, u.log_visibility,
@@ -48,7 +47,6 @@ const ranking = {
   },
 
   loser: async () => {
-    //패만 볼게 아니라 승도 봐야한다...!
     const query = 
     `SELECT 
      u.nickname, u.image, u.user_idx, u.log_visibility,
