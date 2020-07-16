@@ -365,7 +365,6 @@ module.exports = matching => {
         });
 
         socket.on("disconnect", (reason) => {
-            socket.emit("disconnect");
             console.log("user disconnected : " + reason);
         });
     });
