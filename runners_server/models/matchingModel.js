@@ -89,8 +89,8 @@ const match = {
             const coordinate_fields = `latitude, longitude, run_idx`;
             let coordinateArr = [];
 
-            for (var i = 0; i < userData.coordinates.length; i++) {
-                let temp = Object.values(userData.coordinates[i]);
+            for (var i = 0; i < coordinates.length; i++) {
+                let temp = Object.values(coordinates[i]);
                 temp.push(run_idx);
                 coordinateArr.push(temp);
             }
