@@ -20,7 +20,7 @@ const ranking = {
       u.user_idx
     HAVING 
       year = current_year AND month = current_month
-    ORDER BY win DESC lose ASC
+    ORDER BY win DESC, lose ASC
     limit 10
       `;
  
