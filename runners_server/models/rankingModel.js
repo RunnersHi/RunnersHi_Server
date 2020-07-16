@@ -90,7 +90,6 @@ const ranking = {
     if(data.length === 0) {
       return {code : "SUCCESS_BUT_NO_DATA", result : {}};
     } 
-
     return data;
   },
 
@@ -105,6 +104,10 @@ const ranking = {
     WHERE u.user_idx = "${id}"
     `;
     const data = await pool.queryParam(query);
+
+    if(data.length === 0) {
+      return {code : "WRONG_PARM", result : {}};
+    } 
 
     return data[0];
   }

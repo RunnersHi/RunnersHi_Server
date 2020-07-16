@@ -79,15 +79,14 @@ const ranking = {
       const user_data = await rankingModel.getDetailProfile(user_idx);
 
       if(user_data.nickname === null)
-        return next("WRONG_PARM");
+        return next("ACCESS_NON_DATA_FOR_IDX"); //WRONG_PARM
 
       const recentrecord = await recordModel.getUserRecentRecord(user_idx);
       const badge = await recordModel.getBadge(user_idx);
-
       const pace_data = await recordModel.getPace(recentrecord[0].time, recentrecord[0].distance);
 
-      if(recentrecord === null || badge === null) 
-       return next();
+      if(recentrecord === null || badge === null || pace_data == null) 
+        return next("ACCESS_NON_DATA_FOR_IDX");
 
       final_data = user_data;
       final_data.distance = recentrecord[0].distance;

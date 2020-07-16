@@ -142,11 +142,13 @@ const record = {
   },
 
   getBadge: async(id) => {
-    const query = `SELECT badge FROM ${table} WHERE user_idx = "${id}"`;
+    const query = `
+    SELECT badge FROM ${table} WHERE user_idx = "${id}"
+    `;
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return "SUCCESS_BUT_NO_DATA";
+      return "ACCESS_NON_DATA_FOR_IDX";
     }
 
     const result = {badge : []};
@@ -157,6 +159,7 @@ const record = {
     }
     return result;
   },
+
   getRecentRecordByTime: async(user_idx, time)=>{
     const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
     FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
@@ -183,8 +186,9 @@ const record = {
     limit 1`;
 
     const data = await pool.queryParam(query);
+
     if(data.length === 0) {
-      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
+      return "ACCESS_NON_DATA_FOR_IDX";
     }
 
     let result_num = 2;
