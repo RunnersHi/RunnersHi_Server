@@ -107,7 +107,7 @@ const ranking = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return {code : "WRONG_PARM", result : {}};
+      return "WRONG_PARAM";
     } 
     return data[0];
   }
