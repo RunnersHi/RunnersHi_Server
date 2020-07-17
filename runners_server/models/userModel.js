@@ -129,8 +129,10 @@ const userModel = {
     selectRun: async(userData) => {
         const sql = "SELECT result FROM run WHERE user_idx = ? ";
         const rows = await pool.queryParamArr(sql, [userData.user_idx]);
+
         userData.win = 0;
         userData.lose = 0;
+        
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
                 case 1:
@@ -143,6 +145,8 @@ const userModel = {
                     break;
             }
         }
+
+        console.log(userData);
         return userData;
     },
     findUserIdxById : async (id, done) => {
