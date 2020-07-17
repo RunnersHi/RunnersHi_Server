@@ -27,10 +27,18 @@ const record = {
   },
 
   getPace: async (time, distance) => {
+    const result = {};
+
+    if(distance === 0) {
+      result.pace_minute = 0;
+      result.pace_second = 0;
+      return result;
+    }
+
     let pace_minute = ( time /60 ) / ( distance / 1000 );
     let pace_second = (pace_minute - Math.floor(pace_minute)) * 60;
 
-    const result = {};
+    
     result.pace_minute = Math.floor(pace_minute);
     result.pace_second = Math.floor(pace_second);
 

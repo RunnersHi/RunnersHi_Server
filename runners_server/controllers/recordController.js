@@ -192,7 +192,7 @@ const record = {
   },
 
   postRun: async(req, res, next) => {
-    if(!req.body.distance || !req.body.time || !req.body.result || !req.body.created_time || !req.body.end_time || !req.body.coordinates){
+    if(!req.body.time || !req.body.result || !req.body.created_time || !req.body.end_time || !req.body.coordinates){
       return next("NON_EXISTENT_DATA");
     }
     try{

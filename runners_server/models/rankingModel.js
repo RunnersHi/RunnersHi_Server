@@ -7,7 +7,7 @@ const ranking = {
     `SELECT 
       u.nickname, u.image, u.user_idx, u.log_visibility,
       COUNT(IF(r.result = 1, 1, null) || IF(r.result = 5, 1, null)) as win, 
-      COUNT(IF(r.result = 2, 0, null) || IF(r.result = 3, 1, null)) as lose, 
+      COUNT(IF(r.result = 2, 1, null) || IF(r.result = 3, 1, null)) as lose, 
       YEAR(r.created_time) as year,
       MONTH(r.created_time) as month,
       MONTH(NOW()) as current_month,
