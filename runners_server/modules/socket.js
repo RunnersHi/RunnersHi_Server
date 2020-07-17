@@ -75,6 +75,7 @@ module.exports = matching => {
                             socket.adapter.rooms[roomNum].leftTime = leftTime;
                             socket.adapter.rooms[roomNum].userList = []
                             socket.adapter.rooms[roomNum].userList.push(user);
+                            currentUsers.push(user);
                             console.log(socket.adapter.rooms[roomNum]);
                             console.log("Give RoomNum: ", roomNum);
                             roomNum = roomNum.toString();
@@ -88,6 +89,7 @@ module.exports = matching => {
                             let firstUserId = socket.adapter.rooms[targetRoomName].userList[0].id;
                             delete socket.adapter.rooms[targetRoomName].wantGender;
                             socket.adapter.rooms[targetRoomName].userList.push(user);
+                            currentUsers.push(user);
                             socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
                             targetRoomName = targetRoomName.toString();
                             matching.to(firstUserId).emit("matched", targetRoomName);
@@ -370,7 +372,11 @@ module.exports = matching => {
             console.log("user disconnected : " + reason);
             const user = currentUsers.find(user => user.id === socket.id);
             currentUsers.splice(currentUsers.indexOf(user), 1);
-            console.log(`disconnected user: ${Object.entries(user)}`);
+            disconnectUsers.push(user);
+            if (typeof user === 'object') {
+                console.log(`disconnected user: ${Object.entries(user)}`);
+            }
+            
         });
     });
 
