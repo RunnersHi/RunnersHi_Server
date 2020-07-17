@@ -18,7 +18,7 @@ const record = {
   getDetailRecord: async(req, res, next) => {
     const run_idx = req.params.run_idx;
     const user_idx = req.user_idx;
-    
+
     try{
       const result = await recordModel.getDetailRecord(user_idx, run_idx);
       return next(result);
@@ -46,8 +46,6 @@ const record = {
     try{
       const data = await recordModel.getUserRecentRecord(user_idx);
       const image = await recordModel.getUserImg(user_idx);
-
-      
       
       const pace_data = await recordModel.getPace(data[0].time, data[0].distance);
 
@@ -205,13 +203,16 @@ const record = {
     try{
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
+      //userData.user_idx = undefined;
 
-      //console.log(userData);
-
-      userData.user_idx = undefined;
-
-      console.log("밍찔이" + userData.result);
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
+      const updateBadge = await record.updateBadge(userData.user_idx);
+      if(updateBadge) {
+        console.log("뱃지 update 성공");
+      }else {
+        console.log("뱃지 update 실패");
+      }
+
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
         userData.pace_minute = pace.pace_minute;
@@ -219,6 +220,7 @@ const record = {
         userData.distance = distance.distance;
         userData.time = distance.time;
         userData.isDummy = false;
+
         return next({"code" : "GET_MY_RECENT", result : userData});
       } else{
         userData = await recordModel.getDummy(
@@ -228,54 +230,54 @@ const record = {
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
 
-        const isUpdate = record.updateBadge(req.params.user_idx);
-        
-        console.log(isUpdate);
-
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
     } catch(error){
       return next(error);
     }
   },
-  //배지 업데이트
-  updateBadge: async(req, res, next) => {
+  
+  updateBadge: async(user_idx) => {
 
     try{
-      const result = await recordModel.getBadge(req.params.user_idx);
+      const result = await recordModel.getBadge(user_idx);
+
+      if(result === null)
+        return false;
+
       const badge = result.badge;
 
       if(!badge[0]){
-        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 1);
+        const result = await recordModel.updateBadgeByWin(user_idx, 1);
         if(result){
           badge[0] = true;
         }
       }
       if(!badge[1]){
-        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 5);
+        const result = await recordModel.updateBadgeByWin(user_idx, 5);
         if(result){
           badge[1] = true;
         }
       }
       if(!badge[2]){
-        const result = await recordModel.updateBadgeByWin(req.params.user_idx, 10);
+        const result = await recordModel.updateBadgeByWin(user_idx, 10);
         if(result){
           badge[2] = true;
         }
       }
       if(!badge[3]){
-        const result = await recordModel.updateBadgeByPace(req.params.user_idx, true);
+        const result = await recordModel.updateBadgeByPace(user_idx, true);
         if(result){
           badge[3] = true;
         }
       }
       if(!badge[4]){
-        const result = await recordModel.updateBadgeByDistance(req.params.user_idx);
+        const result = await recordModel.updateBadgeByDistance(user_idx);
         if(result)
           badge[4] = true;
       }
       if(!badge[5]){
-        const result = await recordModel.updateBadgeByPace(req.params.user_idx, false);
+        const result = await recordModel.updateBadgeByPace(user_idx, false);
         if(result)
           badge[5] = true;
       }
@@ -283,7 +285,7 @@ const record = {
       if(!badge[6] || !badge[7] || !badge[8])
       {
 
-        const total_time = await recordModel.getSumRunningTime(req.params.user_idx);
+        const total_time = await recordModel.getSumRunningTime(user_idx);
 
         if(!badge[6] && total_time >= 180000)
           badge[6] = true;
@@ -295,14 +297,14 @@ const record = {
       }
       if(!badge[9])
       {
-        const coutinuous = await recordModel.getContinuityRunning(req.params.user_idx);
+        const coutinuous = await recordModel.getContinuityRunning(user_idx);
 
         if(coutinuous >= 10)
           badge[9] = '0';
       }
 
       if(!badge[10] || !badge[11]) {
-        const continuityWin = await recordModel.getContinuityWin(req.params.user_idx);
+        const continuityWin = await recordModel.getContinuityWin(user_idx);
         if(!badge[10] && continuityWin >= 5)
           badge[10] = '0';
         if(!badge[11] && continuityWin >= 10)
@@ -315,11 +317,12 @@ const record = {
         else badgeFlag += "0";
       }
 
-      await recordModel.updateBadge(req.params.user_idx, badgeFlag);
+      console.log(badgeFlag);
 
+      await recordModel.updateBadge(user_idx, badgeFlag);
       return true;
     } catch(error){
-      return next(error);
+      return false;
     }
   },
 };
