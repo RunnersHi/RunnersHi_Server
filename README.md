@@ -61,7 +61,7 @@
 
 [Api Description Link](https://github.com/RunnersHi/RunnersHi_Server/wiki)
 
-## 노션링크
+## 📚 노션링크
 [Notion_Link](https://www.notion.so/_SERVER-7fa66581aaed4cf0a7084592a25fa471)
 
 
