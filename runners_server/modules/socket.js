@@ -155,6 +155,9 @@ module.exports = matching => {
                             matching.to(roomName).emit("roomFull", roomName);
                         }
                     });
+                    socket.on("disconnect", () => {
+                        clearInterval(intervalId);
+                    });
                 }
                 catch(err) {
                     console.log("startCount error");
