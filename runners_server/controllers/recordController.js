@@ -198,6 +198,7 @@ const record = {
         coordinates : req.body.coordinates
       };
       const result = await recordModel.postRun(userData);
+      await record.updateBadge(req, res, next);
       return next({"code" : "POST_RUN", result : {"run_idx" : result, "game_idx" : game_idx}});
     } catch(error){
       return next(error);
@@ -210,7 +211,6 @@ const record = {
     try{
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
-      //userData.user_idx = undefined;
 
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       const updateBadge = await record.updateBadge(userData.user_idx);
@@ -219,6 +219,8 @@ const record = {
       }else {
         console.log("뱃지 update 실패");
       }
+
+      userData.user_idx = undefined;
 
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
