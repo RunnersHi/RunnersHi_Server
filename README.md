@@ -1,6 +1,6 @@
 # 🏃🏻‍♂️🏃🏻‍♀️ 러너스하이 Server Repository 🏃🏻‍♂️🏃🏻‍♀️
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/로고.png" width="20%" height="20%">
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/로고.png" width="40%" height="40%">
 
 ## 러닝을 게임처럼, 러너스하이
 
@@ -147,6 +147,12 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
   }
 
 ```
+
+
+### ARICHTECTURE
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="40%" height="40%">    
+
+
 
 ### 💻 역할분담
 
