@@ -211,9 +211,6 @@ const record = {
     try{
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
-      //userData.user_idx = undefined;
-
-      userData.user_idx = undefined;
 
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       const updateBadge = await record.updateBadge(userData.user_idx);
@@ -223,6 +220,9 @@ const record = {
         console.log("뱃지 update 실패");
       }
 
+      userData.user_idx = undefined;
+      console.log(req.user_idx);
+
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
         userData.pace_minute = pace.pace_minute;
@@ -230,6 +230,7 @@ const record = {
         userData.distance = distance.distance;
         userData.time = distance.time;
         userData.isDummy = false;
+        console.log(userData);
 
         return next({"code" : "GET_MY_RECENT", result : userData});
       } else{
