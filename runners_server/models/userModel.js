@@ -97,7 +97,7 @@ const userModel = {
      *  @param: user_idx
      ********************/
     selectUserData: async(user_idx) => {
-        const sql = "SELECT nickname, gender, level, image, badge FROM user WHERE user_idx = ? ";
+        const sql = "SELECT user_idx, nickname, gender, level, image, badge FROM user WHERE user_idx = ? ";
 
         const rows = await pool.queryParamArr(sql, [user_idx]);
         if(rows.length === 0) {

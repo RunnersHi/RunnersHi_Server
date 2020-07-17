@@ -123,6 +123,7 @@ const userController = {
         try{
             let userData = await userModel.selectUserData(req.user_idx);
             userData = await userModel.selectRun(userData);
+            userData.user_idx = undefined;
             return next({"code" : "MY_PROFILE", result : userData});
         } catch(error){
             return next(error);
