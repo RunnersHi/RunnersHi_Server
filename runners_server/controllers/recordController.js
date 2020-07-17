@@ -324,8 +324,6 @@ const record = {
         else badgeFlag += "0";
       }
 
-      console.log(badgeFlag);
-
       await recordModel.updateBadge(user_idx, badgeFlag);
       return true;
     } catch(error){
