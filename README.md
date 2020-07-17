@@ -2,13 +2,13 @@
 
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/로고.png" width="20%" height="20%">
 
-### 러닝을 게임처럼, 러너스하이
+## 러닝을 게임처럼, 러너스하이
 
 - SOPT 26th APPJAM
 
 - 프로젝트 기간: 2020.06.27 ~ 2020.07.18
 
-### 📑 About Project
+## 📑 About Project
 
 **✨ 기존 러닝 어플리케이션과의 확실한 차별화 요소를 적용했습니다.**
    - 사용자는 '실시간 경쟁'이라는 게이미피케이션 요소를 통해 지루한 러닝이 아닌, 게임처럼 유쾌한 러닝을 즐길 수 있습니다.
@@ -65,7 +65,7 @@
 
 ![ERD](https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/erd%EB%AA%A8%EB%8D%B8.png)
 
-### 🏃‍♂️ User 🏃‍♀️
+### 🏃‍♂️ user 🏃‍♀️
 
 서비스 사용자의 정보를 담고 있는 테이블
 
@@ -83,7 +83,7 @@
 | badge | VARCHAR | 사용자의 배지 소유여부, 9자리 이진수값. ex) 101011000: 1, 3, 5, 6번 배지 소유 |  |
 
 
-## 🎮 Game 🕹️
+### 🎮 game 🕹️
 
 게임 진행 시 해당 게임의 정보를 담고 있는 테이블
 
@@ -92,7 +92,7 @@
 | game_idx | INT | 게임의 인덱스값 | PK |
 
 
-## 🏅 Run 🏆
+### 🏅 run 🏆
 
 게임 종료 후 러닝에 대한 정보를 담고 있는 테이블   
 
@@ -109,7 +109,7 @@
 
 
 
-## :chart_with_upwards_trend: coordinate
+### :chart_with_upwards_trend: coordinate
 running 중 수집한 위치 좌표 정보를 담고 있는 테이블
 
 | Column | type |  설명 | PK/FK |
