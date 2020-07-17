@@ -221,7 +221,6 @@ const record = {
       }
 
       userData.user_idx = undefined;
-      console.log(req.user_idx);
 
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
@@ -230,7 +229,6 @@ const record = {
         userData.distance = distance.distance;
         userData.time = distance.time;
         userData.isDummy = false;
-        console.log(userData);
 
         return next({"code" : "GET_MY_RECENT", result : userData});
       } else{
@@ -240,8 +238,6 @@ const record = {
         userData.pace = undefined;
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
-
-        console.log(userData);
 
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
