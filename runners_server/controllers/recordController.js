@@ -49,6 +49,13 @@ const record = {
       
       const pace_data = await recordModel.getPace(data[0].time, data[0].distance);
 
+      const updateBadge = await record.updateBadge(user_idx);
+      if(updateBadge) {
+        console.log("뱃지 update 성공");
+      }else {
+        console.log("뱃지 update 실패");
+      }
+
       const final_data =  {
         distance: data[0].distance,
         time: data[0].time_diff,
