@@ -2,10 +2,19 @@ const pool = require('./pool');
 const table = 'user';
 
 const record = {
+  getUserData: async (user_idx) => {
+    const query = 
+    `
+    SELECT * FROM user WHERE user_idx = "${user_idx}"
+    `;
+
+    const userData = await pool.queryParam(query);
+    return userData;
+  },
   getUserImg: async (user_idx) => {
     const query = 
     `
-    SELECT 
+    SELECT
       image
     FROM 
       user
@@ -29,37 +38,24 @@ const record = {
   },
 
   getAllRecords: async (id) => {
-
     const query = 
     `SELECT 
       SUBSTR(r.created_time, 1, 10) as date, r.distance, 
-      TIMEDIFF(r.end_time, r.created_time) as time, r.run_idx, r.result, r.game_idx
+      TIMEDIFF(r.end_time, r.created_time) as time, 
+      r.run_idx, r.result, r.game_idx
     FROM 
       user u, run r
     WHERE 
       u.user_idx = "${id}" AND u.user_idx = r.user_idx 
     ORDER BY 
       r.run_idx`;
-
+    
     const data = await pool.queryParam(query);
-
     if(data.length === 0) {
       return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } 
-    const final_data = [];
-
-    for(let i = 0; i < data.length; i++){
-      final_data.push({
-        date: data[i].date,
-        distance: data[i].distance,
-        time: data[i].time,
-        run_idx: data[i].run_idx,
-        result: (data[i].result === 1 || data[i].result === 5) ? 1 : 2,
-        game_idx: data[i].game_idx,
-      });
-    }
-
-    return {code: "RECORD_ALL_SUCCESS", result: final_data};
+    
+    return data;
   },
 
   getDetailRecord: async(user_idx, run_idx) => {
@@ -199,7 +195,6 @@ const record = {
   },
 
   //상대방 기록보기
-  //쿼리문을 2개를 사용해서 접근하는 것이 과연 좋은 방법인가?! --> JOIN을 사용하는 것이 더 좋을까?
   getOpponentRecord: async(user_idx, game_idx) => {
      const query = 
      `
@@ -213,31 +208,31 @@ const record = {
      AND 
       r.user_idx != "${user_idx}"`;
 
- 
      const data = await pool.queryParam(query);
 
     if(data.length === 0) {
       return {"code" : "NO_OPPONENT", result : {}};
+    } 
 
-    } else{
+    const query_nickname = 
+    `
+    SELECT nickname FROM user 
+    WHERE user_idx = "${data[0].user_idx}"`;
 
-      const query_nickname = `
-     SELECT nickname 
-     FROM user 
-     WHERE user_idx = "${data[0].user_idx}"`;
+    const user_nickname = await pool.queryParam(query_nickname);
+    const pace_data = await record.getPace(data[0].time, data[0].distance);
 
-      const user_nickname = await pool.queryParam(query_nickname);
+    let final_data = [];
 
-      const pace_data = await record.getPace(data[0].time, data[0].distance);
-
-      return {code : "OPPONENT_RECORD_SUCCESS", result : {
-          nickname: user_nickname[0].nickname,
-          distance: data[0].distance,
-          time: data[0].diff_time,
-          pace_minute: pace_data.pace_minute,
-          pace_second: pace_data.pace_second
-        }};
+    final_data = {
+      nickname: user_nickname[0].nickname,
+      distance: data[0].distance,
+      time: data[0].diff_time,
+      pace_minute: pace_data.pace_minute,
+      pace_second: pace_data.pace_second
     }
+
+      return {code : "OPPONENT_RECORD_SUCCESS", result : final_data};
   },
   
   getBadgeDetail: async(user_idx, flag) => {
