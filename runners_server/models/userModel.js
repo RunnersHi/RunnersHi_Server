@@ -132,7 +132,6 @@ const userModel = {
 
         userData.win = 0;
         userData.lose = 0;
-        
         for(let i = 0; i < rows.length; i++){
             switch(rows[i].result){
                 case 1:
@@ -145,8 +144,7 @@ const userModel = {
                     break;
             }
         }
-
-        console.log(userData);
+        
         return userData;
     },
     findUserIdxById : async (id, done) => {
