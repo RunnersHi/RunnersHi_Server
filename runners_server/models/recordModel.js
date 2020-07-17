@@ -146,7 +146,7 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return "ACCESS_NON_DATA_FOR_IDX";
+      return null;
     }
 
     const result = {badge : []};
