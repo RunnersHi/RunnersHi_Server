@@ -27,14 +27,14 @@
 
 ### 1. 실시간 매칭
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningmain.PNG" width="20%" height="50%">   
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningmain.PNG" width="30%" height="60%">   
 
 - 러닝목표시간, 러너의 성별에 맞는 사람을 실시간으로 매칭한다.
    - 매칭이 된다면, 소켓 통신을 통해 상대방 러너와 대결을 시작한다.
    - 매칭이 되지 않는다면, 과거의 자신과 대결하게 된다.
 ### 2. 러닝    
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="20%" height="50%">   
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="30%" height="60%">   
 
 - 실제 달리고 있는 거리, 시간, 페이스 등을 실시간으로 알려준다. 
 - 실시간으로 상대방이 어느 정도 달렸는지 보여준다. 
@@ -43,7 +43,7 @@
 
 ### 3. 러닝 기록   
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningrecord.PNG" width="20%" height="50%">   
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningrecord.PNG" width="30%" height="60%">   
 
 - 이전에 달렸던 나의 러닝 기록들을 볼 수 있다.
 - 기록에는 거리, 시간, 페이스, 지도경로를 보여준다. 
@@ -51,7 +51,7 @@
 
 ### 4. 러닝 랭킹   
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runnerRanking.PNG" width="20%" height="50%">    
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runnerRanking.PNG" width="30%" height="60%">    
 
 - 한 달을 기준으로 하는 러너 랭킹 ( 이달의 러너, 명예의 전당, 졌.잘.싸)
 - 뱃지 기능을 통해 러닝을 하는 것에 있어 즐거움을 느끼도록 유도한다.
@@ -150,7 +150,7 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
 
 
 ### ARICHTECTURE
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="40%" height="40%">    
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/Architecture.PNG" width="40%" height="40%">    
 
 
 
