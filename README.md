@@ -25,15 +25,14 @@
 
 ##  :loudspeaker: 핵심 기능
 
-**1. 실시간 매칭**     
+### 1. 실시간 매칭
 
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningmain.PNG" width="20%" height="50%">   
 
 - 러닝목표시간, 러너의 성별에 맞는 사람을 실시간으로 매칭한다.
    - 매칭이 된다면, 소켓 통신을 통해 상대방 러너와 대결을 시작한다.
    - 매칭이 되지 않는다면, 과거의 자신과 대결하게 된다.
-
-**2. 러닝**    
+### 2. 러닝    
 
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningbattle.PNG" width="20%" height="50%">   
 
@@ -42,7 +41,7 @@
 - 음성피드백을 통해, 현재 몇 시간이 남았는지 알려준다. 
 - 자신이 달렸던 길을 좌표, 지도를 통해 경로를 그려준다. 
 
-**3. 러닝 기록**   
+### 3. 러닝 기록   
 
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runningrecord.PNG" width="20%" height="50%">   
 
@@ -50,7 +49,7 @@
 - 기록에는 거리, 시간, 페이스, 지도경로를 보여준다. 
 - 과거에 같이 뛰었던 상대방의 정보도 알려준다. 
 
-**4. 러닝 랭킹**   
+### 4. 러닝 랭킹   
 
 <img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/runnerRanking.PNG" width="20%" height="50%">    
 
