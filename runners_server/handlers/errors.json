@@ -1,10 +1,4 @@
 {
-  "400": {
-    "status": 400,
-    "success" : false,
-    "message": "잘못된 요청입니다.",
-    "description": "Bad Request"
-  },
   "LOGIN_FAIL": {
     "status": 401,
     "success" : false,
@@ -27,7 +21,7 @@
     "status": 400,
     "success" : false,
     "message": "닉네임이 존재합니다.",
-    "description": "Exist ID"
+    "description": "Exist nickname"
   },
 
   "NON_EXISTENT_DATA": {
@@ -40,6 +34,13 @@
     "status": 400,
     "success": true,
     "message": "조건에 맞지 않는 데이터입니다.",
+    "result": ""
+  },
+  
+  "ACCESS_NON_DATA_FOR_IDX" : {
+    "status": 400,
+    "success": true,
+    "message": "데이터가 없는 idx로 접근했습니다. token or 파라미터를 확인해주시고, 아 난 잘못 일도 없다!! 생각하시면 서버에게 요청하세요:-)",
     "result": ""
   },
 
@@ -55,27 +56,6 @@
     "success" : false,
     "message": "파라미터가 잘못되었습니다.",
     "description": "invalid parameter"
-  },
-  "9402": {
-    "status": 403,
-    "success" : false,
-    "message": "권한이 없습니다.",
-    "description": "Do not have permission"
-  },
-
-
-
-  "10401": {
-    "status": 401,
-    "success" : false,
-    "message": "만료된 인증 토큰 입니다.",
-    "description": "expired token"
-  },
-  "10403": {
-    "status": 403,
-    "success" : false,
-    "message": "잘못된 인증 방식입니다.",
-    "description": "invalid authentication"
   },
   "EMPTY_TOKEN": {
     "status": 400,
