@@ -25,11 +25,6 @@ module.exports = matching => {
 
         });
 
-        socket.on('test', (arr) => {
-            console.log("typeof arr: ", typeof arr);
-            console.log("arr: ", arr);
-        });
-
         socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
             console.log(`${socket.id} sent joinRoom with time: ${time}, wantGender: ${wantGender}, leftTime: ${leftTime}`);
 
