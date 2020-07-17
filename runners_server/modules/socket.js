@@ -366,6 +366,8 @@ module.exports = matching => {
 
         socket.on("disconnect", (reason) => {
             console.log("user disconnected : " + reason);
+            const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+            console.log(`disconnected user: ${Object.entries(user)}`);
         });
     });
 
