@@ -121,6 +121,12 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
 | longitude | DOUBLE | 경도 |  |
 
 
+
+### ARICHTECTURE
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/Architecture.PNG">    
+
+
+
 ## ⚙️ Dependencies
 ```
 
@@ -147,10 +153,6 @@ running 중 수집한 위치 좌표 정보를 담고 있는 테이블
   }
 
 ```
-
-
-### ARICHTECTURE
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/Architecture.PNG" width="40%" height="40%">    
 
 
 
