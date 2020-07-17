@@ -1,10 +1,4 @@
 {
-  "400": {
-    "status": 400,
-    "success" : false,
-    "message": "잘못된 요청입니다.",
-    "description": "Bad Request"
-  },
   "LOGIN_FAIL": {
     "status": 401,
     "success" : false,

@@ -207,11 +207,8 @@ const record = {
       let userData = await userModel.selectUserDataNoBadge(req.user_idx);
       userData = await userModel.selectRun(userData);
 
-      //console.log(userData);
-
       userData.user_idx = undefined;
 
-      console.log("밍찔이" + userData.result);
       const distance = await recordModel.getRecentRecordByTime(req.user_idx, req.body.time);
       if(distance){
         const pace = await recordModel.getPace(req.body.time, distance.distance);
@@ -232,6 +229,7 @@ const record = {
         const isUpdate = record.updateBadge(req.params.user_idx);
         
         console.log(isUpdate);
+        console.log(userData);
 
         return next({"code" : "GET_DUMMY_DATA", result : userData});
       }
