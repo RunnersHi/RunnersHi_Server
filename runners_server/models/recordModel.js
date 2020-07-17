@@ -217,7 +217,8 @@ const record = {
      const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return "WRONG_PARM";
+      return {"code" : "NO_OPPONENT", result : {}};
+
     } else{
 
       const query_nickname = `
