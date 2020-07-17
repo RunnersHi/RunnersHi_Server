@@ -10,7 +10,7 @@
 
 ## 📑 About Project
 
-<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/WorkFlow.jpg">
+<img src="https://github.com/RunnersHi/RunnersHi_Server/blob/master/runners_server/readmeimg/WorkFlow.jpg" width="50%" height="50%">
 
 **✨ 기존 러닝 어플리케이션과의 확실한 차별화 요소를 적용했습니다.**
    - 사용자는 '실시간 경쟁'이라는 게이미피케이션 요소를 통해 지루한 러닝이 아닌, 게임처럼 유쾌한 러닝을 즐길 수 있습니다.
