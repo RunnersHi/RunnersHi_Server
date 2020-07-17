@@ -7,9 +7,20 @@ const record = {
     const id = req.user_idx;
 
     try{
-      const result = await recordModel.getAllRecords(id);
-      
-      return next(result);
+      const data = await recordModel.getAllRecords(id);
+      const final_data = [];
+
+      for(let i = 0; i < data.length; i++){
+       final_data.push({
+         date: data[i].date,
+         distance: data[i].distance,
+         time: data[i].time,
+         run_idx: data[i].run_idx,
+         result: (data[i].result === 1 || data[i].result === 5) ? 1 : 2,
+         game_idx: data[i].game_idx,
+       });
+     }
+      return next({code: "RECORD_ALL_SUCCESS", result: final_data});
     } catch(error){
       return next(error);
     }
@@ -22,7 +33,6 @@ const record = {
     try{
       const result = await recordModel.getDetailRecord(user_idx, run_idx);
       return next(result);
-
     } catch(error){
       return next(error);
     }
@@ -34,7 +44,6 @@ const record = {
     try{
       const result = await recordModel.getBadge(id);
       return next({code: "BADGE_SUCCESS", result: result});
-
     } catch(error){
       return next(error);
     }
@@ -48,8 +57,8 @@ const record = {
       const image = await recordModel.getUserImg(user_idx);
       
       const pace_data = await recordModel.getPace(data[0].time, data[0].distance);
-
       const updateBadge = await record.updateBadge(user_idx);
+      
       if(updateBadge) {
         console.log("뱃지 update 성공");
       }else {
@@ -91,6 +100,7 @@ const record = {
 
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
+      
       return next(result);
 
     } catch(error){
@@ -182,7 +192,7 @@ const record = {
   },
 
   postRun: async(req, res, next) => {
-    if(!req.body.distance || !req.body.time || !req.body.result || !req.body.created_time || !req.body.end_time || !req.body.coordinates){
+    if(!req.body.time || !req.body.result || !req.body.created_time || !req.body.end_time || !req.body.coordinates){
       return next("NON_EXISTENT_DATA");
     }
     try{
@@ -204,6 +214,7 @@ const record = {
       return next(error);
     }
   },
+
   withMe: async(req, res, next) => {
     if(!req.body.time){
       return next("NON_EXISTENT_DATA");
