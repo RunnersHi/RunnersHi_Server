@@ -240,7 +240,6 @@ const record = {
         userData.pace_minute = pace.pace_minute;
         userData.pace_second = pace.pace_second;
 
-        console.log(isUpdate);
         console.log(userData);
 
         return next({"code" : "GET_DUMMY_DATA", result : userData});
