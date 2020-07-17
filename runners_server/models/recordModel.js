@@ -44,7 +44,7 @@ const record = {
     const data = await pool.queryParam(query);
 
     if(data.length === 0) {
-      return "SUCCESS_BUT_NO_DATA";
+      return {code: "SUCCESS_BUT_NO_DATA", result: {}};
     } 
     const final_data = [];
 
@@ -296,8 +296,7 @@ const record = {
         result.option = rows[0].distance;
       }
     }
-    return ({"code" : "BADGE_DETAIL",
-      result : result});
+    return ({"code" : "BADGE_DETAIL", result : result});
 
   },
 
