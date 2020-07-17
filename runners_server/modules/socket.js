@@ -7,6 +7,8 @@ moment.tz.setDefault("Asia/Seoul");
 
 
 let roomNum = 1;
+let currentUsers = [];
+let disconnectUsers = [];
 
 module.exports = matching => {
     matching.on('connection', socket =>{
@@ -366,7 +368,8 @@ module.exports = matching => {
 
         socket.on("disconnect", (reason) => {
             console.log("user disconnected : " + reason);
-            const user = socket.adapter.rooms[roomName].userList.find(user => user.id === socket.id);
+            const user = currentUsers.find(user => user.id === socket.id);
+            currentUsers.splice(currentUsers.indexOf(user), 1);
             console.log(`disconnected user: ${Object.entries(user)}`);
         });
     });
