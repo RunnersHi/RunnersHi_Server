@@ -29,7 +29,7 @@ module.exports = matching => {
 
         socket.on('joinRoom', async (token, time, wantGender, leftTime) => {
             console.log(`${socket.id} sent joinRoom with time: ${time}, wantGender: ${wantGender}, leftTime: ${leftTime}`);
-
+            
             if (!token || typeof token !== 'string') {
                 console.log("joinRoom token error");
                 matching.to(socket.id).emit("error");
@@ -44,6 +44,10 @@ module.exports = matching => {
             }
             else if (!leftTime || typeof leftTime !== 'number') {
                 console.log("joinRoom leftTime error");
+                matching.to(socket.id).emit("error");
+            }
+            else if (socket.adapter.rooms[socket.id].in) {
+                console.log("already joined!");
                 matching.to(socket.id).emit("error");
             }
             else {
@@ -79,6 +83,7 @@ module.exports = matching => {
                             console.log(socket.adapter.rooms[roomNum]);
                             console.log("Give RoomNum: ", roomNum);
                             roomNum = roomNum.toString();
+                            socket.adapter.rooms[socket.id].in = true;
                             matching.to(socket.id).emit("roomCreated", roomNum);
                             roomNum++;
                         });
@@ -92,6 +97,7 @@ module.exports = matching => {
                             currentUsers.push(user);
                             socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
                             targetRoomName = targetRoomName.toString();
+                            socket.adapter.rooms[socket.id].in = true; 
                             matching.to(firstUserId).emit("matched", targetRoomName);
                         });
                     }
