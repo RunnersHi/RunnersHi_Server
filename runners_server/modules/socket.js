@@ -46,9 +46,6 @@ module.exports = matching => {
                 console.log("joinRoom leftTime error");
                 matching.to(socket.id).emit("error");
             }
-            else if (socket.in) {
-                matching.to(socket.id).emit("error");
-            }
             else {
                 try {
                     const user = await (async function decodeToken(token) {
@@ -82,7 +79,6 @@ module.exports = matching => {
                             console.log(socket.adapter.rooms[roomNum]);
                             console.log("Give RoomNum: ", roomNum);
                             roomNum = roomNum.toString();
-                            socket.in = true;
                             matching.to(socket.id).emit("roomCreated", roomNum);
                             roomNum++;
                         });
@@ -96,7 +92,6 @@ module.exports = matching => {
                             currentUsers.push(user);
                             socket.adapter.rooms[targetRoomName].gameIdx = await matchingModel.newGameIdx();
                             targetRoomName = targetRoomName.toString();
-                            socket.in = true;
                             matching.to(firstUserId).emit("matched", targetRoomName);
                         });
                     }
