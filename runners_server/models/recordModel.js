@@ -11,6 +11,7 @@ const record = {
     const userData = await pool.queryParam(query);
     return userData;
   },
+
   getUserImg: async (user_idx) => {
     const query = 
     `
@@ -66,6 +67,23 @@ const record = {
     return data;
   },
 
+  getCoordinate: async (run_idx) => {
+    const coordinate =  
+    `SELECT 
+      latitude, longitude 
+    FROM 
+      coordinate
+    WHERE 
+      run_idx =  "${run_idx}"`;
+
+    let coordiData = await pool.queryParam(coordinate);
+
+    if(coordiData.length === 0)
+      return "WRONG_PARM";
+
+    return coordiData;
+  },
+
   getDetailRecord: async(user_idx, run_idx) => {
    
     const query = 
@@ -80,31 +98,13 @@ const record = {
     WHERE 
       user_idx = "${user_idx}" AND run_idx = "${run_idx}"`;
 
-    const coordinate =  
-    `SELECT 
-      latitude, longitude 
-    FROM 
-      coordinate
-    WHERE 
-      run_idx =  "${run_idx}"`;
-
     const data = await pool.queryParam(query);
-    let coordiData = await pool.queryParam(coordinate);
-
+   
     if(data.length === 0 ) {
       return "WRONG_PARM";
     }
 
-    const real_result = {
-      month: data[0].month,
-      day: data[0].day,
-      time : data[0].time,
-      start_time: data[0].create_time,
-      end_time: data[0].end_time,
-      coordinate: coordiData
-    };
-
-    return {code: "RECORD_DETAIL_SUCCESS", result: real_result};
+    return data;
   },
 
   getUserIdxRunIdxRecord: async(user_idx, run_idx) => {
