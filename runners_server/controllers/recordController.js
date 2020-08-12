@@ -98,6 +98,7 @@ const record = {
 
     try{
       const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
+      
       return next(result);
     } catch(error){
       return next(error);
@@ -111,6 +112,7 @@ const record = {
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
       
+
       return next(result);
 
     } catch(error){

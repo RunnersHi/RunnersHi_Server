@@ -39,7 +39,6 @@ const record = {
     let pace_minute = ( time /60 ) / ( distance / 1000 );
     let pace_second = (pace_minute - Math.floor(pace_minute)) * 60;
 
-    
     result.pace_minute = Math.floor(pace_minute);
     result.pace_second = Math.floor(pace_second);
 
@@ -143,14 +142,20 @@ const record = {
       return {code: "USER_RECORD_SUCCESS", result: final_data};
   },
 
-  getBadge: async(id) => {
+  getBadge: async(user_idx) => {
     const query = `
-    SELECT badge FROM ${table} WHERE user_idx = "${id}"
+    SELECT 
+      badge 
+    FROM ${table} 
+    WHERE user_idx = "${user_idx}"
     `;
     const data = await pool.queryParam(query);
 
+    //배지의 정보는 없는 것은 말이 안되는 일.
+    //이럴 경우에, 서버내부에러를 보내야하나?!
+    //user_idx의 경우 token값만 잘 넣으면 잘 가져와지는 값이니
     if(data.length === 0) {
-      return null;
+      return "";
     }
 
     const result = {badge : []};
@@ -160,14 +165,6 @@ const record = {
       result.badge.push(bin[i] === '1');
     }
     return result;
-  },
-
-  getRecentRecordByTime: async(user_idx, time)=>{
-    const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
-    FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
-    const rows = await pool.queryParamArr(query, [user_idx, time]);
-    if(rows.length === 0) return false;
-    else return rows[0];
   },
 
   getUserRecentRecord: async(id) => {
@@ -202,7 +199,6 @@ const record = {
     return data;
   },
 
-  //상대방 기록보기
   getOpponentRecord: async(user_idx, game_idx) => {
      const query = 
      `
@@ -242,7 +238,15 @@ const record = {
 
       return {code : "OPPONENT_RECORD_SUCCESS", result : final_data};
   },
-  
+
+  getRecentRecordByTime: async(user_idx, time)=>{
+    const query = `SELECT distance, TIMEDIFF(r.end_time, r.created_time) as time, (r.time / 60) / (r.distance / 1000) as pace
+    FROM run r WHERE user_idx = ? AND time = ? ORDER BY run_idx DESC LIMIT 1`;
+    const rows = await pool.queryParamArr(query, [user_idx, time]);
+    if(rows.length === 0) return false;
+    else return rows[0];
+  },
+
   getBadgeDetail: async(user_idx, flag) => {
 
     const titles = ["첫 승 달성", "10승 달성", "50승 달성", "최고 페이스", "최장 거리", "최저 페이스",
