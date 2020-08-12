@@ -40,7 +40,7 @@
   "ACCESS_NON_DATA_FOR_IDX" : {
     "status": 400,
     "success": true,
-    "message": "데이터가 없는 idx로 접근했습니다. token or 파라미터를 확인해주시고, 아 난 잘못 일도 없다!! 생각하시면 서버에게 요청하세요:-)",
+    "message": "데이터가 없는 idx로 접근했습니다. token or 파라미터를 확인해주세요!",
     "result": ""
   },
 

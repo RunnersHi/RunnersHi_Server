@@ -2,6 +2,8 @@ const pool = require('../models/pool');
 
 const ranking = {
 
+  // HAVING 
+  //year = current_year AND month = current_month
   winner: async () => {
     const query = 
     `SELECT 
@@ -18,8 +20,7 @@ const ranking = {
       u.log_visibility =1
     GROUP BY 
       u.user_idx
-    HAVING 
-      year = current_year AND month = current_month
+   
     ORDER BY win DESC, lose ASC
     limit 10
       `;
@@ -32,6 +33,8 @@ const ranking = {
     return data;
   },
 
+  //HAVING 
+  //year = current_year AND month = current_month
   loser: async () => {
     const query = 
     `SELECT 
@@ -49,8 +52,7 @@ const ranking = {
       u.log_visibility =1
     GROUP BY 
       u.user_idx
-    HAVING 
-      year = current_year AND month = current_month
+    
     ORDER BY lose DESC, win ASC
     limit 10
     `;
@@ -64,6 +66,9 @@ const ranking = {
   },
 
   runner: async () => {
+    //year = current_year을 사용하고 groupby로 묶어서
+    //7월이 아닌 달에 달린 사람들은 안묶음.
+    //AND year = current_year AND month = current_month
     const query = 
     `
     SELECT 
@@ -81,7 +86,7 @@ const ranking = {
       u.log_visibility=1
     GROUP BY 
       u.user_idx
-    HAVING sum IS NOT NULL AND year = current_year AND month = current_month
+    HAVING sum IS NOT NULL 
     ORDER BY sum DESC, sum_time ASC
     limit 10
     `;

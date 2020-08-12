@@ -31,8 +31,18 @@ const record = {
     const user_idx = req.user_idx;
 
     try{
-      const result = await recordModel.getDetailRecord(user_idx, run_idx);
-      return next(result);
+      const data = await recordModel.getDetailRecord(user_idx, run_idx);
+      const coordinateData = await recordModel.getCoordinate(run_idx);
+
+      const real_result = {
+        month: data[0].month,
+        day: data[0].day,
+        time : data[0].time,
+        start_time: data[0].create_time,
+        end_time: data[0].end_time,
+        coordinate: coordinateData
+      };
+      return next({code: "RECORD_DETAIL_SUCCESS", result: real_result});
     } catch(error){
       return next(error);
     }
@@ -88,6 +98,7 @@ const record = {
 
     try{
       const result = await recordModel.getUserIdxRunIdxRecord(user_idx, run_idx);
+      
       return next(result);
     } catch(error){
       return next(error);
@@ -101,6 +112,7 @@ const record = {
     try{
       const result = await recordModel.getOpponentRecord(user_idx, game_idx);
       
+
       return next(result);
 
     } catch(error){
