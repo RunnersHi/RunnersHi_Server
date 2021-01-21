@@ -24,6 +24,6 @@
     "pool": "^0.4.1",
     "promise-mysql": "^4.1.3",
     "pug": "2.0.0-beta11",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   }
 }
